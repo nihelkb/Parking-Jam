@@ -1,4 +1,4 @@
-package es.upm.pproject.parkingjam.parking_jam;
+package es.upm.pproject.parkingjam;
 
 public class App {
     
