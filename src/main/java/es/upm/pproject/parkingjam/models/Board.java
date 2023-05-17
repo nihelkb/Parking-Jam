@@ -2,7 +2,10 @@ package es.upm.pproject.parkingjam.models;
 import java.io.*;
 
 public class Board {
+<<<<<<< HEAD
     
+=======
+>>>>>>> e32dfd4914e275675d411e913c603b720bf5e7b5
     private char[][] board;
     private int nRows, nColumns;
     private File fich;
@@ -16,7 +19,11 @@ public class Board {
 
     public void readFile(){
         try{
+<<<<<<< HEAD
             fich = new File("C:\\Users\\Julio\\Desktop\\nivel.txt");
+=======
+            fich = new File("C:/Users/Julio/Desktop/nivel.txt"); // PENDING CHANGE
+>>>>>>> e32dfd4914e275675d411e913c603b720bf5e7b5
             fr = new FileReader (fich);
             br = new BufferedReader(fr);
         }
@@ -38,6 +45,10 @@ public class Board {
             //Rellenamos el char[][]
             char [][] tablero = new char[nRows][nColumns];
             while((index = br.readLine())!= null && i < nRows){
+<<<<<<< HEAD
+=======
+                System.out.println(index);
+>>>>>>> e32dfd4914e275675d411e913c603b720bf5e7b5
                 j = 0;
                 while(j< nColumns){
                  tablero[i][j]=index.charAt(j);
@@ -51,7 +62,11 @@ public class Board {
 
     public static void main(String[] args)throws IOException  {
         Board a = new Board();
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> e32dfd4914e275675d411e913c603b720bf5e7b5
         for (int x=0; x < a.board.length; x++) {
             System.out.print("|");
             for (int y=0; y < a.board[x].length; y++) {
@@ -60,7 +75,11 @@ public class Board {
             }
             System.out.println("|");
           }
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> e32dfd4914e275675d411e913c603b720bf5e7b5
     }
 
     public String toString(){
