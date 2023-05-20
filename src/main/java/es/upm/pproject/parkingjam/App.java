@@ -10,6 +10,7 @@ public class App {
         Level level1 = new Level();
         try {
             level1.loadLevel();
+            int levelScore = 0;
 
             /*
             for(int i = 0; i < level1.getVehicles().size(); i++ ){
@@ -33,7 +34,7 @@ public class App {
             Boolean salida = true;
             while(salida){ 
                 
-                System.out.println("Ingrese el coche que quiere mover..."); 
+                System.out.println("Choose the vehicle you want to move:"); 
                 char nombreVehiculo = ' ';
                 
                 nombreVehiculo = sc.nextLine().charAt(0);
@@ -46,16 +47,20 @@ public class App {
                     return;
                 }
                 
-                System.out.println("Ingrese la dirección (up, down, left, right):");
+                System.out.println("Choose the direction (up, down, left, right):");
                 String direccion = sc.nextLine();
                 
-                System.out.println("Ingrese la distancia a mover:");
+                System.out.println("Choose the number of movements:");
                 int distancia = sc.nextInt();
                 
                 boolean movimientoExitoso = level1.getBoard().updateBoard(vehicle, direccion, distancia);
         
                 if (!movimientoExitoso) {
-                    System.out.println("Movimiento inválido. Intente nuevamente.");
+                    System.out.println("Invalid movement, try again.");
+                    System.out.println("Level score: " + levelScore);
+                }else{
+                    levelScore++;
+                    System.out.println("Level score: " + levelScore);
                 }
                 
                 

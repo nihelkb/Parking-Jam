@@ -131,8 +131,7 @@ public class Board extends JFrame{
                     for (int i = row + lengthVehicle ; i < nRows -1 && contador < distance; i++){
                         contador++;
                         if(board[i][column] != ' ')
-                            return false;
-                        
+                            return false;      
                     }             
             }
 
@@ -187,12 +186,12 @@ public class Board extends JFrame{
             deleteCar(vehicle);
             vehicle.move(direction, distance);
             insertCar(vehicle);
-            System.out.println("Movimiento valido");
+            //System.out.println("Movimiento valido");
             return true;
         }
         
         else{
-            System.out.println("Movimiento no válido");
+            //System.out.println("Movimiento no válido");
             return false;
         }
 
