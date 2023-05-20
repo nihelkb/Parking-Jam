@@ -1,32 +1,32 @@
 package es.upm.pproject.parkingjam.models;
 
 public class Vehicle {
-    private String name;
+    private Character id;
     private int length;
-    private char direction;
+    private char orientation;
     private int positionX;
     private int positionY;
     private boolean redCar;
 
-    public Vehicle (String name, int length, char direction, int positionX, int positionY, boolean redCar){
-        this.name = name;
+    public Vehicle (Character id, int length, char orientation, int positionX, int positionY, boolean redCar){
+        this.id = id;
         this.length = length;
-        this.direction = direction;
+        this.orientation = orientation;
         this.positionX = positionX;
         this.positionY = positionY;
         this.redCar = redCar;
     }
     
-    public String getName(){
-        return name;
+    public Character getId(){
+        return id;
     }
     
     public int getLength(){
         return length;
     }
 
-    public char getDirection(){
-        return direction;
+    public char getOrientation(){
+        return orientation;
     }
     
     public int getpositionX(){
@@ -43,23 +43,23 @@ public class Vehicle {
     }
 
     public String toString(){
-        return name+ " "+ length +" " + direction +" "+ positionX +" "+ positionY + " "+ redCar;
+        return id+ " "+ length +" " + orientation +" "+ positionX +" "+ positionY + " "+ redCar;
     }
     public void move(String direction, int distance){
-        if(this.direction == 'H'){
+        if(this.orientation == 'H'){
             if(direction.equals("left")){
-                this.positionX = this.positionX - distance;
-            }
-            else if(direction.equals("right")){
-                this.positionX = this.positionX + distance;
-            }
-        }
-        else if(this.direction == 'V'){
-            if(direction.equals("up")){
                 this.positionY = this.positionY - distance;
             }
-            else if(direction.equals("down")){
+            else if(direction.equals("right")){
                 this.positionY = this.positionY + distance;
+            }
+        }
+        else if(this.orientation == 'V'){
+            if(direction.equals("up")){
+                this.positionX = this.positionX - distance;
+            }
+            else if(direction.equals("down")){
+                this.positionX = this.positionX + distance;
             }
         }
     }

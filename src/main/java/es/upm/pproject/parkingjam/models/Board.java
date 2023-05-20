@@ -9,6 +9,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.LinkedList;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -22,17 +23,10 @@ public class Board extends JFrame{
     private FileReader fr;
     private BufferedReader br;
     private Lamina milamina;
-    private LinkedList<Vehicle> vehicles;
+    
 
 
-    public Board() throws IOException{
-        /* 
-        //readFile();
-        board = fillBoard(br);
-        vehicles = new LinkedList<Vehicle>();
-        paintBoard();
-        */
-    }
+    public Board(){}
 
     public void readFile(){
         try{
@@ -87,15 +81,17 @@ public class Board extends JFrame{
 
 
     public boolean verifyMovement(Vehicle vehicle, int distance, String direction){
-        int row = vehicle.getpositionY();
-        int column = vehicle.getpositionX();
-        char orientation = vehicle.getDirection();
+        int row = vehicle.getpositionX();
+        int column = vehicle.getpositionY();
+        char orientation = vehicle.getOrientation();
         int lengthVehicle = vehicle.getLength();
+        int contador = 0;
         if(orientation == 'H'){
             if(direction.equals("left")){
-                if((row - distance) <= 0) 
+                if((column - distance) <= 0) 
                     return false;
-                for (int i = column - 1; i > 0; i--){
+                for (int i = column - 1; i > 0 && contador < distance; i--){
+                    contador ++;
                     if(board[row][i] != ' ')
                         return false;
                 }
@@ -105,35 +101,101 @@ public class Board extends JFrame{
             else if(direction.equals("right")){
                     if((row + distance + (lengthVehicle -1)) >= nColumns) 
                         return false;
-                    for (int i = column + lengthVehicle; i < nColumns -1; i++){
+                    for (int i = column + lengthVehicle; i < nColumns -1 && contador < distance; i++){
+                        contador ++;
                         if(board[row][i] != ' ')
                             return false;
                         
                     }             
             }
+            else{
+                return false;
+            }
         }
         if(orientation == 'V'){
             if(direction.equals("up")){
-                if((column - distance) <= 0) 
+                if((row - distance) <= 0) 
                     return false;
-                for (int i = row - 1; i > 0; i--){
-                    if(board[column][i] != ' ')
+                for (int i = row - 1; i > 0  && contador < distance; i--){
+                    contador ++;
+                    if(board[i][column] != ' ')
                         return false;
                 }
                 
             }
         
             else if(direction.equals("down")){
-                    if((column + distance + (lengthVehicle -1)) >= nRows) 
+                    if((row + distance + lengthVehicle - 1) >= nRows) 
                         return false;
-                    for (int i = row + lengthVehicle; i < nRows -1; i++){
-                        if(board[column][i] != ' ')
+                    
+                    for (int i = row + lengthVehicle ; i < nRows -1 && contador < distance; i++){
+                        contador++;
+                        if(board[i][column] != ' ')
                             return false;
                         
                     }             
             }
+
+            else{
+                return false;
+            }
         }
         return true;
+
+    }
+
+    public void deleteCar(Vehicle vehicle){
+        char orientation = vehicle.getOrientation();
+        int length = vehicle.getLength();
+        int posX = vehicle.getpositionX();
+        int posY = vehicle.getpositionY();
+        if(orientation == 'H'){
+            for (int j = posY; j < length + posY; j++){
+
+                board[posX][j] = ' ';
+                
+            }
+        } else if(orientation == 'V'){
+            System.out.println(posY);
+            for (int i = posX; i < posX + length; i++){
+                System.out.println(board[i][posY]);
+                board[i][posY] = ' ';
+            }
+        }
+    }
+
+    public void insertCar(Vehicle vehicle) {
+        int posX = vehicle.getpositionX();
+        int posY = vehicle.getpositionY();
+        int length = vehicle.getLength();
+        Character id = vehicle.getId();
+        char orientation = vehicle.getOrientation();
+        if (orientation == 'H') {
+            for (int j = posY; j < posY + length; j++){
+                board[posX][j] = id; 
+            }
+        }else if (orientation == 'V') {
+            for (int i = posX; i < posX + length; i++){
+                board[i][posY] = id;
+            }
+        }
+    }
+
+    public boolean updateBoard(Vehicle vehicle, String direction, int distance){
+        if(verifyMovement(vehicle, distance, direction)){
+            Character id = vehicle.getId();
+            deleteCar(vehicle);
+            vehicle.move(direction, distance);
+            insertCar(vehicle);
+            System.out.println("Movimiento valido");
+            return true;
+        }
+        
+        else{
+            System.out.println("Movimiento no válido");
+            return false;
+        }
+
 
     }
     

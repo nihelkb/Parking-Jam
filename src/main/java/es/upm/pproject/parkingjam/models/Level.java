@@ -4,30 +4,38 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import javax.swing.plaf.synth.SynthOptionPaneUI;
 
 public class Level {
-    public Board board;
+    private Board board;
     private File fich;
     private FileReader fr;
     private BufferedReader br;
-    private LinkedList<Vehicle> vehicles;
-    private LinkedList<String> idCars;
+    private Map<Character, Vehicle> vehicles;
+    private LinkedList<Character> idCars;
     
-    public Level() throws IOException{
+    
+    public Level(){
         board = new Board();
+        vehicles = new HashMap<Character, Vehicle>();
+        idCars = new LinkedList<Character>();
+    }
 
-        vehicles = new LinkedList<Vehicle>();
-        idCars = new LinkedList<String>();
+    public  Map<Character, Vehicle> getVehicles(){
+        return vehicles;
+    }
 
-
+    public Board getBoard(){
+        return board;
     }
 
     public void readFile(){
         try{
-            fich = new File("C:\\Users\\Julio\\Desktop\\nivel.txt");
+            fich = new File("src/resources/levels/level1.txt");
             fr = new FileReader (fich);
             br = new BufferedReader(fr);
         }
@@ -35,6 +43,7 @@ public class Level {
             e.printStackTrace();
         }
     }
+
 
     public void loadLevel() throws IOException{
         readFile();
@@ -53,22 +62,20 @@ public class Level {
             j = 1;
             while( j < board.getnColumns()-1 && isCorrect ){
                 letter = b[i][j];
-                System.out.println(idCars.contains(letter+""));
-                if(!idCars.contains(letter+"") && letter != ' '){
-                    System.out.println(idCars.contains(letter+""));
-                    System.out.println(letter);
+                //System.out.println(idCars.contains(letter+""));
+                if(!idCars.contains(letter) && letter != ' '){
+                   // System.out.println(idCars.contains(letter));
+                  //  System.out.println(letter);
                     if(!loadCar(b, letter, i, j)){
                         isCorrect = false;
                     }
                 }
                 j++;
-
             }
             i++;
         }
 
     }
-
 
     public boolean loadCar(char [][] b, char letter, int x, int y){
         int i = x;
@@ -110,9 +117,9 @@ public class Level {
             if(vertical){
                 direction = 'V';
             }
-            Vehicle vehicle = new Vehicle(letter+"", tam, direction, x, y, redCar);
-            ;vehicles.add(vehicle);
-            idCars.add(letter+"")
+            Vehicle vehicle = new Vehicle(letter, tam, direction, x, y, redCar);
+            vehicles.put(letter, vehicle);
+            idCars.add(letter);
         }
         else{
             return false;
@@ -122,6 +129,7 @@ public class Level {
         return true;
     }
     
+    /*
     public static void main(String[] args) throws IOException{
         Level uno = new Level();
         uno.loadLevel();
@@ -137,5 +145,6 @@ public class Level {
             System.out.println("|");
           }
     }
+    */
 }
 
