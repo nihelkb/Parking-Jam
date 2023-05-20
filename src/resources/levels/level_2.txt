@@ -1,0 +1,10 @@
+Level 2
+6 6
+++++++++
++a  bbb+
++a  c d+
++** ced@
++fff ed+
++  g jj+
++hhgii +
+++++++++
