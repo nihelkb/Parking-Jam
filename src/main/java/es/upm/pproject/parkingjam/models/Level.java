@@ -18,11 +18,13 @@ public class Level {
     private Map<Character, Vehicle> vehicles;
     private LinkedList<Character> idCars;
     
-    
+   
+
     public Level(){
         board = new Board();
         vehicles = new HashMap<Character, Vehicle>();
         idCars = new LinkedList<Character>();
+     
     }
 
     public  Map<Character, Vehicle> getVehicles(){
@@ -35,7 +37,7 @@ public class Level {
 
     public void readFile(){
         try{
-            fich = new File("src/resources/levels/level1.txt");
+            fich = new File("src/resources/levels/level_1.txt");
             fr = new FileReader (fich);
             br = new BufferedReader(fr);
         }

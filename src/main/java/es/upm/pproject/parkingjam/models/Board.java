@@ -155,9 +155,9 @@ public class Board extends JFrame{
                 
             }
         } else if(orientation == 'V'){
-            System.out.println(posY);
+            //System.out.println(posY);
             for (int i = posX; i < posX + length; i++){
-                System.out.println(board[i][posY]);
+                //System.out.println(board[i][posY]);
                 board[i][posY] = ' ';
             }
         }

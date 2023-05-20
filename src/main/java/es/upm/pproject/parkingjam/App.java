@@ -28,7 +28,7 @@ public class App {
             }
 
             
-            System.out.println(level1.getVehicles().toString());
+           //System.out.println(level1.getVehicles().toString());
             
             Scanner sc = new Scanner(System.in);
             Boolean salida = true;
