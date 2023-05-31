@@ -92,7 +92,7 @@ public class Board extends JFrame{
                     return false;
                 for (int i = column - 1; i > 0 && contador < distance; i--){
                     contador ++;
-                    if(board[row][i] != ' ')
+                    if(board[row][i] != ' ' || (board[row][i] == '@' && vehicle.getRedCar()))
                         return false;
                 }
                 
@@ -103,7 +103,7 @@ public class Board extends JFrame{
                         return false;
                     for (int i = column + lengthVehicle; i < nColumns -1 && contador < distance; i++){
                         contador ++;
-                        if(board[row][i] != ' ')
+                        if(board[row][i] != ' ' || (board[row][i] == '@' && vehicle.getRedCar()))
                             return false;
                         
                     }             
@@ -118,7 +118,7 @@ public class Board extends JFrame{
                     return false;
                 for (int i = row - 1; i > 0  && contador < distance; i--){
                     contador ++;
-                    if(board[i][column] != ' ')
+                    if(board[i][column] != ' ' || (board[row][i] == '@' && vehicle.getRedCar()))
                         return false;
                 }
                 
@@ -130,7 +130,7 @@ public class Board extends JFrame{
                     
                     for (int i = row + lengthVehicle ; i < nRows -1 && contador < distance; i++){
                         contador++;
-                        if(board[i][column] != ' ')
+                        if(board[i][column] != ' ' || (board[row][i] == '@' && vehicle.getRedCar()))
                             return false;      
                     }             
             }
@@ -180,20 +180,53 @@ public class Board extends JFrame{
         }
     }
 
-    public boolean updateBoard(Vehicle vehicle, String direction, int distance){
+    public boolean endGame(Vehicle vehicle){
+        int posX = vehicle.getpositionX();
+        int posY = vehicle.getpositionY();
+        int length = vehicle.getLength();
+        boolean redCar = vehicle.getRedCar();
+        char orientation = vehicle.getOrientation();
+        boolean fin = false;
+        System.out.println("si");
+        if(orientation == 'H' && redCar){
+            for(int i = posY ; i < (length + posY); i++){
+                if(board[posX][i] == '@'){
+                    System.out.println(board[posX][i]);
+                    fin = true;
+                }
+            }    
+        }
+        if(orientation == 'V' && redCar){
+            for(int i = posX ; i < (length + posX); i++){
+                if(board[i][posY] == '@'){
+                    System.out.println(board[i][posY]);
+                    fin = true;
+                }
+            }    
+        }
+
+        return fin;
+    }
+    /////////////////
+    public boolean[] updateBoard(Vehicle vehicle, String direction, int distance){
+        //boolean fin;
+        boolean [] res = new boolean[2];
+        res[0]=false;
+        res[1]=false;
         if(verifyMovement(vehicle, distance, direction)){
             Character id = vehicle.getId();
             deleteCar(vehicle);
             vehicle.move(direction, distance);
+            if(endGame(vehicle)){
+                System.out.println("FIN");
+                res[1]=true;
+            }
             insertCar(vehicle);
-            //System.out.println("Movimiento valido");
-            return true;
+            res[0]=true;
+            //System.out.println("Movimiento valido")
         }
         
-        else{
-            //System.out.println("Movimiento no válido");
-            return false;
-        }
+        return res;
 
 
     }

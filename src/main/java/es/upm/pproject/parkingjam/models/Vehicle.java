@@ -36,6 +36,10 @@ public class Vehicle {
     public int getpositionY(){
         return positionY;
     }
+
+    public boolean getRedCar(){
+        return redCar;
+    }
     
     public void setPosition (int x, int y) {
         positionX = x;

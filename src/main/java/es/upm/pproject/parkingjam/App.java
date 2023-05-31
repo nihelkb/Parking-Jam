@@ -53,24 +53,28 @@ public class App {
                 System.out.println("Choose the number of movements:");
                 int distancia = sc.nextInt();
                 
-                boolean movimientoExitoso = level1.getBoard().updateBoard(vehicle, direccion, distancia);
+                boolean []movimientoExitoso = level1.getBoard().updateBoard(vehicle, direccion, distancia);
         
-                if (!movimientoExitoso) {
+                if (!movimientoExitoso[0]) {
                     System.out.println("Invalid movement, try again.");
                     System.out.println("Level score: " + levelScore);
                 }else{
                     levelScore++;
                     System.out.println("Level score: " + levelScore);
                 }
+                if(movimientoExitoso[1]){
+                    System.out.println("ENHORABUENA JUGADOR!");
+                }
+                else{
                 
-                
-                for (int x=0; x < level1.getBoard().getBoard().length; x++) {
-                    System.out.print("|");
-                    for (int y=0; y < level1.getBoard().getBoard().length; y++) {
-                        System.out.print (level1.getBoard().getBoard()[x][y]);
-                        if (y!=level1.getBoard().getBoard()[x].length-1) System.out.print("\t");
+                    for (int x=0; x < level1.getBoard().getBoard().length; x++) {
+                        System.out.print("|");
+                        for (int y=0; y < level1.getBoard().getBoard().length; y++) {
+                            System.out.print (level1.getBoard().getBoard()[x][y]);
+                            if (y!=level1.getBoard().getBoard()[x].length-1) System.out.print("\t");
+                        }
+                        System.out.println("|");
                     }
-                    System.out.println("|");
                 }
                 
                 sc.nextLine();
