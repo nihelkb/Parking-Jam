@@ -2,151 +2,395 @@ package es.upm.pproject.parkingjam.models;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
-import javax.swing.plaf.synth.SynthOptionPaneUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
-public class Level {
-    private Board board;
-    private File fich;
-    private FileReader fr;
-    private BufferedReader br;
-    private Map<Character, Vehicle> vehicles;
-    private LinkedList<Character> idCars;
+import es.upm.pproject.parkingjam.interfaces.Resetable;
+import es.upm.pproject.parkingjam.common.*;
+import es.upm.pproject.parkingjam.exceptions.LevelNotFoundException;
+import es.upm.pproject.parkingjam.exceptions.WrongLevelFormatException;
+
+/**
+* Class that represents a level.
+* @author Nihel Kella Bouziane
+* @author Julio Manso Sánchez-Tornero
+* @author Álvaro Dominguez Martín
+* @author Lucía Sánchez Navidad
+* @version 2.0
+* @since 15/06/2023
+*/
+
+public class Level implements Resetable{    
+    private Car redCar;
+    private Parking board;
+    private Map<Character, Car> vehicles;
+    private List<Character> idCars;
+    private String name;
+    private int score;
+
+    public static final String LEVEL_FILE_NAME_FORMAT = "src/main/resources/levels/level_%d.txt";
     
-   
+    private static final Logger logger = LoggerFactory.getLogger(Level.class);
+    private static final Marker levelMarker = MarkerFactory.getMarker("LEVEL");
 
-    public Level(){
-        board = new Board();
-        vehicles = new HashMap<Character, Vehicle>();
-        idCars = new LinkedList<Character>();
-     
+    /**
+    * Constructor of the class.
+    * @param levelPath File path of the level file.
+    * FINISHED
+    */
+    public Level(String levelPath) throws LevelNotFoundException, WrongLevelFormatException{
+        this.vehicles = new HashMap<>();
+        this.idCars = new LinkedList<>();
+
+        // Fill the board reading the chars from the file.
+        this.board = fillBoard(levelPath);  
+        loadCars();
+
+        score = 0;
+        String logMsg = String.format("The new level (%s) has been successfully loaded.", name);
+        logger.info(levelMarker, logMsg);
     }
-
-    public  Map<Character, Vehicle> getVehicles(){
-        return vehicles;
-    }
-
-    public Board getBoard(){
-        return board;
-    }
-
-    public void readFile(){
-        try{
-            fich = new File("src/resources/levels/level_1.txt");
-            fr = new FileReader (fich);
-            br = new BufferedReader(fr);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-    }
-
-
-    public void loadLevel() throws IOException{
-        readFile();
-        board.setBoard(board.fillBoard(br));
-        loadCars(board.getBoard());
-    }
-
-    public void loadCars(char [][] b){
-        int i = 1; //filas
-        int j = 1; // columnas
-        int tam = 0;
-        char direction;
-        char letter = ' ';
-        boolean isCorrect = true;
-        while(i < board.getNRows()-1 && isCorrect ){
-            j = 1;
-            while( j < board.getnColumns()-1 && isCorrect ){
-                letter = b[i][j];
-                //System.out.println(idCars.contains(letter+""));
-                if(!idCars.contains(letter) && letter != ' '){
-                   // System.out.println(idCars.contains(letter));
-                  //  System.out.println(letter);
-                    if(!loadCar(b, letter, i, j)){
-                        isCorrect = false;
+    /**
+    * Method that fills the board by reading the level file.
+    * @return The board created with the tiles content.
+    * FINISHED
+     * @throws LevelNotFoundException,WrongLevelFormatException
+    */
+    private Parking fillBoard(String levelPath) throws LevelNotFoundException, WrongLevelFormatException {
+        char[][] boardTiles = null;
+        
+        try ( 
+            FileReader lvlFile = new FileReader(new File(levelPath)); 
+            BufferedReader br = new BufferedReader(lvlFile);
+           ){
+            this.name = br.readLine();
+            int redSize = 0;
+            int exit = 0;
+            String[] dimensions = br.readLine().split(" ");
+            int nRows = Integer.parseInt(dimensions[0]);
+            int nColumns = Integer.parseInt(dimensions[1]);
+            boardTiles = new char[nRows][nColumns];
+            String line;
+            for (int i = 0; i < nRows; i++) {
+                line = br.readLine();
+                for (int j = 0; j < nColumns; j++) {
+                    char c = line.charAt(j);
+                    switch (c) {
+                        case '*':
+                            redSize++;
+                            break;
+                        case '@':
+                            exit++;
+                            break;
+                        default:
+                            break;
                     }
+                    boardTiles[i][j] = c;
                 }
-                j++;
             }
-            i++;
-        }
-
+            // Level must have only one red car
+            if(redSize != 2){
+                throw new WrongLevelFormatException("The level must have one red car");
+            }
+            // Level must have only one exit
+            if(exit != 1){
+                throw new WrongLevelFormatException("The level must have one exit");
+            }
+        }catch (FileNotFoundException e) {
+            throw new LevelNotFoundException(String.format("The level %s does not exist", levelPath));
+        }catch (IOException e) {
+           throw new WrongLevelFormatException("Error while attempting to read the file");
+        } 
+        return new Parking(boardTiles);
     }
 
-    public boolean loadCar(char [][] b, char letter, int x, int y){
-        int i = x;
-        int j = y;
-        boolean end = false;
-        boolean vertical = false;
-        int tam = 0;
-        char direction ='H';
-        boolean redCar = false;
-        if(letter == '*')
-            redCar = true;
-        while(i < board.getNRows()-1 && !end){
-            while( j < board.getnColumns() && !vertical && !end){
-                if(b[i][j] == letter){
-                    tam++;
-                }
-                else if(b[i][j] != letter && tam == 1){
-                    vertical = true;
-                }
-                if(tam > 1 && b[i][j] != letter){
-                    end = true;
-                }
-                j++;
-            }
-            if(!end){
-                j = y;
-                i++;
-                if(b[i][j] == letter){
-                    tam++;
-                }
-                else if(b[i][j] != letter ){
-                    end = true;
+    private void loadCars() throws WrongLevelFormatException{
+        char[][] b = board.getTiles();
+        char letter;
+        boolean isCorrect = true;
+        for (int i = 1; i < board.getNRows() - 1 && isCorrect; i++){
+            for (int j = 1; j < board.getNColumns() - 1 && isCorrect; j++){
+                letter = b[i][j];
+                if (!idCars.contains(letter) && letter != ' ' && !loadCar(b, letter, i, j)){
+                    isCorrect = false;
                 }
             }
-
-            
         }
-        if(tam >=2) {
-            if(vertical){
-                direction = 'V';
+        if(!isCorrect){
+            throw new WrongLevelFormatException("Vehicles must have the form 1xN or Nx1 where N ≥ 2");
+        }
+    }
+
+    private boolean loadCar(char [][] b, char letter, int x, int y){
+        int tam = 1;
+        // Check car orientation
+        boolean horizontal = b[x][y+1] == letter;
+        if (horizontal) {
+           for (int j = y + 1; j < b[0].length; j++) {
+                if (b[x][j] == letter) {
+                    tam++;
+                }
             }
-            Vehicle vehicle = new Vehicle(letter, tam, direction, x, y, redCar);
+        }else {
+            for (int i = x + 1; i < b.length; i++) {
+                if (b[i][y] == letter) {
+                    tam++;
+                }
+            }
+        }
+        return createCar(tam, x, y, letter, horizontal);
+    }
+
+    private boolean createCar(int tam, int x, int y, char letter, boolean horizontal) {
+        if(tam >= 2) {
+            boolean isRedCar = letter == '*';
+            Car vehicle = new Car(x, y, letter, tam, horizontal, isRedCar);
             vehicles.put(letter, vehicle);
             idCars.add(letter);
+            // Save redCar reference
+            if(isRedCar){
+                this.redCar = vehicle;
+            }
+            return true;
         }
-        else{
+        return false;
+    }
+
+    /**
+    * Method that returns if a car has been moved succesfully.
+    * @return true if the car has been moved, false otherwise. 
+    * FINISHED
+    */
+    public boolean moveCar(Car vehicle, char direction, int distance) {
+        if (distance == 0) {
             return false;
-
         }
-
-        return true;
+        // if movement is valid
+        if (verifyMovement(vehicle, direction, distance)) {
+            String logMsg;
+            if (vehicle.isOnGoal()) {
+                logger.trace(levelMarker, "Red car has reached the exit");
+            } 
+            Coordinates newPos = board.updateParking(vehicle, direction, distance);
+            score++;
+            // Which car and how many positions
+            logMsg = String.format("Car %c has been moved into tile [%d,%d]",
+                    vehicle.getId(), newPos.getX(), newPos.getY());
+            
+            logger.trace(levelMarker, logMsg);
+            return true;
+        }
+        return false;
     }
     
-    /*
-    public static void main(String[] args) throws IOException{
-        Level uno = new Level();
-        uno.loadLevel();
-        for(int i = 0; i < uno.vehicles.size(); i++ ){
-            System.out.println(uno.vehicles.get(i));
-        }
-        for (int x=0; x < uno.board.getBoard().length; x++) {
-            System.out.print("|");
-            for (int y=0; y < uno.board.getBoard().length; y++) {
-              System.out.print (uno.board.getBoard()[x][y]);
-              if (y!=uno.board.getBoard()[x].length-1) System.out.print("\t");
-            }
-            System.out.println("|");
-          }
-    }
+    /**
+    * Method that returns if a car movement is valid.
+    * @return true if the movement is valid, false otherwise.
+    * FINISHED
     */
-}
+    public boolean verifyMovement(Car vehicle, char direction, int distance) {
+        char[][] tiles = board.getTiles();
+        int nRows = board.getNRows();
+        int nColumns = board.getNColumns();
 
+        int row = vehicle.getCurrentPositionX();
+        int column = vehicle.getCurrentPositionY();
+        char orientation = vehicle.getOrientation();
+        boolean isRedCar = vehicle.isRedCar();
+
+        if (orientation == 'H') {
+            if (direction == 'L') {
+                return verifyMovementLeft(tiles, row, column, distance, isRedCar, vehicle);
+            } else if (direction == 'R') {
+                return verifyMovementRight(tiles, vehicle, distance, nColumns);
+            }else{
+                return false;
+            }
+        } else if (orientation == 'V') {
+            if (direction == 'U') {
+                return verifyMovementUp(tiles, row, column, distance, isRedCar, vehicle);
+            } else if (direction == 'D') {
+                return verifyMovementDown(tiles, vehicle, distance, nRows);
+            }else{
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean verifyMovementLeft(char[][] tiles, int row, int column, int distance, boolean isRedCar, Car vehicle) {
+        if (column - distance <= 0)
+            return false;
+        boolean isGoal;
+        for (int i = column - 1; i >= column - distance; i--) {
+            if (!isEmptyTile(tiles[row][i])){
+                // Look if destine tile is exit
+                isGoal = isGoalTile(tiles[row][i], isRedCar);
+                if(isGoal){
+                    vehicle.setOnGoal(true);
+                }
+                return isGoal;
+            }
+        }
+        return true;
+    }
+
+    private boolean verifyMovementRight(char[][] tiles, Car vehicle, int distance, int nColumns) {
+        int row = vehicle.getCurrentPositionX();
+        int column = vehicle.getCurrentPositionY();
+        int vehicleSize = vehicle.getLength();
+        boolean isRedCar = vehicle.isRedCar();
+
+        if (column + vehicleSize + distance - 1 >= nColumns)
+            return false;
+        boolean isGoal;
+        for (int i = column + vehicleSize; i <= column + vehicleSize + distance - 1; i++) {
+            if (!isEmptyTile(tiles[row][i])){
+                // Look if destine tile is exit
+                isGoal = isGoalTile(tiles[row][i], isRedCar);
+                if(isGoal){
+                    vehicle.setOnGoal(true);
+                }
+                return isGoal;
+            }
+        }
+        return true;
+    }
+
+    private boolean verifyMovementUp(char[][] tiles, int row, int column, int distance, boolean isRedCar, Car vehicle) {
+        if (row - distance <= 0)
+            return false;
+        boolean isGoal;
+        for (int i = row - 1; i >= row - distance; i--) {
+            if (!isEmptyTile(tiles[i][column])){
+                // Look if destine tile is exit
+                isGoal = isGoalTile(tiles[i][column], isRedCar);
+                if(isGoal){
+                    vehicle.setOnGoal(true);
+                }
+                return isGoal;
+            }    
+        }
+        return true;
+    }
+
+    private boolean verifyMovementDown(char[][] tiles, Car vehicle, int distance, int nRows) {
+        int row = vehicle.getCurrentPositionX();
+        int column = vehicle.getCurrentPositionY();
+        int vehicleSize = vehicle.getLength();
+        boolean isRedCar = vehicle.isRedCar();
+
+        if (row + vehicleSize + distance - 1 >= nRows)
+            return false;
+        boolean isGoal;
+        for (int i = row + vehicleSize; i <= row + vehicleSize + distance - 1; i++) {
+            if (!isEmptyTile(tiles[i][column])){
+                // Look if destine tile is exit
+                isGoal = isGoalTile(tiles[i][column], isRedCar);
+                if(isGoal){
+                    vehicle.setOnGoal(true);
+                }
+                return isGoal;
+            }
+        }
+        return true;
+    }
+
+    private boolean isEmptyTile(char tile) {
+        return tile == ' ';
+    }
+
+    private boolean isGoalTile(char tile, boolean isRedCar) {
+        return tile == '@' && isRedCar;
+    }
+
+    /**
+    * Method that returns the red car coordinates.
+    * @return Current coordinates of the red car position.
+    * FINISHED
+    */
+    public Coordinates getRedCarCoords(){
+        return redCar.getCurrentPos();
+    }
+    
+    /**
+    * Method that checks if a level is completed.
+    * @return true if the level has been completed, false otherwise.
+    * FINISHED
+    */
+    public boolean checkStatus() {
+        return redCar.isOnGoal();
+    }
+
+    /**
+     * Method to reset a level.
+     * FINISHED
+     */
+    @Override
+    public void reset(){
+        char c;
+        for (int i = 0; i < idCars.size(); i++){
+            c = idCars.get(i);
+            vehicles.get(c).reset();
+        }
+        score = 0;
+        logger.info(levelMarker, "The current level has been reset to its initial state.");
+    }
+
+    @Override
+    public String toString() {
+        return "\n" + board.toString();
+    }
+    
+    // Getters and setters for xml binding
+    
+    public Car getRedCar() {
+        return redCar;
+    }
+    
+    public void setRedCar(Car redCar) {
+        this.redCar = redCar;
+    }
+    
+    public Parking getBoard() {
+        return board;
+    }
+    
+    public void setBoard(Parking board) {
+        this.board = board;
+    }
+    
+    public Map<Character, Car> getVehiclesMap() {
+        return vehicles;
+    }
+    
+    public void setBoxList(Map<Character, Car> vehicles) {
+        this.vehicles = vehicles;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public int getScore(){
+        return score;
+    }
+
+    public void setScore(int score){
+        this.score = score;
+    }
+}

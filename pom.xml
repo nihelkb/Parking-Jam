@@ -66,6 +66,16 @@
             <version>${junit}</version>
             <scope>test</scope>
         </dependency>
+         <dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jacoco</groupId>
+			<artifactId>jacoco-maven-plugin</artifactId>
+			<version>0.8.6</version>
+		</dependency>
     </dependencies>
     
     <build>
@@ -94,6 +104,37 @@
                 <artifactId>maven-install-plugin</artifactId>
                 <version>3.0.0-M1</version>
             </plugin>
+            <plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration>
+				  <!-- Set the class with your main method --> 
+				  <mainClass>es.upm.pproject.parkingjam.App</mainClass>
+				</configuration>
+			</plugin>
+            <plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco.version}</version>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+						<phase>test-compile</phase>
+					</execution>
+					<execution>
+						<id>report</id>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<phase>test</phase>
+					</execution>
+					
+				</executions>
+			</plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
