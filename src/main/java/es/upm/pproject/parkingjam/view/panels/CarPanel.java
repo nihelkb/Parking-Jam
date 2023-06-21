@@ -148,4 +148,17 @@ public class CarPanel extends ImagePanel implements MouseMotionListener, MouseLi
     public void mouseExited(MouseEvent e) {
         // Method not used
     }
+
+    public char getId(){
+        return idCar;
+    }
+    
+    public int getInitialX(){
+        return initialX;
+    }
+
+    public int getInitialY(){
+        return initialY;
+    }
+    
 }

@@ -75,4 +75,11 @@ public class Controller {
         return game.getLevel().getVehiclesMap().get(idCar).isRedCar();
     }
     
+    public void undo(){
+        if(game.undo()){
+            char id = game.id();
+            gui.undo(id,this);
+        }
+     
+    }
 }

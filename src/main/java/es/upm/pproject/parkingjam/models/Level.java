@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,11 +38,13 @@ public class Level implements Resetable{
     private List<Character> idCars;
     private String name;
     private int score;
+    private List<Pair<Pair<Character,Integer>,Car>> list;
 
     public static final String LEVEL_FILE_NAME_FORMAT = "src/main/resources/levels/level_%d.txt";
     
     private static final Logger logger = LoggerFactory.getLogger(Level.class);
     private static final Marker levelMarker = MarkerFactory.getMarker("LEVEL");
+    private static final Marker fatalMarker = MarkerFactory.getMarker("FATAL");
 
     /**
     * Constructor of the class.
@@ -55,7 +58,7 @@ public class Level implements Resetable{
         // Fill the board reading the chars from the file.
         this.board = fillBoard(levelPath);  
         loadCars();
-
+        list = new ArrayList<>();
         score = 0;
         String logMsg = String.format("The new level (%s) has been successfully loaded.", name);
         logger.info(levelMarker, logMsg);
@@ -171,17 +174,39 @@ public class Level implements Resetable{
     * @return true if the car has been moved, false otherwise. 
     * FINISHED
     */
-    public boolean moveCar(Car vehicle, char direction, int distance) {
+    public boolean moveCar(Car vehicle, char direction, int distance, boolean undo) {
+        System.out.println(direction);
+        System.out.println(distance);
+        Coordinates newPos;
+        char dir2 = ' ';
         if (distance == 0) {
             return false;
         }
+        System.out.println("casa");
         // if movement is valid
         if (verifyMovement(vehicle, direction, distance)) {
+            System.out.println(distance);
             String logMsg;
             if (vehicle.isOnGoal()) {
                 logger.trace(levelMarker, "Red car has reached the exit");
             } 
-            Coordinates newPos = board.updateParking(vehicle, direction, distance);
+            System.out.println("a");
+            if(direction == 'D')
+                dir2 = 'U';
+            if(direction == 'R')
+                dir2 = 'L';
+            if(direction == 'U')
+                dir2 = 'D';
+            if(direction == 'L')
+                dir2 = 'R';
+            if(!undo){
+                Pair <Character,Integer> pair = new Pair<>(dir2, distance);
+                Pair <Pair <Character,Integer>, Car > pair2 = new Pair<>(pair, vehicle);
+                list.add(pair2);
+                System.out.println(list);
+            }
+
+            newPos = board.updateParking(vehicle, direction, distance);
             score++;
             // Which car and how many positions
             logMsg = String.format("Car %c has been moved into tile [%d,%d]",
@@ -343,8 +368,29 @@ public class Level implements Resetable{
             c = idCars.get(i);
             vehicles.get(c).reset();
         }
+        list.clear();
         score = 0;
         logger.info(levelMarker, "The current level has been reset to its initial state.");
+    }
+
+    public char id(){
+         Pair<Pair<Character,Integer>, Car> pair = list.get(list.size()-1);
+         list.remove(pair);
+         return pair.getRight().getId();
+    }
+
+    public boolean undo(){
+        if(list.isEmpty()){
+             logger.error(fatalMarker, "Imposible to undo the movement");
+             return false;
+        }
+        else{
+            Pair<Pair<Character,Integer>, Car> pair = list.get(list.size()-1);
+            moveCar(pair.getRight(), pair.getLeft().getLeft(),pair.getLeft().getRight(),true);
+            score--;
+            return true;
+        }
+       
     }
 
     @Override

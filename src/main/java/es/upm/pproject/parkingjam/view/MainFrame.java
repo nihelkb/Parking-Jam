@@ -1,24 +1,37 @@
 package es.upm.pproject.parkingjam.view;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Toolkit;
+import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
+import org.w3c.dom.events.MouseEvent;
+
+import es.upm.pproject.parkingjam.common.Coordinates;
 import es.upm.pproject.parkingjam.controller.Controller;
 import es.upm.pproject.parkingjam.view.panels.ParkingPanel;
 import es.upm.pproject.parkingjam.view.panels.CarPanel;
 import es.upm.pproject.parkingjam.view.panels.ImagePanel;
 import es.upm.pproject.parkingjam.view.utils.Constants;
 
-public class MainFrame extends JFrame{
+public class MainFrame extends JFrame  {
 
     private static final ImagePanel BACKGROUND_SPRITE = new ImagePanel(
         Constants.BACKGROUND, Constants.SCREEN_WIDTH,Constants.SCREEN_HEIGHT);
@@ -30,9 +43,15 @@ public class MainFrame extends JFrame{
     private Dimension levelDimension;
 
     private transient Controller controller;
+
+    private JLabel newItem;
+
+    private Map<Character, CarPanel> mapCarPanels;
+    
     
     public MainFrame(Controller control) {
         super("Parking Jam");
+        mapCarPanels = new HashMap<>();
         this.controller = control;
         this.setSize(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
         this.setResizable(false);
@@ -50,6 +69,8 @@ public class MainFrame extends JFrame{
 
         this.getContentPane().add(grid);
         this.setIconImage(new ImageIcon(Constants.BACKGROUND).getImage());
+        setupMenuBar();
+     
     }
 
     public void init() {
@@ -59,6 +80,7 @@ public class MainFrame extends JFrame{
 
     // Repinta despues de cada nivel completado
     public void showLevel() {
+        mapCarPanels.clear();
         levelDimension = controller.getLevelDimension();
         carSpritesMap = createSpriteMap();
         repaintLevel();
@@ -102,7 +124,9 @@ public class MainFrame extends JFrame{
             // Ruta de la imagen del coche
             String spritePath = controller.isRedCar(idCar) ? Constants.RED_CAR : Constants.CARS_PATH + carSpritesMap.get(length).remove(0);
             CarPanel image = new CarPanel(idCar, spritePath, width, height, initialX, initialY, controller);
+            mapCarPanels.put(idCar,image);
             grid.add(image);
+            
         }
         
         char[][] board = controller.getLevelBoard();
@@ -129,4 +153,44 @@ public class MainFrame extends JFrame{
         // Crea un mapa con key 2 y valor doubles ...
         return Map.of(2, doubles,3, triples);
     }
+
+    private void setupMenuBar(){
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.setBackground(Color.WHITE);
+        // Crear un menú
+
+        
+        // Crear elementos de menú
+        newItem = new JLabel("UNDO");
+        Font menuBarFont = new Font("Arial", Font.PLAIN, 12);
+        newItem.setFont(menuBarFont);
+        newItem.setBackground(new Color(229, 243, 255));
+        newItem.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
+        menuBar.add(newItem);
+        setJMenuBar(menuBar);
+        mouse();
+    }
+
+
+    public void undo(char id, Controller c){
+        boolean stop = false;
+        CarPanel a = mapCarPanels.get(id);
+        Coordinates carCoordinates = controller.getCarPosition(id);
+        a.setLocation(a.getInitialX() + carCoordinates.getY()*Constants.TILE_SIZE,a.getInitialY() + carCoordinates.getX()*Constants.TILE_SIZE);
+
+    }
+
+    private void mouse(){
+        newItem.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                // Aquí se coloca la lógica que deseas ejecutar cuando se haga clic en el JLabel
+                System.out.println("Se hizo clic en el JLabel");
+                controller.undo();
+            }
+        });
+    }
+
+   
+
 }
+

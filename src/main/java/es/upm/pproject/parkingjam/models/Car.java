@@ -112,6 +112,7 @@ public class Car implements Resetable {
     }
 
     public boolean isOnGoal() {
+        System.out.println("ii");
         return this.isOnGoal && this.redCar;
     }
 
