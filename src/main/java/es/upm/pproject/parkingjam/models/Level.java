@@ -54,12 +54,14 @@ public class Level implements Resetable{
     public Level(String levelPath) throws LevelNotFoundException, WrongLevelFormatException{
         this.vehicles = new HashMap<>();
         this.idCars = new LinkedList<>();
+        this.list = new ArrayList<>();
 
         // Fill the board reading the chars from the file.
         this.board = fillBoard(levelPath);  
         loadCars();
-        list = new ArrayList<>();
-        score = 0;
+        
+        this.score = 0;
+        
         String logMsg = String.format("The new level (%s) has been successfully loaded.", name);
         logger.info(levelMarker, logMsg);
     }
@@ -120,17 +122,13 @@ public class Level implements Resetable{
     private void loadCars() throws WrongLevelFormatException{
         char[][] b = board.getTiles();
         char letter;
-        boolean isCorrect = true;
-        for (int i = 1; i < board.getNRows() - 1 && isCorrect; i++){
-            for (int j = 1; j < board.getNColumns() - 1 && isCorrect; j++){
+        for (int i = 1; i < board.getNRows() - 1; i++){
+            for (int j = 1; j < board.getNColumns() - 1; j++){
                 letter = b[i][j];
                 if (!idCars.contains(letter) && letter != ' ' && !loadCar(b, letter, i, j)){
-                    isCorrect = false;
+                    throw new WrongLevelFormatException("Vehicles must have the form 1xN or Nx1 where N ≥ 2");
                 }
             }
-        }
-        if(!isCorrect){
-            throw new WrongLevelFormatException("Vehicles must have the form 1xN or Nx1 where N ≥ 2");
         }
     }
 
@@ -175,22 +173,16 @@ public class Level implements Resetable{
     * FINISHED
     */
     public boolean moveCar(Car vehicle, char direction, int distance, boolean undo) {
-        System.out.println(direction);
-        System.out.println(distance);
-        Coordinates newPos;
         char dir2 = ' ';
         if (distance == 0) {
             return false;
         }
-        System.out.println("casa");
         // if movement is valid
         if (verifyMovement(vehicle, direction, distance)) {
-            System.out.println(distance);
             String logMsg;
             if (vehicle.isOnGoal()) {
                 logger.trace(levelMarker, "Red car has reached the exit");
             } 
-            System.out.println("a");
             if(direction == 'D')
                 dir2 = 'U';
             if(direction == 'R')
@@ -203,10 +195,9 @@ public class Level implements Resetable{
                 Pair <Character,Integer> pair = new Pair<>(dir2, distance);
                 Pair <Pair <Character,Integer>, Car > pair2 = new Pair<>(pair, vehicle);
                 list.add(pair2);
-                System.out.println(list);
             }
 
-            newPos = board.updateParking(vehicle, direction, distance);
+            Coordinates newPos = board.updateParking(vehicle, direction, distance);
             score++;
             // Which car and how many positions
             logMsg = String.format("Car %c has been moved into tile [%d,%d]",
@@ -387,7 +378,6 @@ public class Level implements Resetable{
         else{
             Pair<Pair<Character,Integer>, Car> pair = list.get(list.size()-1);
             moveCar(pair.getRight(), pair.getLeft().getLeft(),pair.getLeft().getRight(),true);
-            score--;
             return true;
         }
        

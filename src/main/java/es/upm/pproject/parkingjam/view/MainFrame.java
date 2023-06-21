@@ -1,11 +1,10 @@
 package es.upm.pproject.parkingjam.view;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.awt.event.*;
-import java.util.ArrayList;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,16 +12,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-
-import org.w3c.dom.events.MouseEvent;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
 
 import es.upm.pproject.parkingjam.common.Coordinates;
 import es.upm.pproject.parkingjam.controller.Controller;
@@ -37,17 +38,20 @@ public class MainFrame extends JFrame  {
         Constants.BACKGROUND, Constants.SCREEN_WIDTH,Constants.SCREEN_HEIGHT);
 
     private Map<Integer,List<String>> carSpritesMap;
+    private Map<Character, CarPanel> mapCarPanels;
 
     private JPanel grid;
+    private JPanel stats;
+
+    private JLabel levelName;
+    private JLabel gameScore;
+    private JLabel levelScore;
 
     private Dimension levelDimension;
 
+    private JMenuBar menuBarComp;
+
     private transient Controller controller;
-
-    private JLabel newItem;
-
-    private Map<Character, CarPanel> mapCarPanels;
-    
     
     public MainFrame(Controller control) {
         super("Parking Jam");
@@ -67,10 +71,25 @@ public class MainFrame extends JFrame  {
 
         BACKGROUND_SPRITE.setLocation(0, Constants.STATS_HEIGHT);
 
+        stats = new JPanel(new GridLayout(1,3));
+        stats.setBounds(0,0,Constants.STATS_WIDTH,Constants.STATS_HEIGHT);
+        stats.setBackground(Constants.STATS_COLOR);
+        // Padding for the text
+        stats.setBorder(new EmptyBorder(0, 20, 0, 20));
+
+        levelScore = new JLabel("", SwingConstants.RIGHT);
+        gameScore = new JLabel("", SwingConstants.LEFT);
+        levelName = new JLabel("", SwingConstants.CENTER);
+        levelScore.setLocation(0, 25);
+        gameScore.setLocation(0, 25);
+        levelName.setLocation(0, 25);
+
+        this.getContentPane().add(stats);
         this.getContentPane().add(grid);
-        this.setIconImage(new ImageIcon(Constants.BACKGROUND).getImage());
-        setupMenuBar();
-     
+
+        this.setIconImage(new ImageIcon(Constants.ICON).getImage());
+
+        buildMenuBar();
     }
 
     public void init() {
@@ -84,6 +103,18 @@ public class MainFrame extends JFrame  {
         levelDimension = controller.getLevelDimension();
         carSpritesMap = createSpriteMap();
         repaintLevel();
+        this.pack();
+    }
+
+    public void repaintLevel() {
+        grid.removeAll();
+        repaintStats();
+        stats.repaint();
+        paintParking();
+        repaintParking();
+        repaintBackground();
+        grid.repaint();
+        this.pack();
     }
 
     private void repaintParking() {
@@ -95,16 +126,20 @@ public class MainFrame extends JFrame  {
         parking.setLocation(initialX, initialY + Constants.STATS_HEIGHT/2);
         grid.add(parking);
     }
-    
-    public void repaintLevel() {
-        grid.removeAll();
-        paintParking();
-        repaintParking();
-        repaintBackground();
-        grid.repaint();
+
+    public void repaintStats(){
+        stats.removeAll();
+        levelName.setText(controller.getLevelName());
+        levelName.setFont(Constants.LEVEL_FONT);
+        gameScore.setText("Score: " + controller.getGameScore());
+        levelScore.setText("Level score: " + controller.getLevelScore());
+        stats.add(gameScore);
+        stats.add(levelName);
+        stats.add(levelScore);
+        stats.repaint();
         this.pack();
     }
-
+    
     private void repaintBackground(){
         grid.add(BACKGROUND_SPRITE);
     }
@@ -154,43 +189,86 @@ public class MainFrame extends JFrame  {
         return Map.of(2, doubles,3, triples);
     }
 
-    private void setupMenuBar(){
-        JMenuBar menuBar = new JMenuBar();
-        menuBar.setBackground(Color.WHITE);
-        // Crear un menú
-
-        
-        // Crear elementos de menú
-        newItem = new JLabel("UNDO");
-        Font menuBarFont = new Font("Arial", Font.PLAIN, 12);
-        newItem.setFont(menuBarFont);
-        newItem.setBackground(new Color(229, 243, 255));
-        newItem.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
-        menuBar.add(newItem);
-        setJMenuBar(menuBar);
-        mouse();
-    }
-
-
-    public void undo(char id, Controller c){
-        boolean stop = false;
+    public void undo(char id){
         CarPanel a = mapCarPanels.get(id);
         Coordinates carCoordinates = controller.getCarPosition(id);
         a.setLocation(a.getInitialX() + carCoordinates.getY()*Constants.TILE_SIZE,a.getInitialY() + carCoordinates.getX()*Constants.TILE_SIZE);
-
     }
 
-    private void mouse(){
-        newItem.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                // Aquí se coloca la lógica que deseas ejecutar cuando se haga clic en el JLabel
-                System.out.println("Se hizo clic en el JLabel");
+    private void buildMenuBar() {
+        menuBarComp = new JMenuBar();
+        JFrame main = this;
+
+        JMenu gameMenu = new JMenu("Game");
+        JMenuItem newGame = new JMenuItem("New game");
+        gameMenu.add(newGame);
+
+        JMenuItem resetLevel = new JMenuItem("Reset level");
+        gameMenu.add(resetLevel);
+
+        JMenuItem loadGame = new JMenuItem("Load...");
+        gameMenu.add(loadGame);
+
+        JMenuItem saveGame = new JMenuItem("Save");
+        gameMenu.add(saveGame);
+
+        JMenuItem exitGame = new JMenuItem("Exit");
+        exitGame.addActionListener(e -> main.dispose());
+        gameMenu.addSeparator();
+        gameMenu.add(exitGame);
+
+        menuBarComp.add(gameMenu);
+
+        JMenu undo = new JMenu("Undo");
+        undo.addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
                 controller.undo();
             }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // Not necessary implementation
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                // Not necessary implementation
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                // Not necessary implementation
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // Not necessary implementation
+            }
+            
         });
+        menuBarComp.add(undo);
+
+        JMenu redo = new JMenu("Redo");
+        menuBarComp.add(redo);
+
+        JMenu soundMenu = new JMenu("Sound");
+        JCheckBoxMenuItem mute = new JCheckBoxMenuItem("Mute", false);
+
+        soundMenu.add(mute);
+        menuBarComp.add(soundMenu);
+
+        JMenu help = new JMenu("Help");
+        menuBarComp.add(help);
+
+        this.setJMenuBar(menuBarComp);
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            SwingUtilities.updateComponentTreeUI(this);
+        } catch (Exception e) {
+            // Not able
+        }
     }
 
-   
-
 }
-

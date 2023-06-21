@@ -14,8 +14,8 @@ import es.upm.pproject.parkingjam.view.MainFrame;
  * Class responsible for the application's controller.
  * 
  * @author Nihel Kella Bouziane
- * @version 1.0
- * @since 18/06/2023
+ * @version 1.1
+ * @since 21/06/2023
  */
 public class Controller {
 
@@ -51,6 +51,8 @@ public class Controller {
         game.moveCar(car, dir, distance);
         if (!game.getLevelName().equals(lvlName)){
             gui.showLevel();
+        }else{
+            gui.repaintStats();
         }
     }
 
@@ -74,12 +76,24 @@ public class Controller {
     public boolean isRedCar(char idCar) {
         return game.getLevel().getVehiclesMap().get(idCar).isRedCar();
     }
+
+    public String getLevelName(){
+        return game.getLevelName();
+    }
+
+    public int getGameScore(){
+        return game.getTotalScore();
+    }
+
+    public int getLevelScore(){
+        return game.getLevelScore();
+    }
     
     public void undo(){
         if(game.undo()){
             char id = game.id();
-            gui.undo(id,this);
+            gui.undo(id);
         }
-     
     }
+
 }
