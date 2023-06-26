@@ -91,8 +91,15 @@ public class Controller {
     
     public void undo(){
         if(game.undo()){
-            char id = game.id();
-            gui.undo(id);
+            char id = game.id(true);
+            gui.undoRedo(id);
+        }
+    }
+
+    public void redo(){
+        if(game.redo()){
+            char id = game.id(false);
+            gui.undoRedo(id);
         }
     }
 

@@ -189,7 +189,7 @@ public class MainFrame extends JFrame  {
         return Map.of(2, doubles,3, triples);
     }
 
-    public void undo(char id){
+    public void undoRedo(char id){
         CarPanel a = mapCarPanels.get(id);
         Coordinates carCoordinates = controller.getCarPosition(id);
         a.setLocation(a.getInitialX() + carCoordinates.getY()*Constants.TILE_SIZE,a.getInitialY() + carCoordinates.getX()*Constants.TILE_SIZE);
@@ -251,6 +251,34 @@ public class MainFrame extends JFrame  {
         menuBarComp.add(undo);
 
         JMenu redo = new JMenu("Redo");
+        redo.addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                controller.redo();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // Not necessary implementation
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                // Not necessary implementation
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                // Not necessary implementation
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // Not necessary implementation
+            }
+            
+        });
         menuBarComp.add(redo);
 
         JMenu soundMenu = new JMenu("Sound");
