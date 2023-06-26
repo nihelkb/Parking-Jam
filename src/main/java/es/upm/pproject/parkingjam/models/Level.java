@@ -41,6 +41,7 @@ public class Level implements Resetable{
     private int score;
     private List<Pair<Pair<Character,Integer>,Car>> list;
     private Stack <Pair<Pair<Character,Integer>,Car>> stackRedo;
+    private String levelPath;
     
 
     public static final String LEVEL_FILE_NAME_FORMAT = "src/main/resources/levels/level_%d.txt";
@@ -59,6 +60,7 @@ public class Level implements Resetable{
         this.idCars = new LinkedList<>();
         this.list = new ArrayList<>();
         this.stackRedo = new Stack<>();
+        this.levelPath = levelPath;
 
         // Fill the board reading the chars from the file.
         this.board = fillBoard(levelPath);  
@@ -365,6 +367,11 @@ public class Level implements Resetable{
         list.clear();
         stackRedo.clear();
         score = 0;
+        try {
+            this.board = fillBoard(levelPath);
+        } catch (LevelNotFoundException | WrongLevelFormatException e) {
+            e.printStackTrace();
+        } 
         logger.info(levelMarker, "The current level has been reset to its initial state.");
     }
 

@@ -152,6 +152,7 @@ public class MainFrame extends JFrame  {
         int heigthLvl = (int)levelDimension.getHeight()*Constants.TILE_SIZE;
         int initialX = (Constants.SCREEN_WIDTH - widthLvl)/2;
         int initialY = (Constants.SCREEN_HEIGHT - heigthLvl)/2 + Constants.STATS_HEIGHT/2;
+
         List<Character> cars = controller.getCarIds();
         for (Character idCar : cars) {
             char orientation = controller.isCarHorizontal(idCar) ? 'H' : 'V';
@@ -214,6 +215,13 @@ public class MainFrame extends JFrame  {
         gameMenu.add(newGame);
 
         JMenuItem resetLevel = new JMenuItem("Reset level");
+        ActionListener actionResetLevel = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.resetLevel();
+            }
+        };
+        resetLevel.addActionListener(actionResetLevel);
            
         gameMenu.add(resetLevel);
 

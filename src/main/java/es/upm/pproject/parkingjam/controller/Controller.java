@@ -14,6 +14,8 @@ import es.upm.pproject.parkingjam.view.MainFrame;
  * Class responsible for the application's controller.
  * 
  * @author Nihel Kella Bouziane
+ * @author Julio Manso Sánchez-Tornero
+ * @author Lucía Sánchez Navidad
  * @version 1.1
  * @since 21/06/2023
  */
@@ -104,8 +106,14 @@ public class Controller {
     }
 
     public void newGame(){
-        game = new Game();
+        game.newGame();
         gui.init();
+    }
+
+    public void resetLevel(){
+        game.reset();
+        gui.showLevel();
+    
     }
 
 }
