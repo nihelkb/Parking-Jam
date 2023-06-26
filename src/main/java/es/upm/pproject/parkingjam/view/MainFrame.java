@@ -226,6 +226,13 @@ public class MainFrame extends JFrame  {
         gameMenu.add(resetLevel);
 
         JMenuItem loadGame = new JMenuItem("Load...");
+        ActionListener actionLoadGame = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.loadGame();
+            }
+        };
+        loadGame.addActionListener(actionLoadGame);
         gameMenu.add(loadGame);
 
         JMenuItem saveGame = new JMenuItem("Save");

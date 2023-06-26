@@ -2,6 +2,7 @@ package es.upm.pproject.parkingjam.models;
 
 import java.awt.Dimension;
 import java.io.IOException;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,7 @@ public class Game implements Resetable{
 
     public Game(){
         this.levelPathFormat = Level.LEVEL_FILE_NAME_FORMAT;
-        newGame();
+        newGame(false);
     }
 
     /**
@@ -52,7 +53,7 @@ public class Game implements Resetable{
         if (this.level.checkStatus()) {
             this.levelNumber++;
             this.score += level.getScore();
-            levelLoad();
+            levelLoad(false);
         }
         return true;
     }
@@ -60,27 +61,30 @@ public class Game implements Resetable{
     /**
      * Starts a new game from the initial level.
      */
-    public void newGame(){
+    public void newGame(boolean levelLoad){
         this.levelNumber = 1;
         this.finished = false;
         this.score = 0;
         logger.info(gameMarker, "A new game has started");
-        levelLoad();
+        levelLoad(levelLoad);
     }
 
     /**
      * Private method used to load the game's level.
      */
-    private void levelLoad(){
+    private void levelLoad(boolean levelLoad){
         try{
-            level = new Level(String.format(levelPathFormat, levelNumber));
+            if(levelLoad)
+                level = new Level("src/main/resources/data/board.txt");
+            else
+                level = new Level(String.format(levelPathFormat, levelNumber));
         }catch (LevelNotFoundException e){
             logger.info(gameMarker,"Game completed");
             finished = true;   
         }catch(WrongLevelFormatException e){
             logger.error(fatalMarker, String.format("Level %d could not be loaded", levelNumber), e);
             levelNumber++;
-            levelLoad();
+            levelLoad(false);
         }
     }
 
@@ -187,7 +191,6 @@ public class Game implements Resetable{
     public char id(boolean isUndo){
         return level.id(isUndo);
     }
-   
 
     @Override
     public String toString() {

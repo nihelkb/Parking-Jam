@@ -45,6 +45,8 @@ public class Level implements Resetable{
     private List<Pair<Pair<Character,Integer>,Car>> list;
     private Stack <Pair<Pair<Character,Integer>,Car>> stackRedo;
     private String levelPath;
+    private int nRows;
+    private int nColumns;
     
 
     public static final String LEVEL_FILE_NAME_FORMAT = "src/main/resources/levels/level_%d.txt";
@@ -91,8 +93,8 @@ public class Level implements Resetable{
             int redSize = 0;
             int exit = 0;
             String[] dimensions = br.readLine().split(" ");
-            int nRows = Integer.parseInt(dimensions[0]);
-            int nColumns = Integer.parseInt(dimensions[1]);
+            nRows = Integer.parseInt(dimensions[0]);
+            nColumns = Integer.parseInt(dimensions[1]);
             boardTiles = new char[nRows][nColumns];
             String line;
             for (int i = 0; i < nRows; i++) {
@@ -452,6 +454,10 @@ public class Level implements Resetable{
 		bufferS = new BufferedWriter(writeS);
 		outS = new PrintWriter(bufferS);
 
+        outB.append(name);
+        outB.append('\n');
+        outB.append(nRows + " " + nColumns + '\n');
+
         for (int i = 0; i < board.getTiles().length; i++) {
             for(int j = 0; j < board.getTiles()[i].length; j++){
                  outB.append(board.getTiles()[i][j] + "");
@@ -462,8 +468,6 @@ public class Level implements Resetable{
         outS.append(String.valueOf(scoreGlobal));
         outS.append('\n');
         outS.append(String.valueOf(score));
-            
-      
 
 		outB.close();
         outS.close();
@@ -515,4 +519,6 @@ public class Level implements Resetable{
     public void setScore(int score){
         this.score = score;
     }
+
+
 }

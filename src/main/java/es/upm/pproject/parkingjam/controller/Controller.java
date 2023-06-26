@@ -106,14 +106,18 @@ public class Controller {
     }
 
     public void newGame(){
-        game.newGame();
+        game.newGame(false);
         gui.init();
+    }
+
+    public void loadGame(){
+        game.newGame(true);
+        gui.init();        
     }
 
     public void resetLevel(){
         game.reset();
         gui.showLevel();
-    
     }
 
     public void saveGame(){
