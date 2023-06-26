@@ -229,6 +229,13 @@ public class MainFrame extends JFrame  {
         gameMenu.add(loadGame);
 
         JMenuItem saveGame = new JMenuItem("Save");
+        ActionListener actionSaveGame = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.saveGame();
+            }
+        };
+        saveGame.addActionListener(actionSaveGame);
         gameMenu.add(saveGame);
 
         JMenuItem exitGame = new JMenuItem("Exit");

@@ -116,4 +116,7 @@ public class Controller {
     
     }
 
+    public void saveGame(){
+        game.saveGame();
+    }
 }

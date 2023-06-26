@@ -1,0 +1,8 @@
+++++++++
++abbb  +
++a  c d+
++** ced@
++fff ed+
++  g jj+
++hhgii +
+++++++++

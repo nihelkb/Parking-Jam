@@ -1,6 +1,7 @@
 package es.upm.pproject.parkingjam.models;
 
 import java.awt.Dimension;
+import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,6 +90,14 @@ public class Game implements Resetable{
 
     public boolean redo() {
         return level.redo();
+    }
+
+    public void saveGame() {
+        try {
+            level.saveGame(score);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

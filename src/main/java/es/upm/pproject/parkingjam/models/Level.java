@@ -1,10 +1,13 @@
 package es.upm.pproject.parkingjam.models;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -428,6 +431,42 @@ public class Level implements Resetable{
             moveCar(pair.getRight(), pair.getLeft().getLeft(),pair.getLeft().getRight(),false, true);
             return true;
         }
+    }
+
+    public void saveGame(int scoreGlobal) throws IOException{
+        FileWriter writeB;
+	    BufferedWriter bufferB;
+	    PrintWriter outB;
+        File fileoutput = new File("src/main/resources/data/board.txt");
+
+        FileWriter writeS;
+	    BufferedWriter bufferS;
+	    PrintWriter outS;
+        File fileScoreOutput = new File("src/main/resources/data/score.txt");
+
+		writeB = new FileWriter(fileoutput);
+		bufferB = new BufferedWriter(writeB);
+		outB = new PrintWriter(bufferB);
+
+        writeS = new FileWriter(fileScoreOutput);
+		bufferS = new BufferedWriter(writeS);
+		outS = new PrintWriter(bufferS);
+
+        for (int i = 0; i < board.getTiles().length; i++) {
+            for(int j = 0; j < board.getTiles()[i].length; j++){
+                 outB.append(board.getTiles()[i][j] + "");
+            }
+		    outB.append('\n');
+        }
+
+        outS.append(String.valueOf(scoreGlobal));
+        outS.append('\n');
+        outS.append(String.valueOf(score));
+            
+      
+
+		outB.close();
+        outS.close();
     }
 
     @Override
