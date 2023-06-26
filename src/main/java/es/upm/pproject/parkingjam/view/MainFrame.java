@@ -3,6 +3,8 @@ package es.upm.pproject.parkingjam.view;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
@@ -201,9 +203,18 @@ public class MainFrame extends JFrame  {
 
         JMenu gameMenu = new JMenu("Game");
         JMenuItem newGame = new JMenuItem("New game");
+        ActionListener actionListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.newGame();
+            }
+        };
+        newGame.addActionListener(actionListener);
+
         gameMenu.add(newGame);
 
         JMenuItem resetLevel = new JMenuItem("Reset level");
+           
         gameMenu.add(resetLevel);
 
         JMenuItem loadGame = new JMenuItem("Load...");

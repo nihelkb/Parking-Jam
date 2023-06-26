@@ -103,4 +103,9 @@ public class Controller {
         }
     }
 
+    public void newGame(){
+        game = new Game();
+        gui.init();
+    }
+
 }
