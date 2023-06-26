@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,8 @@ public class Level implements Resetable{
     private String name;
     private int score;
     private List<Pair<Pair<Character,Integer>,Car>> list;
+    private Stack <Pair<Pair<Character,Integer>,Car>> stackRedo;
+    
 
     public static final String LEVEL_FILE_NAME_FORMAT = "src/main/resources/levels/level_%d.txt";
     
@@ -55,6 +58,7 @@ public class Level implements Resetable{
         this.vehicles = new HashMap<>();
         this.idCars = new LinkedList<>();
         this.list = new ArrayList<>();
+        this.stackRedo = new Stack<>();
 
         // Fill the board reading the chars from the file.
         this.board = fillBoard(levelPath);  
@@ -172,31 +176,30 @@ public class Level implements Resetable{
     * @return true if the car has been moved, false otherwise. 
     * FINISHED
     */
-    public boolean moveCar(Car vehicle, char direction, int distance, boolean undo) {
+    public boolean moveCar(Car vehicle, char direction, int distance, boolean undo, boolean redo) {
         char dir2 = ' ';
+        if(redo)
+            direction = change(direction);
+  
         if (distance == 0) {
             return false;
         }
+       
+        
         // if movement is valid
         if (verifyMovement(vehicle, direction, distance)) {
             String logMsg;
             if (vehicle.isOnGoal()) {
                 logger.trace(levelMarker, "Red car has reached the exit");
-            } 
-            if(direction == 'D')
-                dir2 = 'U';
-            if(direction == 'R')
-                dir2 = 'L';
-            if(direction == 'U')
-                dir2 = 'D';
-            if(direction == 'L')
-                dir2 = 'R';
+            }
+            if (!undo || redo) {
+                dir2 = change(direction);
+            }
             if(!undo){
                 Pair <Character,Integer> pair = new Pair<>(dir2, distance);
                 Pair <Pair <Character,Integer>, Car > pair2 = new Pair<>(pair, vehicle);
                 list.add(pair2);
             }
-
             Coordinates newPos = board.updateParking(vehicle, direction, distance);
             score++;
             // Which car and how many positions
@@ -360,14 +363,39 @@ public class Level implements Resetable{
             vehicles.get(c).reset();
         }
         list.clear();
+        stackRedo.clear();
         score = 0;
         logger.info(levelMarker, "The current level has been reset to its initial state.");
     }
 
-    public char id(){
-         Pair<Pair<Character,Integer>, Car> pair = list.get(list.size()-1);
-         list.remove(pair);
+    public char id(boolean isUndo){
+        Pair<Pair<Character,Integer>, Car> pair;
+        if(isUndo){
+            pair = list.get(list.size()-1);
+            list.remove(pair);
+        }
+        else{
+            pair = stackRedo.pop();
+        }
          return pair.getRight().getId();
+    }
+
+    public char change(char c){
+        char char2 = ' ';
+        if(c == 'D'){
+             char2 = 'U';
+        }
+        if(c == 'R'){
+            char2 = 'L';
+        }
+        if(c == 'U'){
+            char2 = 'D';
+        }
+        if(c == 'L'){
+            char2 = 'R';
+        }
+        return char2;
+
     }
 
     public boolean undo(){
@@ -377,10 +405,22 @@ public class Level implements Resetable{
         }
         else{
             Pair<Pair<Character,Integer>, Car> pair = list.get(list.size()-1);
-            moveCar(pair.getRight(), pair.getLeft().getLeft(),pair.getLeft().getRight(),true);
+            moveCar(pair.getRight(), pair.getLeft().getLeft(),pair.getLeft().getRight(),true, false);
+            stackRedo.push(pair); 
             return true;
         }
        
+    }
+
+    public boolean redo(){
+        if(stackRedo.isEmpty()){
+             logger.error(fatalMarker, "Imposible to redo the movement");
+             return false;
+        } else{
+            Pair<Pair<Character,Integer>, Car> pair = stackRedo.peek();
+            moveCar(pair.getRight(), pair.getLeft().getLeft(),pair.getLeft().getRight(),false, true);
+            return true;
+        }
     }
 
     @Override

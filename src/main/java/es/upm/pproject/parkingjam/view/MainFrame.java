@@ -3,6 +3,8 @@ package es.upm.pproject.parkingjam.view;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
@@ -189,7 +191,7 @@ public class MainFrame extends JFrame  {
         return Map.of(2, doubles,3, triples);
     }
 
-    public void undo(char id){
+    public void undoRedo(char id){
         CarPanel a = mapCarPanels.get(id);
         Coordinates carCoordinates = controller.getCarPosition(id);
         a.setLocation(a.getInitialX() + carCoordinates.getY()*Constants.TILE_SIZE,a.getInitialY() + carCoordinates.getX()*Constants.TILE_SIZE);
@@ -201,9 +203,18 @@ public class MainFrame extends JFrame  {
 
         JMenu gameMenu = new JMenu("Game");
         JMenuItem newGame = new JMenuItem("New game");
+        ActionListener actionListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.newGame();
+            }
+        };
+        newGame.addActionListener(actionListener);
+
         gameMenu.add(newGame);
 
         JMenuItem resetLevel = new JMenuItem("Reset level");
+           
         gameMenu.add(resetLevel);
 
         JMenuItem loadGame = new JMenuItem("Load...");
@@ -251,6 +262,34 @@ public class MainFrame extends JFrame  {
         menuBarComp.add(undo);
 
         JMenu redo = new JMenu("Redo");
+        redo.addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                controller.redo();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // Not necessary implementation
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                // Not necessary implementation
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                // Not necessary implementation
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // Not necessary implementation
+            }
+            
+        });
         menuBarComp.add(redo);
 
         JMenu soundMenu = new JMenu("Sound");

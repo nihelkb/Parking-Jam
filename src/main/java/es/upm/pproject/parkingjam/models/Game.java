@@ -47,7 +47,7 @@ public class Game implements Resetable{
      * @return If the movement has been done 
      */
     public boolean moveCar(Car car, char dir, int distance){
-        if (this.finished || !level.moveCar(car, dir, distance,false)) return false;
+        if (this.finished || !level.moveCar(car, dir, distance,false, false)) return false;
         if (this.level.checkStatus()) {
             this.levelNumber++;
             this.score += level.getScore();
@@ -85,6 +85,10 @@ public class Game implements Resetable{
 
      public boolean undo(){
          return level.undo();
+    }
+
+    public boolean redo() {
+        return level.redo();
     }
 
     /**
@@ -171,8 +175,8 @@ public class Game implements Resetable{
         this.score = score;
     }
 
-    public char id(){
-        return level.id();
+    public char id(boolean isUndo){
+        return level.id(isUndo);
     }
    
 
