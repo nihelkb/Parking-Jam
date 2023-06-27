@@ -6,7 +6,6 @@ import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -78,9 +77,9 @@ public class MainFrame extends JFrame  {
         // Padding for the text
         stats.setBorder(new EmptyBorder(0, 20, 0, 20));
 
-        levelScore = new JLabel("", SwingConstants.RIGHT);
-        gameScore = new JLabel("", SwingConstants.LEFT);
-        levelName = new JLabel("", SwingConstants.CENTER);
+        levelScore = new JLabel("levelScore", SwingConstants.RIGHT);
+        gameScore = new JLabel("gameScore", SwingConstants.LEFT);
+        levelName = new JLabel("levelName", SwingConstants.CENTER);
         levelScore.setLocation(0, 25);
         gameScore.setLocation(0, 25);
         levelName.setLocation(0, 25);
@@ -217,13 +216,8 @@ public class MainFrame extends JFrame  {
         gameMenu.add(resetLevel);
 
         JMenuItem loadGame = new JMenuItem("Load...");
-        ActionListener actionLoadGame= e -> {
-             try {
-                    controller.loadGame();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-        };
+        ActionListener actionLoadGame= e -> 
+                controller.loadGame();        
         loadGame.addActionListener(actionLoadGame);
         gameMenu.add(loadGame);
 

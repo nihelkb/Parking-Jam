@@ -1,17 +1,25 @@
 package es.upm.pproject.parkingjam.models;
 
 import java.awt.Dimension;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+import es.upm.pproject.parkingjam.common.Pair;
 import es.upm.pproject.parkingjam.exceptions.LevelNotFoundException;
 import es.upm.pproject.parkingjam.exceptions.WrongLevelFormatException;
 import es.upm.pproject.parkingjam.interfaces.Resetable;
-import es.upm.pproject.parkingjam.view.utils.Constants;
+
 
 /**
  * Class that represents a game.
@@ -31,6 +39,7 @@ public class Game implements Resetable{
     protected int score;
 
     protected String levelPathFormat;
+    protected String path;
 
     private static final Logger logger = LoggerFactory.getLogger(Game.class);
     private static final Marker gameMarker = MarkerFactory.getMarker("GAME");
@@ -61,7 +70,7 @@ public class Game implements Resetable{
     /**
      * Starts a new game from the initial level.
      */
-    public void newGame(boolean levelLoad){
+    public final void newGame(boolean levelLoad){
         this.levelNumber = 1;
         this.finished = false;
         this.score = 0;
@@ -75,7 +84,7 @@ public class Game implements Resetable{
     private void levelLoad(boolean levelLoad){
         try{
             if(levelLoad)
-                level = new Level(Constants.BOARD_PATH);
+                level = new Level(getPath());
             else
                 level = new Level(String.format(levelPathFormat, levelNumber));
         }catch (LevelNotFoundException e){
@@ -102,6 +111,26 @@ public class Game implements Resetable{
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getPath(){
+        // Crear un objeto JFileChooser
+        JFileChooser fileChooser = new JFileChooser();
+        
+        // Establecer el filtro de extensión del archivo (opcional)
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de texto", "txt");
+        fileChooser.setFileFilter(filter);
+        
+        // Mostrar el diálogo de selección de archivo
+        int result = fileChooser.showOpenDialog(null);
+        java.io.File selectedFile = null; 
+        if (result == JFileChooser.APPROVE_OPTION) {
+            // Obtener el archivo seleccionado
+            selectedFile = fileChooser.getSelectedFile();
+            path = selectedFile.getAbsolutePath();
+            return path;
+        }
+        return null;
     }
 
     /**
@@ -183,13 +212,46 @@ public class Game implements Resetable{
         return this.score;
     }
 
-    public void setLevelScore(int score){
-        level.setScore(score);
+
+    public void setScoreAndUndoMov(){
+        String cadena;
+        List <Pair<Pair<Character,Integer>,Character>> list = new ArrayList<>();
+        Pair <Character, Integer> pair1;
+        Pair <Pair<Character,Integer>,Character> pair2;
+        Integer distance;
+        char direction = 'a';
+        char id;
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+            cadena = br.readLine();
+            cadena = br.readLine();
+            String[] nums = cadena.split(" ");
+            int valor = Integer.parseInt(nums[0]);
+            for(int i = 0 ; i < valor ; i++){
+                cadena = br.readLine();
+            }
+            score = Integer.parseInt(br.readLine());
+            level.setScore(Integer.parseInt(br.readLine()));
+
+            while ((cadena = br.readLine())!=null) {
+                String[] elements = cadena.split(" ");
+                direction = elements[0].charAt(0);
+                distance = Integer.parseInt(elements[1]);
+                id = elements[2].charAt(0);
+                pair1 = new Pair<>(direction,distance);
+                pair2 = new Pair<>(pair1, id);
+                list.add(pair2);
+            }
+            
+            level.setUndoList(list);
+            
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+           
     }
 
-    public void setScore(int score){
-        this.score = score;
-    }
+  
 
     public char id(boolean isUndo){
         return level.id(isUndo);

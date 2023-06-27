@@ -16,13 +16,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 import es.upm.pproject.parkingjam.interfaces.Resetable;
-import es.upm.pproject.parkingjam.view.utils.Constants;
 import es.upm.pproject.parkingjam.common.*;
 import es.upm.pproject.parkingjam.exceptions.LevelNotFoundException;
 import es.upm.pproject.parkingjam.exceptions.WrongLevelFormatException;
@@ -44,8 +47,8 @@ public class Level implements Resetable{
     private List<Character> idCars;
     private String name;
     private int score;
-    private List<Pair<Pair<Character,Integer>,Car>> list;
-    private Deque <Pair<Pair<Character,Integer>,Car>> stackRedo;
+    private List <Pair<Pair<Character,Integer>,Character>> list;
+    private Deque <Pair<Pair<Character,Integer>,Character>> stackRedo;
     private String levelPath;
     private int nRows;
     private int nColumns;
@@ -149,8 +152,9 @@ public class Level implements Resetable{
         int tam = 1;
         // Check car orientation
         boolean horizontal = b[x][y+1] == letter;
+        int zero = 0;
         if (horizontal) {
-           for (int j = y + 1; j < b[0].length; j++) {
+           for (int j = y + 1; j < b[zero].length; j++) {
                 if (b[x][j] == letter) {
                     tam++;
                 }
@@ -206,7 +210,7 @@ public class Level implements Resetable{
             }
             if(!undo){
                 Pair <Character,Integer> pair = new Pair<>(dir2, distance);
-                Pair <Pair <Character,Integer>, Car > pair2 = new Pair<>(pair, vehicle);
+                Pair <Pair <Character,Integer>, Character > pair2 = new Pair<>(pair, vehicle.getId());
                 list.add(pair2);
             }
             Coordinates newPos = board.updateParking(vehicle, direction, distance);
@@ -383,7 +387,7 @@ public class Level implements Resetable{
     }
 
     public char id(boolean isUndo){
-        Pair<Pair<Character,Integer>, Car> pair;
+        Pair<Pair<Character,Integer>, Character> pair;
         if(isUndo){
             pair = list.get(list.size()-1);
             list.remove(pair);
@@ -391,7 +395,7 @@ public class Level implements Resetable{
         else{
             pair = stackRedo.pop();
         }
-         return pair.getRight().getId();
+         return pair.getRight();
     }
 
     public char change(char c){
@@ -418,8 +422,8 @@ public class Level implements Resetable{
              return false;
         }
         else{
-            Pair<Pair<Character,Integer>, Car> pair = list.get(list.size()-1);
-            moveCar(pair.getRight(), pair.getLeft().getLeft(),pair.getLeft().getRight(),true, false);
+            Pair<Pair<Character,Integer>, Character> pair = list.get(list.size()-1);
+            moveCar(vehicles.get(pair.getRight()), pair.getLeft().getLeft(),pair.getLeft().getRight(),true, false);
             stackRedo.push(pair); 
             return true;
         }
@@ -431,47 +435,55 @@ public class Level implements Resetable{
              logger.error(fatalMarker, "Imposible to redo the movement");
              return false;
         } else{
-            Pair<Pair<Character,Integer>, Car> pair = stackRedo.peek();
-            moveCar(pair.getRight(), pair.getLeft().getLeft(),pair.getLeft().getRight(),false, true);
+            Pair<Pair<Character,Integer>, Character> pair = stackRedo.peek();
+            moveCar(vehicles.get(pair.getRight()), pair.getLeft().getLeft(),pair.getLeft().getRight(),false, true);
             return true;
         }
     }
 
     public void saveGame(int scoreGlobal) throws IOException {
-        FileWriter writeB;
-	    BufferedWriter bufferB;
-        File fileoutput = new File(Constants.BOARD_PATH);
+        // Crear un objeto JFileChooser
+        JFileChooser fileChooser = new JFileChooser();
+        
+        // Establecer el filtro de extensión del archivo (opcional)
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de texto", "txt");
+        fileChooser.setFileFilter(filter);
+        
+        // Mostrar el diálogo de selección de archivo
+        int result = fileChooser.showOpenDialog(null);
+        java.io.File selectedFile = null; 
+        if (result == JFileChooser.APPROVE_OPTION) {
+            // Obtener el archivo seleccionado
+            selectedFile = fileChooser.getSelectedFile();
+            FileWriter writeB;
+	        BufferedWriter bufferB;
+            File fileoutput = new File(selectedFile.getAbsolutePath());
+            writeB = new FileWriter(fileoutput);
+		    bufferB = new BufferedWriter(writeB);
+            try (PrintWriter outB = new PrintWriter(bufferB);) {
+                outB.append(name);
+                outB.append('\n');
+                outB.append(nRows + " " + nColumns + '\n');
 
-        FileWriter writeS;
-	    BufferedWriter bufferS;
-	    PrintWriter outS;
-        File fileScoreOutput = new File(Constants.SCORE_PATH);
-
-		writeB = new FileWriter(fileoutput);
-		bufferB = new BufferedWriter(writeB);
-        try (PrintWriter outB = new PrintWriter(bufferB);) {
-            outB.append(name);
-            outB.append('\n');
-            outB.append(nRows + " " + nColumns + '\n');
-
-            for (int i = 0; i < board.getTiles().length; i++) {
-                for(int j = 0; j < board.getTiles()[i].length; j++){
-                    outB.append(board.getTiles()[i][j] + "");
+                for (int i = 0; i < board.getTiles().length; i++) {
+                    for(int j = 0; j < board.getTiles()[i].length; j++){
+                        outB.append(board.getTiles()[i][j] + "");
+                }
+		            outB.append('\n');
+                }
+                outB.append(String.valueOf(scoreGlobal));
+                outB.append('\n');
+                outB.append(String.valueOf(score));
+                outB.append('\n');
+                for(int i = 0; i < list.size(); i++) {
+                    outB.write(list.get(i).getLeft().getLeft() + " ");
+                    outB.write(String.valueOf(list.get(i).getLeft().getRight())+ " ");
+                    outB.write( list.get(i).getRight());
+                    outB.write("\n");
+                }
             }
-		        outB.append('\n');
-            }
-
         }
 
-        writeS = new FileWriter(fileScoreOutput);
-		bufferS = new BufferedWriter(writeS);
-		outS = new PrintWriter(bufferS);
-  
-        outS.append(String.valueOf(scoreGlobal));
-        outS.append('\n');
-        outS.append(String.valueOf(score));
-
-        outS.close();
     }
 
     @Override
@@ -495,6 +507,10 @@ public class Level implements Resetable{
     
     public void setBoard(Parking board) {
         this.board = board;
+    }
+
+    public void setUndoList( List <Pair<Pair<Character,Integer>,Character>> list){
+        this.list = list;
     }
     
     public Map<Character, Car> getVehiclesMap() {
