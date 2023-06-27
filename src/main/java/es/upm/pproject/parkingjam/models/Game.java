@@ -12,6 +12,7 @@ import org.slf4j.MarkerFactory;
 import es.upm.pproject.parkingjam.exceptions.LevelNotFoundException;
 import es.upm.pproject.parkingjam.exceptions.WrongLevelFormatException;
 import es.upm.pproject.parkingjam.interfaces.Resetable;
+import es.upm.pproject.parkingjam.view.utils.Constants;
 
 /**
  * Class that represents a game.
@@ -75,7 +76,7 @@ public class Game implements Resetable{
     private void levelLoad(boolean levelLoad){
         try{
             if(levelLoad)
-                level = new Level("src/main/resources/data/board.txt");
+                level = new Level(Constants.BOARD_PATH);
             else
                 level = new Level(String.format(levelPathFormat, levelNumber));
         }catch (LevelNotFoundException e){
@@ -182,6 +183,10 @@ public class Game implements Resetable{
     
     public int getScore(){
         return this.score;
+    }
+
+    public void setLevelScore(int score){
+        level.setScore(score);
     }
 
     public void setScore(int score){

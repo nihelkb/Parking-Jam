@@ -1,6 +1,15 @@
 package es.upm.pproject.parkingjam.controller;
 
 import java.awt.Dimension;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +18,7 @@ import es.upm.pproject.parkingjam.common.Coordinates;
 import es.upm.pproject.parkingjam.models.Car;
 import es.upm.pproject.parkingjam.models.Game;
 import es.upm.pproject.parkingjam.view.MainFrame;
+import es.upm.pproject.parkingjam.view.utils.Constants;
 
 /**
  * Class responsible for the application's controller.
@@ -110,9 +120,17 @@ public class Controller {
         gui.init();
     }
 
-    public void loadGame(){
+    public void loadGame() throws IOException{
         game.newGame(true);
-        gui.init();        
+        String cadena = "";
+        BufferedReader br = null;
+        br = new BufferedReader(new FileReader(Constants.SCORE_PATH));
+        cadena = br.readLine();
+        game.setScore(Integer.parseInt(cadena));
+        cadena = br.readLine();
+        game.setLevelScore(Integer.parseInt(cadena));
+        br.close();
+        gui.init(); 
     }
 
     public void resetLevel(){

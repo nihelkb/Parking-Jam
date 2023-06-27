@@ -21,6 +21,7 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 import es.upm.pproject.parkingjam.interfaces.Resetable;
+import es.upm.pproject.parkingjam.view.utils.Constants;
 import es.upm.pproject.parkingjam.common.*;
 import es.upm.pproject.parkingjam.exceptions.LevelNotFoundException;
 import es.upm.pproject.parkingjam.exceptions.WrongLevelFormatException;
@@ -439,12 +440,12 @@ public class Level implements Resetable{
         FileWriter writeB;
 	    BufferedWriter bufferB;
 	    PrintWriter outB;
-        File fileoutput = new File("src/main/resources/data/board.txt");
+        File fileoutput = new File(Constants.BOARD_PATH);
 
         FileWriter writeS;
 	    BufferedWriter bufferS;
 	    PrintWriter outS;
-        File fileScoreOutput = new File("src/main/resources/data/score.txt");
+        File fileScoreOutput = new File(Constants.SCORE_PATH);
 
 		writeB = new FileWriter(fileoutput);
 		bufferB = new BufferedWriter(writeB);
