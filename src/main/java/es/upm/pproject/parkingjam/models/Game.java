@@ -2,7 +2,6 @@ package es.upm.pproject.parkingjam.models;
 
 import java.awt.Dimension;
 import java.io.IOException;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,9 +119,8 @@ public class Game implements Resetable{
     }
 
     public void printCurrentLevel() {
-        // if(logger.isDebugEnabled(gameMarker)){
-        logger.debug(gameMarker, this.level.toString());
-        // }
+        String msg = this.level.toString();
+        logger.debug(gameMarker, msg);
     }
 
     /**

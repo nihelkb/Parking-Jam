@@ -3,7 +3,6 @@ package es.upm.pproject.parkingjam.view;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -52,7 +51,6 @@ public class MainFrame extends JFrame  {
 
     private Dimension levelDimension;
 
-    private JMenuBar menuBarComp;
 
     private transient Controller controller;
     
@@ -200,53 +198,39 @@ public class MainFrame extends JFrame  {
     }
 
     private void buildMenuBar() {
-        menuBarComp = new JMenuBar();
+        JMenuBar menuBarComp = new JMenuBar();
         JFrame main = this;
 
         JMenu gameMenu = new JMenu("Game");
         JMenuItem newGame = new JMenuItem("New game");
-        ActionListener actionListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                controller.newGame();
-            }
-        };
+        ActionListener actionListener = e -> 
+            controller.newGame();
+    
         newGame.addActionListener(actionListener);
-
         gameMenu.add(newGame);
 
         JMenuItem resetLevel = new JMenuItem("Reset level");
-        ActionListener actionResetLevel = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                controller.resetLevel();
-            }
-        };
-        resetLevel.addActionListener(actionResetLevel);
-           
+        ActionListener actionResetLevel = e ->
+            controller.resetLevel();
+
+        resetLevel.addActionListener(actionResetLevel);   
         gameMenu.add(resetLevel);
 
         JMenuItem loadGame = new JMenuItem("Load...");
-        ActionListener actionLoadGame = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
+        ActionListener actionLoadGame= e -> {
+             try {
                     controller.loadGame();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-            }
         };
         loadGame.addActionListener(actionLoadGame);
         gameMenu.add(loadGame);
 
         JMenuItem saveGame = new JMenuItem("Save");
-        ActionListener actionSaveGame = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                controller.saveGame();
-            }
-        };
+        ActionListener actionSaveGame = e -> 
+            controller.saveGame();
+        
         saveGame.addActionListener(actionSaveGame);
         gameMenu.add(saveGame);
 

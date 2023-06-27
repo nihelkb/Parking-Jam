@@ -8,12 +8,13 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,7 @@ public class Level implements Resetable{
     private String name;
     private int score;
     private List<Pair<Pair<Character,Integer>,Car>> list;
-    private Stack <Pair<Pair<Character,Integer>,Car>> stackRedo;
+    private Deque <Pair<Pair<Character,Integer>,Car>> stackRedo;
     private String levelPath;
     private int nRows;
     private int nColumns;
@@ -65,7 +66,7 @@ public class Level implements Resetable{
         this.vehicles = new HashMap<>();
         this.idCars = new LinkedList<>();
         this.list = new ArrayList<>();
-        this.stackRedo = new Stack<>();
+        this.stackRedo = new ArrayDeque<>();
         this.levelPath = levelPath;
 
         // Fill the board reading the chars from the file.
@@ -227,8 +228,8 @@ public class Level implements Resetable{
     */
     public boolean verifyMovement(Car vehicle, char direction, int distance) {
         char[][] tiles = board.getTiles();
-        int nRows = board.getNRows();
-        int nColumns = board.getNColumns();
+        int numRows = board.getNRows();
+        int numColumns = board.getNColumns();
 
         int row = vehicle.getCurrentPositionX();
         int column = vehicle.getCurrentPositionY();
@@ -239,7 +240,7 @@ public class Level implements Resetable{
             if (direction == 'L') {
                 return verifyMovementLeft(tiles, row, column, distance, isRedCar, vehicle);
             } else if (direction == 'R') {
-                return verifyMovementRight(tiles, vehicle, distance, nColumns);
+                return verifyMovementRight(tiles, vehicle, distance, numColumns);
             }else{
                 return false;
             }
@@ -247,7 +248,7 @@ public class Level implements Resetable{
             if (direction == 'U') {
                 return verifyMovementUp(tiles, row, column, distance, isRedCar, vehicle);
             } else if (direction == 'D') {
-                return verifyMovementDown(tiles, vehicle, distance, nRows);
+                return verifyMovementDown(tiles, vehicle, distance, numRows);
             }else{
                 return false;
             }
@@ -436,10 +437,9 @@ public class Level implements Resetable{
         }
     }
 
-    public void saveGame(int scoreGlobal) throws IOException{
+    public void saveGame(int scoreGlobal) throws IOException {
         FileWriter writeB;
 	    BufferedWriter bufferB;
-	    PrintWriter outB;
         File fileoutput = new File(Constants.BOARD_PATH);
 
         FileWriter writeS;
@@ -449,28 +449,28 @@ public class Level implements Resetable{
 
 		writeB = new FileWriter(fileoutput);
 		bufferB = new BufferedWriter(writeB);
-		outB = new PrintWriter(bufferB);
+        try (PrintWriter outB = new PrintWriter(bufferB);) {
+            outB.append(name);
+            outB.append('\n');
+            outB.append(nRows + " " + nColumns + '\n');
+
+            for (int i = 0; i < board.getTiles().length; i++) {
+                for(int j = 0; j < board.getTiles()[i].length; j++){
+                    outB.append(board.getTiles()[i][j] + "");
+            }
+		        outB.append('\n');
+            }
+
+        }
 
         writeS = new FileWriter(fileScoreOutput);
 		bufferS = new BufferedWriter(writeS);
 		outS = new PrintWriter(bufferS);
-
-        outB.append(name);
-        outB.append('\n');
-        outB.append(nRows + " " + nColumns + '\n');
-
-        for (int i = 0; i < board.getTiles().length; i++) {
-            for(int j = 0; j < board.getTiles()[i].length; j++){
-                 outB.append(board.getTiles()[i][j] + "");
-            }
-		    outB.append('\n');
-        }
-
+  
         outS.append(String.valueOf(scoreGlobal));
         outS.append('\n');
         outS.append(String.valueOf(score));
 
-		outB.close();
         outS.close();
     }
 
