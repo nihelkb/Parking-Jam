@@ -7,7 +7,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.event.*;
 
-import es.upm.pproject.parkingjam.common.Coordinates;
 import es.upm.pproject.parkingjam.common.Pair;
 import es.upm.pproject.parkingjam.controller.Controller;
 import es.upm.pproject.parkingjam.view.utils.Constants;

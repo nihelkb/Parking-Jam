@@ -246,6 +246,7 @@ public class Game implements Resetable{
             
 
         } catch (IOException e) {
+            e.printStackTrace();
         }
            
     }

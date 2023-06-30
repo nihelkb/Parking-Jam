@@ -92,7 +92,7 @@ public class Level implements Resetable{
      * @throws LevelNotFoundException,WrongLevelFormatException
     */
     private Parking fillBoard(String levelPath) throws LevelNotFoundException, WrongLevelFormatException, 
-    IOException {
+    IOException, FileNotFoundException {
         char[][] boardTiles = null;
         
         try ( 

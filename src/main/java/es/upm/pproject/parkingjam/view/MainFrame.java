@@ -57,7 +57,6 @@ public class MainFrame extends JFrame  {
         super("Parking Jam");
         mapCarPanels = new HashMap<>();
         this.controller = control;
-        this.setSize(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
         this.pack();
         this.setResizable(false);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
