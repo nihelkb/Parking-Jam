@@ -73,7 +73,11 @@ public class Level implements Resetable{
         this.levelPath = levelPath;
 
         // Fill the board reading the chars from the file.
-        this.board = fillBoard(levelPath);  
+        try {
+            this.board = fillBoard(levelPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }  
         loadCars();
         
         this.score = 0;
@@ -87,7 +91,8 @@ public class Level implements Resetable{
     * FINISHED
      * @throws LevelNotFoundException,WrongLevelFormatException
     */
-    private Parking fillBoard(String levelPath) throws LevelNotFoundException, WrongLevelFormatException {
+    private Parking fillBoard(String levelPath) throws LevelNotFoundException, WrongLevelFormatException, 
+    IOException {
         char[][] boardTiles = null;
         
         try ( 
@@ -380,7 +385,7 @@ public class Level implements Resetable{
         score = 0;
         try {
             this.board = fillBoard(levelPath);
-        } catch (LevelNotFoundException | WrongLevelFormatException e) {
+        } catch (LevelNotFoundException | IOException| WrongLevelFormatException e) {
             e.printStackTrace();
         } 
         logger.info(levelMarker, "The current level has been reset to its initial state.");

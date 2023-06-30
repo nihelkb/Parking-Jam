@@ -79,8 +79,9 @@ public class Parking{
     @Override
     public String toString() {
         StringBuilder boardRep = new StringBuilder();
+        int zero = 0;
         for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles[0].length; j++) {
+            for (int j = 0; j < tiles[zero].length; j++) {
                 boardRep.append(tiles[i][j]);
             }
             boardRep.append('\n');

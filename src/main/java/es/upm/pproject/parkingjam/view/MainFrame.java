@@ -58,6 +58,7 @@ public class MainFrame extends JFrame  {
         mapCarPanels = new HashMap<>();
         this.controller = control;
         this.setSize(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
+        this.pack();
         this.setResizable(false);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2 - 35);
@@ -167,8 +168,9 @@ public class MainFrame extends JFrame  {
         
         char[][] board = controller.getLevelBoard();
         // Dibujar los muros en la interfaz
+        int zero = 0;
         for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[0].length; j++) {
+            for (int j = 0; j < board[zero].length; j++) {
                 if (board[i][j] == '+') {
                     ImagePanel wall = new ImagePanel(Constants.WALL);
                     // x + j filas, y + i

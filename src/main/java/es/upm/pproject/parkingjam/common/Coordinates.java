@@ -31,12 +31,26 @@ public class Coordinates{
     public int getY() {
         return y;
     }
-
+    
     @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        Coordinates other = (Coordinates) obj;
+        return this.x == other.x && this.y == other.y;
+    }
+
+    /*@Override
     public boolean equals(Object obj) {
         return obj != null && (obj.getClass() == Coordinates.class) &&
                 this.x == ((Coordinates)obj).x && this.y == ((Coordinates)obj).y;
-    }
+    }*/
     
     @Override
     public int hashCode() {

@@ -14,7 +14,6 @@ import es.upm.pproject.parkingjam.view.utils.Constants;
 
 public class CarPanel extends ImagePanel implements MouseMotionListener, MouseListener {
 
-    private transient Coordinates carCoordinates;
     private char idCar;
     private boolean horizontal;
     private transient Controller controller;
@@ -36,8 +35,7 @@ public class CarPanel extends ImagePanel implements MouseMotionListener, MouseLi
         if (!horizontal) {
             this.image = rotateImage(image);
         }
-        carCoordinates = controller.getCarPosition(idCar);
-        this.setLocation(initialX + carCoordinates.getY()*Constants.TILE_SIZE,initialY + carCoordinates.getX()*Constants.TILE_SIZE);
+        this.setLocation(initialX +  controller.getCarPosition(idCar).getY()*Constants.TILE_SIZE,initialY +  controller.getCarPosition(idCar).getX()*Constants.TILE_SIZE);
         this.addMouseMotionListener(this);
         this.addMouseListener(this);
     }
@@ -134,8 +132,7 @@ public class CarPanel extends ImagePanel implements MouseMotionListener, MouseLi
     public void mouseReleased(MouseEvent e) {
         Pair<Character,Integer> movement = calculateMovement(e.getLocationOnScreen());
         controller.move(idCar, movement.getLeft(), this.moved);
-        carCoordinates = controller.getCarPosition(idCar);
-        this.setLocation(initialX + carCoordinates.getY()*Constants.TILE_SIZE,initialY + carCoordinates.getX()*Constants.TILE_SIZE);
+        this.setLocation(initialX + controller.getCarPosition(idCar).getY()*Constants.TILE_SIZE,initialY + controller.getCarPosition(idCar).getX()*Constants.TILE_SIZE);
         this.moved = 0;
     }
 
