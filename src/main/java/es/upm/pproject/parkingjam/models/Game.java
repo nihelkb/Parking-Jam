@@ -2,6 +2,7 @@ package es.upm.pproject.parkingjam.models;
 
 import java.awt.Dimension;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -109,7 +110,7 @@ public class Game implements Resetable{
         try {
             level.saveGame(score);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(fatalMarker, "The file cannot be created/opened");
         }
     }
 
@@ -219,7 +220,7 @@ public class Game implements Resetable{
         Pair <Character, Integer> pair1;
         Pair <Pair<Character,Integer>,Character> pair2;
         Integer distance;
-        char direction = 'a';
+        char direction = 'a'; // ?
         char id;
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             cadena = br.readLine();
@@ -241,17 +242,13 @@ public class Game implements Resetable{
                 pair2 = new Pair<>(pair1, id);
                 list.add(pair2);
             }
-            
-            level.setUndoList(list);
-            
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            level.setUndoList(list);  
+        } catch(FileNotFoundException e){
+            logger.error(fatalMarker, "The selected file has not been found");
+        }catch (IOException e) {
+            logger.error(fatalMarker, "Error while attempting to read the file");
         }
-           
     }
-
-  
 
     public char id(boolean isUndo){
         return level.id(isUndo);

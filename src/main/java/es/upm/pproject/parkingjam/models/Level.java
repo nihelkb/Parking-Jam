@@ -43,16 +43,13 @@ import es.upm.pproject.parkingjam.exceptions.WrongLevelFormatException;
 public class Level implements Resetable{    
     private Car redCar;
     private Parking board;
+    private Parking initialBoard;
     private Map<Character, Car> vehicles;
     private List<Character> idCars;
     private String name;
     private int score;
     private List <Pair<Pair<Character,Integer>,Character>> list;
     private Deque <Pair<Pair<Character,Integer>,Character>> stackRedo;
-    private String levelPath;
-    private int nRows;
-    private int nColumns;
-    
 
     public static final String LEVEL_FILE_NAME_FORMAT = "src/main/resources/levels/level_%d.txt";
     
@@ -70,14 +67,10 @@ public class Level implements Resetable{
         this.idCars = new LinkedList<>();
         this.list = new ArrayList<>();
         this.stackRedo = new ArrayDeque<>();
-        this.levelPath = levelPath;
 
         // Fill the board reading the chars from the file.
-        try {
-            this.board = fillBoard(levelPath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }  
+        this.board = fillBoard(levelPath);
+        this.initialBoard = this.board.duplicate();
         loadCars();
         
         this.score = 0;
@@ -91,8 +84,7 @@ public class Level implements Resetable{
     * FINISHED
      * @throws LevelNotFoundException,WrongLevelFormatException
     */
-    private Parking fillBoard(String levelPath) throws LevelNotFoundException, WrongLevelFormatException, 
-    IOException, FileNotFoundException {
+    private Parking fillBoard(String levelPath) throws LevelNotFoundException, WrongLevelFormatException {
         char[][] boardTiles = null;
         
         try ( 
@@ -103,8 +95,8 @@ public class Level implements Resetable{
             int redSize = 0;
             int exit = 0;
             String[] dimensions = br.readLine().split(" ");
-            nRows = Integer.parseInt(dimensions[0]);
-            nColumns = Integer.parseInt(dimensions[1]);
+            int nRows = Integer.parseInt(dimensions[0]);
+            int nColumns = Integer.parseInt(dimensions[1]);
             boardTiles = new char[nRows][nColumns];
             String line;
             for (int i = 0; i < nRows; i++) {
@@ -133,9 +125,13 @@ public class Level implements Resetable{
                 throw new WrongLevelFormatException("The level must have one exit");
             }
         }catch (FileNotFoundException e) {
-            throw new LevelNotFoundException(String.format("The level %s does not exist", levelPath));
+            LevelNotFoundException exc = new LevelNotFoundException(String.format("The level %s does not exist", levelPath));
+            exc.initCause(e);
+            throw exc;
         }catch (IOException e) {
-           throw new WrongLevelFormatException("Error while attempting to read the file");
+            WrongLevelFormatException exc = new WrongLevelFormatException("Error while attempting to read the file");
+            exc.initCause(e);
+            throw exc;
         } 
         return new Parking(boardTiles);
     }
@@ -202,8 +198,7 @@ public class Level implements Resetable{
         if (distance == 0) {
             return false;
         }
-       
-        
+         
         // if movement is valid
         if (verifyMovement(vehicle, direction, distance)) {
             String logMsg;
@@ -383,11 +378,7 @@ public class Level implements Resetable{
         list.clear();
         stackRedo.clear();
         score = 0;
-        try {
-            this.board = fillBoard(levelPath);
-        } catch (LevelNotFoundException | IOException| WrongLevelFormatException e) {
-            e.printStackTrace();
-        } 
+        this.board = this.initialBoard.duplicate();
         logger.info(levelMarker, "The current level has been reset to its initial state.");
     }
 
@@ -468,7 +459,7 @@ public class Level implements Resetable{
             try (PrintWriter outB = new PrintWriter(bufferB);) {
                 outB.append(name);
                 outB.append('\n');
-                outB.append(nRows + " " + nColumns + '\n');
+                outB.append(this.board.getNRows() + " " + this.board.getNColumns() + '\n');
 
                 for (int i = 0; i < board.getTiles().length; i++) {
                     for(int j = 0; j < board.getTiles()[i].length; j++){
@@ -541,6 +532,5 @@ public class Level implements Resetable{
     public void setScore(int score){
         this.score = score;
     }
-
 
 }

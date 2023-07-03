@@ -43,6 +43,14 @@ public class Parking{
         return newPosition;
     }
 
+    public Parking duplicate() {
+        char[][] clonedTiles = new char[nRows][nColumns];
+        for (int i = 0; i < nRows; i++) {
+            clonedTiles[i] = tiles[i].clone();
+        }
+        return new Parking(clonedTiles);
+    }
+
     private void insertCar(Car vehicle) {
         int posX = vehicle.getCurrentPositionX();
         int posY = vehicle.getCurrentPositionY();

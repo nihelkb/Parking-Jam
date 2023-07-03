@@ -3,10 +3,10 @@ package es.upm.pproject.parkingjam;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
-public class AppTest {
+class AppTest {
 
     @Test
-    public void shouldAnswerWithTrue() {
+    void shouldAnswerWithTrue() {
         assertTrue(true);
     }
 

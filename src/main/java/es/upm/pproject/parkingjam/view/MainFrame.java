@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
 import es.upm.pproject.parkingjam.common.Coordinates;
@@ -35,12 +36,10 @@ import es.upm.pproject.parkingjam.view.utils.Constants;
 
 public class MainFrame extends JFrame  {
 
-    private static final ImagePanel BACKGROUND_SPRITE = new ImagePanel(
-        Constants.BACKGROUND, Constants.SCREEN_WIDTH,Constants.SCREEN_HEIGHT);
-
     private Map<Integer,List<String>> carSpritesMap;
     private Map<Character, CarPanel> mapCarPanels;
 
+    private ImagePanel backgroundSprite;
     private JPanel grid;
     private JPanel stats;
 
@@ -50,17 +49,14 @@ public class MainFrame extends JFrame  {
 
     private Dimension levelDimension;
 
-
     private transient Controller controller;
     
     public MainFrame(Controller control) {
         super("Parking Jam");
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         mapCarPanels = new HashMap<>();
         this.controller = control;
-        this.pack();
         this.setResizable(false);
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2 - 35);
         this.getContentPane().setPreferredSize(
                 new Dimension(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT));
         grid = new JPanel();
@@ -69,7 +65,8 @@ public class MainFrame extends JFrame  {
                        Constants.SCREEN_WIDTH - Constants.STATS_HEIGHT);
         grid.setLayout(null);
 
-        BACKGROUND_SPRITE.setLocation(0, Constants.STATS_HEIGHT);
+        backgroundSprite = new ImagePanel(Constants.BACKGROUND, Constants.SCREEN_WIDTH,Constants.SCREEN_HEIGHT);
+        backgroundSprite.setLocation(0, Constants.STATS_HEIGHT);
 
         stats = new JPanel(new GridLayout(1,3));
         stats.setBounds(0,0,Constants.STATS_WIDTH,Constants.STATS_HEIGHT);
@@ -83,9 +80,13 @@ public class MainFrame extends JFrame  {
         levelScore.setLocation(0, 25);
         gameScore.setLocation(0, 25);
         levelName.setLocation(0, 25);
+        gameScore.setLabelFor(stats);
+        levelName.setLabelFor(stats);
+        levelScore.setLabelFor(stats);
 
         this.getContentPane().add(stats);
         this.getContentPane().add(grid);
+        this.setAlwaysOnTop(false);
 
         this.setIconImage(new ImageIcon(Constants.ICON).getImage());
 
@@ -104,12 +105,13 @@ public class MainFrame extends JFrame  {
         carSpritesMap = createSpriteMap();
         repaintLevel();
         this.pack();
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2 - 35);
     }
 
     public void repaintLevel() {
         grid.removeAll();
         repaintStats();
-        stats.repaint();
         paintParking();
         repaintParking();
         repaintBackground();
@@ -137,11 +139,10 @@ public class MainFrame extends JFrame  {
         stats.add(levelName);
         stats.add(levelScore);
         stats.repaint();
-        this.pack();
     }
     
     private void repaintBackground(){
-        grid.add(BACKGROUND_SPRITE);
+        grid.add(backgroundSprite);
     }
 
     // Coches y troncos
@@ -217,8 +218,7 @@ public class MainFrame extends JFrame  {
         gameMenu.add(resetLevel);
 
         JMenuItem loadGame = new JMenuItem("Load...");
-        ActionListener actionLoadGame= e -> 
-                controller.loadGame();        
+        ActionListener actionLoadGame= e -> controller.loadGame();        
         loadGame.addActionListener(actionLoadGame);
         gameMenu.add(loadGame);
 
@@ -237,65 +237,45 @@ public class MainFrame extends JFrame  {
         menuBarComp.add(gameMenu);
 
         JMenu undo = new JMenu("Undo");
-        undo.addMouseListener(new MouseListener() {
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                controller.undo();
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                // Not necessary implementation
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                // Not necessary implementation
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                // Not necessary implementation
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                // Not necessary implementation
-            }
-            
-        });
-        menuBarComp.add(undo);
-
         JMenu redo = new JMenu("Redo");
-        redo.addMouseListener(new MouseListener() {
 
+        // Crear una clase anónima que implemente MouseListener
+        MouseListener mouseListener = new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                controller.redo();
+                if (e.getSource() == undo) {
+                    controller.undo();
+                } else if (e.getSource() == redo) {
+                    controller.redo();
+                }
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
-                // Not necessary implementation
+                // No es necesario implementar este método
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                // Not necessary implementation
+                // No es necesario implementar este método
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                // Not necessary implementation
+                // No es necesario implementar este método
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                // Not necessary implementation
+                // No es necesario implementar este método
             }
-            
-        });
+        };
+
+        // Asignar el mismo listener a ambos componentes
+        undo.addMouseListener(mouseListener);
+        redo.addMouseListener(mouseListener);
+
+        menuBarComp.add(undo);
         menuBarComp.add(redo);
 
         JMenu soundMenu = new JMenu("Sound");

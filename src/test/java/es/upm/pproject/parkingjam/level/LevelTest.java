@@ -7,21 +7,23 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import es.upm.pproject.parkingjam.exceptions.LevelNotFoundException;
 import es.upm.pproject.parkingjam.exceptions.WrongLevelFormatException;
 import es.upm.pproject.parkingjam.models.Level;
 
 @DisplayName("Class to test the level")
-public class LevelTest {
-    private Level level;
-    private final String usableLevels = "src/main/resources/levels";
-    private final String testLevels = "src/main/resources/levels4test";
-    private char board[][];
+class LevelTest {
+    Level level;
+    final String usableLevels = "src/main/resources/levels";
+    final String testLevels = "src/main/resources/levels4test";
+    char board[][];
 
     @Test
     @DisplayName("Reading level 2 file")
-    public void test1() throws LevelNotFoundException, WrongLevelFormatException{
+    void test1() throws LevelNotFoundException, WrongLevelFormatException{
         board = new char[8][8];
         board[0][0] = '+';
         board[0][1] = '+';
@@ -95,7 +97,7 @@ public class LevelTest {
      
     @Test
     @DisplayName("Reading level file - wrong format (invalid path)")
-    public void test2() throws LevelNotFoundException, WrongLevelFormatException {
+    void test2() throws LevelNotFoundException, WrongLevelFormatException {
         String expectedMessage = "The level src/main/resources/levels/level.txt does not exist";
         Exception exception = assertThrows(LevelNotFoundException.class, () -> {
             level = new Level(usableLevels + "/level.txt");
@@ -105,65 +107,18 @@ public class LevelTest {
         assertEquals(actualMessage, expectedMessage);
     }
 
-    @Test
-    @DisplayName("Reading level file - wrong format (no exits)")
-    public void test3() throws WrongLevelFormatException {
-        
-        String expectedMessage = "The level must have one exit";
+    @ParameterizedTest(name = "Reading level file - wrong format: {1}")
+    @CsvSource({
+            "The level must have one exit,/levelTest3.txt",
+            "The level must have one exit,/levelTest4.txt",
+            "The level must have one red car,/levelTest5.txt",
+            "The level must have one red car,/levelTest6.txt",
+            "The level must have one red car,/levelTest7.txt"
+    })
+    void testWrongLevelFormat(String expectedMessage, String levelFile) throws WrongLevelFormatException {
+
         Exception exception = assertThrows(WrongLevelFormatException.class, () -> {
-            level = new Level(testLevels + "/levelTest3.txt");
-        });
-
-        String actualMessage = exception.getMessage();
-        assertEquals(actualMessage, expectedMessage);
-    }
-
-    @Test
-    @DisplayName("Reading level file - wrong format (more than one exit)")
-    public void test4() throws WrongLevelFormatException {
-        
-        String expectedMessage = "The level must have one exit";
-        Exception exception = assertThrows(WrongLevelFormatException.class, () -> {
-            level = new Level(testLevels + "/levelTest4.txt");
-        });
-
-        String actualMessage = exception.getMessage();
-        assertEquals(actualMessage, expectedMessage);
-    }
-    
-    @Test
-    @DisplayName("Reading level file - wrong format (no red car)")
-    public void test5() throws WrongLevelFormatException {
-        
-        String expectedMessage = "The level must have one red car";
-        Exception exception = assertThrows(WrongLevelFormatException.class, () -> {
-            level = new Level(testLevels + "/levelTest5.txt");
-        });
-
-        String actualMessage = exception.getMessage();
-        assertEquals(actualMessage, expectedMessage);
-    }
-
-    @Test
-    @DisplayName("Reading level file - wrong format (red car size is not 2x1 or 1*2)")
-    public void test6() throws WrongLevelFormatException {
-        
-        String expectedMessage = "The level must have one red car";
-        Exception exception = assertThrows(WrongLevelFormatException.class, () -> {
-            level = new Level(testLevels + "/levelTest6.txt");
-        });
-
-        String actualMessage = exception.getMessage();
-        assertEquals(actualMessage, expectedMessage);
-    }
-
-    @Test
-    @DisplayName("Reading level file - wrong format (more than one red car)")
-    public void test7() throws WrongLevelFormatException {
-        
-        String expectedMessage = "The level must have one red car";
-        Exception exception = assertThrows(WrongLevelFormatException.class, () -> {
-            level = new Level(testLevels + "/levelTest7.txt");
+            level = new Level(testLevels + levelFile);
         });
 
         String actualMessage = exception.getMessage();

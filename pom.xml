@@ -28,6 +28,7 @@
         <maven.surefire>3.0.0-M5</maven.surefire>
         <maven.jar>3.2.0</maven.jar>
         <maven.install>3.0.0-M1</maven.install>
+
 		<sonar.language>java</sonar.language>
 		<sonar.host.url>https://costa.ls.fi.upm.es/sonar</sonar.host.url>
 		<sonar.qualitygate.wait>true</sonar.qualitygate.wait>
@@ -35,17 +36,19 @@
 		<sonar.projectKey>${project.groupId}:${project.artifactId}:${sonar.projectName}:${sonar.id}</sonar.projectKey>
 		<!-- Files to be excluded from coverage. Define for the view+controller 
 			in your final projects -->
-		<!--sonar.coverage.exclusions>**/view</sonar.coverage.exclusions -->
+        <sonar.coverage.exclusions>**/view/**,**/controller/**</sonar.coverage.exclusions>
 		<jacoco.version>0.8.6</jacoco.version>
 		<sonar.scm.provider>git</sonar.scm.provider>
 		<sonar.language>java</sonar.language>
-
-		
     </properties>
 
     <dependencies>
         <!-- Dependencies -->
-    
+        <dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.5</version>
+		</dependency>
     
         <!-- Testing dependencies-->
         <dependency>
@@ -66,11 +69,6 @@
             <version>${junit}</version>
             <scope>test</scope>
         </dependency>
-         <dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.5</version>
-		</dependency>
 		<dependency>
 			<groupId>org.jacoco</groupId>
 			<artifactId>jacoco-maven-plugin</artifactId>
