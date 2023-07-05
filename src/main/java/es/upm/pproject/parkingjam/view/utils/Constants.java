@@ -7,17 +7,19 @@ public class Constants {
 
     private Constants(){ }
 
-    public static final String IMG_PATH = "src/main/resources/img/";
-    public static final String BACKGROUND_PATH = "src/main/resources/img/backgrounds/";
-    public static final String CARS_PATH = "src/main/resources/img/cars/";
-    public static final String WALL_PATH = "src/main/resources/img/wall/";
+    private static final String RESOURCES_PATH = "src/main/resources/";
+    private static final String IMG_PATH = RESOURCES_PATH + "img/";
+    public static final String BACKGROUND_PATH = RESOURCES_PATH + "img/backgrounds/";
+    public static final String CARS_PATH = RESOURCES_PATH + "img/cars/";
+    public static final String WALL_PATH = RESOURCES_PATH + "img/wall/";
+    public static final String AUDIO_PATH = RESOURCES_PATH + "sounds/";
 
     public static final String APP_ICON = IMG_PATH + "carIcon.png";
     public static final String CONGRATS_ICON = IMG_PATH + "congrats.png";
-    public static final String PARKING_BACKGROUND = BACKGROUND_PATH + "parking_background.jpg";
     public static final String BACKGROUND = BACKGROUND_PATH + "background.png";
     public static final String RED_CAR = CARS_PATH + "redcar.png";
     public static final String WALL = WALL_PATH + "wall.png";
+    public static final String BACKGROUND_MUSIC = AUDIO_PATH + "background.wav";
 
     public static final int TILE_SIZE = 50;
     public static final int SCREEN_WIDTH = 900;

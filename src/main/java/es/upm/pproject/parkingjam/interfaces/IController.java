@@ -42,5 +42,11 @@ public interface IController {
     void resetLevel();
 
     void saveGame();
-}
 
+    void pauseBackgroundMusic();
+
+    void resumeBackgroundMusic();
+
+    void restartBackgroundMusic();
+
+}

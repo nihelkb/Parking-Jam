@@ -1,15 +1,24 @@
 package es.upm.pproject.parkingjam.controller;
 
 import java.awt.Dimension;
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import es.upm.pproject.parkingjam.common.Coordinates;
 import es.upm.pproject.parkingjam.interfaces.IController;
 import es.upm.pproject.parkingjam.models.Car;
 import es.upm.pproject.parkingjam.models.Game;
 import es.upm.pproject.parkingjam.view.MainFrame;
+import es.upm.pproject.parkingjam.view.utils.Constants;
 
 
 /**
@@ -25,11 +34,15 @@ public class Controller implements IController{
 
     private MainFrame gui;
     private Game game;
+    private Clip bgMusic;
+    private Long currentFrame;
 
     public Controller(){
-        gui = new MainFrame(this);
-        game = new Game();
+        this.gui = new MainFrame(this);
+        this.game = new Game();
         gui.init();
+
+        playBackgroundMusic();
     }
 
     /**
@@ -129,4 +142,37 @@ public class Controller implements IController{
     public void saveGame(){
         game.saveGame();
     }
+
+    private void playBackgroundMusic() {
+        try {
+            AudioInputStream audioInputStream = AudioSystem
+                    .getAudioInputStream(new File(Constants.BACKGROUND_MUSIC).getAbsoluteFile());
+
+            this.bgMusic = AudioSystem.getClip();
+            bgMusic.open(audioInputStream);
+            bgMusic.loop(Clip.LOOP_CONTINUOUSLY);
+            bgMusic.start();
+            
+        } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
+            // couldnt load music
+        }
+    }
+
+    public void pauseBackgroundMusic(){
+        this.currentFrame = this.bgMusic.getMicrosecondPosition();
+        bgMusic.stop();
+    }
+
+    public void resumeBackgroundMusic(){
+        bgMusic.setMicrosecondPosition(currentFrame);
+        bgMusic.start();
+    }
+
+    public void restartBackgroundMusic(){
+        bgMusic.stop();
+        currentFrame = 0L;
+        bgMusic.setMicrosecondPosition(currentFrame);
+        bgMusic.start();
+    }
+
 }

@@ -211,17 +211,29 @@ public class MainFrame extends JFrame  {
         JFrame main = this;
 
         JMenu gameMenu = new JMenu("Game");
+        JCheckBoxMenuItem mute = new JCheckBoxMenuItem("Mute", false);
+
         JMenuItem newGame = new JMenuItem("New game");
-        ActionListener actionListener = e -> 
+        ActionListener actionListener = e -> {
             controller.newGame();
-    
+            if (mute.isSelected()) 
+                // Detener la reproducción de la música
+                pauseBackgroundMusic();
+            else
+                controller.restartBackgroundMusic();
+        };
         newGame.addActionListener(actionListener);
         gameMenu.add(newGame);
 
         JMenuItem resetLevel = new JMenuItem("Reset level");
-        ActionListener actionResetLevel = e ->
-            controller.resetLevel();
-
+        ActionListener actionResetLevel = e ->{
+            controller.resetLevel(); 
+            if (mute.isSelected()) 
+                // Detener la reproducción de la música
+                pauseBackgroundMusic();
+            else
+                controller.restartBackgroundMusic();
+        };
         resetLevel.addActionListener(actionResetLevel);   
         gameMenu.add(resetLevel);
 
@@ -287,7 +299,17 @@ public class MainFrame extends JFrame  {
         menuBarComp.add(redo);
 
         JMenu soundMenu = new JMenu("Sound");
-        JCheckBoxMenuItem mute = new JCheckBoxMenuItem("Mute", false);
+
+        mute.addActionListener(e -> {
+            if (mute.isSelected()) {
+                // Detener la reproducción de la música
+                pauseBackgroundMusic();
+            } else {
+                // Reanudar la reproducción de la música
+                resumeBackgroundMusic();
+            }
+        });
+
 
         soundMenu.add(mute);
         menuBarComp.add(soundMenu);
@@ -302,6 +324,14 @@ public class MainFrame extends JFrame  {
         } catch (Exception e) {
             // Not able
         }
+    }
+
+    private void pauseBackgroundMusic(){
+        controller.pauseBackgroundMusic();
+    }
+
+    private void resumeBackgroundMusic(){
+        controller.resumeBackgroundMusic();
     }
 
 }
