@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import es.upm.pproject.parkingjam.common.Coordinates;
+import es.upm.pproject.parkingjam.interfaces.IController;
 import es.upm.pproject.parkingjam.models.Car;
 import es.upm.pproject.parkingjam.models.Game;
 import es.upm.pproject.parkingjam.view.MainFrame;
@@ -20,7 +21,7 @@ import es.upm.pproject.parkingjam.view.MainFrame;
  * @version 1.1
  * @since 21/06/2023
  */
-public class Controller {
+public class Controller implements IController{
 
     private MainFrame gui;
     private Game game;

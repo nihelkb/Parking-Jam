@@ -29,7 +29,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
 import es.upm.pproject.parkingjam.common.Coordinates;
-import es.upm.pproject.parkingjam.controller.Controller;
+import es.upm.pproject.parkingjam.interfaces.IController;
 import es.upm.pproject.parkingjam.view.panels.ParkingPanel;
 import es.upm.pproject.parkingjam.view.panels.CarPanel;
 import es.upm.pproject.parkingjam.view.panels.ImagePanel;
@@ -50,13 +50,13 @@ public class MainFrame extends JFrame  {
 
     private Dimension levelDimension;
 
-    private transient Controller controller;
+    private transient IController controller;
     
-    public MainFrame(Controller control) {
+    public MainFrame(IController controller) {
         super("Parking Jam");
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         mapCarPanels = new HashMap<>();
-        this.controller = control;
+        this.controller = controller;
         this.setResizable(false);
         this.getContentPane().setPreferredSize(
                 new Dimension(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT));

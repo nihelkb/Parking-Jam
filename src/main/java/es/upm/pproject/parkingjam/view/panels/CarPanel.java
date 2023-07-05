@@ -8,14 +8,14 @@ import java.awt.image.BufferedImage;
 import java.awt.event.*;
 
 import es.upm.pproject.parkingjam.common.Pair;
-import es.upm.pproject.parkingjam.controller.Controller;
+import es.upm.pproject.parkingjam.interfaces.IController;
 import es.upm.pproject.parkingjam.view.utils.Constants;
 
 public class CarPanel extends ImagePanel implements MouseMotionListener, MouseListener {
 
     private char idCar;
     private boolean horizontal;
-    private transient Controller controller;
+    private transient IController controller;
     private int initialX;
     private int initialY;
     
@@ -23,7 +23,7 @@ public class CarPanel extends ImagePanel implements MouseMotionListener, MouseLi
     private Point initialPositionOnScreen;
     private int moved;
     
-    public CarPanel(char idCar, String spritePath, int width, int height, int initialX, int initialY, Controller controller) {
+    public CarPanel(char idCar, String spritePath, int width, int height, int initialX, int initialY, IController controller) {
         super(spritePath, width, height);
         this.idCar = idCar;
         this.horizontal = controller.isCarHorizontal(idCar);
