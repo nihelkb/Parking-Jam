@@ -52,10 +52,13 @@ public class Controller {
         Car car = game.getLevel().getVehiclesMap().get(idCar);
         String lvlName = game.getLevelName();
         game.moveCar(car, dir, distance);
+        // pasa al siguiente nivel
         if (!game.getLevelName().equals(lvlName)){
             gui.showLevel();
-        }else{
-            gui.repaintStats();
+        }
+        gui.repaintStats();
+        if(game.isFinished()){
+            gui.showCongratsMsg(game.getTotalScore());
         }
     }
 

@@ -83,15 +83,19 @@ public class Game implements Resetable{
      * Private method used to load the game's level.
      */
     private void levelLoad(boolean levelLoad){
+        int lastLevelScore = 0;
+        if(level != null)
+            lastLevelScore = level.getScore();
         try{
             if(levelLoad)
                 level = new Level(getPath());
             else
                 level = new Level(String.format(levelPathFormat, levelNumber));
-        }catch (LevelNotFoundException e){
-            logger.info(gameMarker,"Game completed");
-            finished = true;   
-        }catch(WrongLevelFormatException e){
+        }catch (LevelNotFoundException e) {
+            logger.info(gameMarker, "Game completed");
+            finished = true;
+            this.score = this.score - lastLevelScore;     
+        } catch (WrongLevelFormatException e) {
             logger.error(fatalMarker, String.format("Level %d could not be loaded", levelNumber), e);
             levelNumber++;
             levelLoad(false);
@@ -146,6 +150,10 @@ public class Game implements Resetable{
     @Override
     public void reset() {
         this.level.reset();
+        if(this.finished){
+            levelNumber--;
+            this.finished = false;
+        }
     }
 
     public void printCurrentLevel() {

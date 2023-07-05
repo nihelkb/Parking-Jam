@@ -12,7 +12,8 @@ public class Constants {
     public static final String CARS_PATH = "src/main/resources/img/cars/";
     public static final String WALL_PATH = "src/main/resources/img/wall/";
 
-    public static final String ICON = IMG_PATH + "carIcon.png";
+    public static final String APP_ICON = IMG_PATH + "carIcon.png";
+    public static final String CONGRATS_ICON = IMG_PATH + "congrats.png";
     public static final String PARKING_BACKGROUND = BACKGROUND_PATH + "parking_background.jpg";
     public static final String BACKGROUND = BACKGROUND_PATH + "background.png";
     public static final String RED_CAR = CARS_PATH + "redcar.png";

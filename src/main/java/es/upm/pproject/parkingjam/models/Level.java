@@ -375,6 +375,7 @@ public class Level implements Resetable{
             c = idCars.get(i);
             vehicles.get(c).reset();
         }
+        redCar.setOnGoal(false);
         list.clear();
         stackRedo.clear();
         score = 0;

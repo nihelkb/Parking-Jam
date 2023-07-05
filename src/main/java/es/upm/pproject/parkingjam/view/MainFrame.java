@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -88,7 +89,7 @@ public class MainFrame extends JFrame  {
         this.getContentPane().add(grid);
         this.setAlwaysOnTop(false);
 
-        this.setIconImage(new ImageIcon(Constants.ICON).getImage());
+        this.setIconImage(new ImageIcon(Constants.APP_ICON).getImage());
 
         buildMenuBar();
     }
@@ -190,6 +191,13 @@ public class MainFrame extends JFrame  {
         Collections.shuffle(triples);
         // Crea un mapa con key 2 y valor doubles ...
         return Map.of(2, doubles,3, triples);
+    }
+
+    public void showCongratsMsg(int gameScore) {
+        String message = String.format(
+                "<html><div style='text-align: center;'>Congratulations!<br><br>You have completed the game.<br><br>Score: %d</div></html>",
+                gameScore);
+        JOptionPane.showMessageDialog(null, message, "Game completed", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(Constants.CONGRATS_ICON));
     }
 
     public void undoRedo(char id){
