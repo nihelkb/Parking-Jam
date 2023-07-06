@@ -19,7 +19,13 @@ public class Constants {
     public static final String BACKGROUND = BACKGROUND_PATH + "background.png";
     public static final String RED_CAR = CARS_PATH + "redcar.png";
     public static final String WALL = WALL_PATH + "wall.png";
+
     public static final String BACKGROUND_MUSIC = AUDIO_PATH + "background.wav";
+    public static final String MOVE_CAR_SOUND = AUDIO_PATH + "move_car.wav";
+    public static final String NEW_GAME_SOUND = AUDIO_PATH + "new_game.wav";
+    public static final String RESET_SOUND = AUDIO_PATH + "reset.wav";
+    public static final String UNDO_SOUND = AUDIO_PATH + "undo.wav";
+    public static final String DEFAULT_SOUND = AUDIO_PATH + "default.wav";
 
     public static final int TILE_SIZE = 50;
     public static final int SCREEN_WIDTH = 900;

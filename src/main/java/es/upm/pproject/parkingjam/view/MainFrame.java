@@ -50,6 +50,8 @@ public class MainFrame extends JFrame  {
 
     private Dimension levelDimension;
 
+    private boolean isMuted = false;
+
     private transient IController controller;
     
     public MainFrame(IController controller) {
@@ -208,116 +210,22 @@ public class MainFrame extends JFrame  {
 
     private void buildMenuBar() {
         JMenuBar menuBarComp = new JMenuBar();
-        JFrame main = this;
 
-        JMenu gameMenu = new JMenu("Game");
-        JCheckBoxMenuItem mute = new JCheckBoxMenuItem("Mute", false);
-
-        JMenuItem newGame = new JMenuItem("New game");
-        ActionListener actionListener = e -> {
-            controller.newGame();
-            if (mute.isSelected()) 
-                // Detener la reproducción de la música
-                pauseBackgroundMusic();
-            else
-                controller.restartBackgroundMusic();
-        };
-        newGame.addActionListener(actionListener);
-        gameMenu.add(newGame);
-
-        JMenuItem resetLevel = new JMenuItem("Reset level");
-        ActionListener actionResetLevel = e ->{
-            controller.resetLevel(); 
-            if (mute.isSelected()) 
-                // Detener la reproducción de la música
-                pauseBackgroundMusic();
-            else
-                controller.restartBackgroundMusic();
-        };
-        resetLevel.addActionListener(actionResetLevel);   
-        gameMenu.add(resetLevel);
-
-        JMenuItem loadGame = new JMenuItem("Load...");
-        ActionListener actionLoadGame= e -> controller.loadGame();        
-        loadGame.addActionListener(actionLoadGame);
-        gameMenu.add(loadGame);
-
-        JMenuItem saveGame = new JMenuItem("Save");
-        ActionListener actionSaveGame = e -> 
-            controller.saveGame();
-        
-        saveGame.addActionListener(actionSaveGame);
-        gameMenu.add(saveGame);
-
-        JMenuItem exitGame = new JMenuItem("Exit");
-        exitGame.addActionListener(e -> main.dispose());
-        gameMenu.addSeparator();
-        gameMenu.add(exitGame);
+        JMenu gameMenu = createGameMenu();
+        JMenu[] options = createUndoMenu();
+        JMenu undo = options[0];
+        JMenu redo = options[1];
+        JMenu soundMenu = createSoundMenu();
+        JMenu help = new JMenu("Help");
 
         menuBarComp.add(gameMenu);
-
-        JMenu undo = new JMenu("Undo");
-        JMenu redo = new JMenu("Redo");
-
-        // Crear una clase anónima que implemente MouseListener
-        MouseListener mouseListener = new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getSource() == undo) {
-                    controller.undo();
-                } else if (e.getSource() == redo) {
-                    controller.redo();
-                }
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                // No es necesario implementar este método
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                // No es necesario implementar este método
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                // No es necesario implementar este método
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                // No es necesario implementar este método
-            }
-        };
-
-        // Asignar el mismo listener a ambos componentes
-        undo.addMouseListener(mouseListener);
-        redo.addMouseListener(mouseListener);
-
         menuBarComp.add(undo);
         menuBarComp.add(redo);
-
-        JMenu soundMenu = new JMenu("Sound");
-
-        mute.addActionListener(e -> {
-            if (mute.isSelected()) {
-                // Detener la reproducción de la música
-                pauseBackgroundMusic();
-            } else {
-                // Reanudar la reproducción de la música
-                resumeBackgroundMusic();
-            }
-        });
-
-
-        soundMenu.add(mute);
         menuBarComp.add(soundMenu);
-
-        JMenu help = new JMenu("Help");
         menuBarComp.add(help);
 
         this.setJMenuBar(menuBarComp);
+
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             SwingUtilities.updateComponentTreeUI(this);
@@ -326,12 +234,144 @@ public class MainFrame extends JFrame  {
         }
     }
 
-    private void pauseBackgroundMusic(){
+    private JMenu createGameMenu() {
+        JMenu gameMenu = new JMenu("Game");
+
+        JMenuItem newGame = new JMenuItem("New game");
+        newGame.addActionListener(e -> handleNewGameAction());
+
+        JMenuItem resetLevel = new JMenuItem("Reset level");
+        resetLevel.addActionListener(e -> handleResetLevelAction());
+
+        JMenuItem loadGame = new JMenuItem("Load...");
+        loadGame.addActionListener(e -> handleLoadGameAction());
+
+        JMenuItem saveGame = new JMenuItem("Save");
+        saveGame.addActionListener(e -> handleSaveGameAction());
+
+        JMenuItem exitGame = new JMenuItem("Exit");
+        exitGame.addActionListener(e -> this.dispose());
+
+        gameMenu.add(newGame);
+        gameMenu.add(resetLevel);
+        gameMenu.add(loadGame);
+        gameMenu.add(saveGame);
+        gameMenu.addSeparator();
+        gameMenu.add(exitGame);
+
+        return gameMenu;
+    }
+
+    private JMenu[] createUndoMenu() {
+        JMenu undo = new JMenu("Undo");
+        JMenu redo = new JMenu("Redo");
+        JMenu[] options = {undo, redo};
+        MouseListener mouseListener = createUndoRedoMouseListener(undo, redo);
+        undo.addMouseListener(mouseListener);
+        redo.addMouseListener(mouseListener);
+
+        return options;
+    }
+
+    private JMenu createSoundMenu() {
+        JMenu soundMenu = new JMenu("Sound");
+        JCheckBoxMenuItem mute = new JCheckBoxMenuItem("Mute", false);
+
+        mute.addActionListener(e -> handleMuteAction(mute.isSelected()));
+
+        soundMenu.add(mute);
+
+        return soundMenu;
+    }
+
+    private MouseListener createUndoRedoMouseListener(JMenu undo, JMenu redo) {
+        return new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getSource() == undo) {
+                    controller.undo();
+                } else if (e.getSource() == redo) {
+                    controller.redo();
+                }
+                controller.playUndoSound();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // Not needed
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                // Not needed
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                // Not needed
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // Not needed
+            }
+        };
+    }
+
+    private void handleNewGameAction() {
+        controller.newGame();
+        if (isMuted) {
+            pauseBackgroundMusic();
+        } else {
+            controller.playNewGameSound();
+            controller.restartBackgroundMusic();
+        }
+    }
+
+    private void handleResetLevelAction() {
+        controller.resetLevel();
+        if (isMuted) {
+            pauseBackgroundMusic();
+        } else {
+            controller.restartBackgroundMusic();
+            controller.playResetSound();
+        }
+    }
+
+    private void handleLoadGameAction() {
+        if (!isMuted) {
+            controller.playDefaultSound();
+        }
+        controller.loadGame();
+    }
+
+    private void pauseBackgroundMusic() {
         controller.pauseBackgroundMusic();
     }
 
-    private void resumeBackgroundMusic(){
+    private void resumeBackgroundMusic() {
         controller.resumeBackgroundMusic();
+    }
+
+    private void handleSaveGameAction() {
+        if (!isMuted) {
+            controller.playDefaultSound();
+        }
+        controller.saveGame();
+    }
+
+    private void handleMuteAction(boolean isMuted) {
+        this.isMuted = isMuted;
+        if (isMuted) {
+            pauseBackgroundMusic();
+        } else {
+            controller.playDefaultSound();
+            resumeBackgroundMusic();
+        }
+    }
+
+    public boolean isGameMuted(){
+        return this.isMuted;
     }
 
 }

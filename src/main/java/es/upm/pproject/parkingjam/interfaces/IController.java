@@ -49,4 +49,16 @@ public interface IController {
 
     void restartBackgroundMusic();
 
+    void playMoveCarSound();
+
+    void playNewGameSound();
+
+    void playResetSound();
+
+    void playUndoSound();
+
+    void playDefaultSound();
+
+    boolean isGameMuted();
+
 }

@@ -22,6 +22,9 @@ public class CarPanel extends ImagePanel implements MouseMotionListener, MouseLi
     private Point initialClick;
     private Point initialPositionOnScreen;
     private int moved;
+
+    // Auxiliar variable used to only play car movement sound if the car has been moved
+    private boolean carMoved = false;
     
     public CarPanel(char idCar, String spritePath, int width, int height, int initialX, int initialY, IController controller) {
         super(spritePath, width, height);
@@ -108,6 +111,7 @@ public class CarPanel extends ImagePanel implements MouseMotionListener, MouseLi
             this.moved = movement.getRight();
             // Update position in frame
             this.setLocation(x, y);
+            carMoved = true;
         }
     }
 
@@ -133,6 +137,11 @@ public class CarPanel extends ImagePanel implements MouseMotionListener, MouseLi
         controller.move(idCar, movement.getLeft(), this.moved);
         this.setLocation(initialX + controller.getCarPosition(idCar).getY()*Constants.TILE_SIZE,initialY + controller.getCarPosition(idCar).getX()*Constants.TILE_SIZE);
         this.moved = 0;
+        if(carMoved){
+            if(!controller.isGameMuted())
+                controller.playMoveCarSound();
+            carMoved = false;
+        }  
     }
 
     @Override
