@@ -99,6 +99,7 @@ public class Level implements Resetable{
             int nRows = Integer.parseInt(dimensions[0]);
             int nColumns = Integer.parseInt(dimensions[1]);
             int totalWalls = nColumns + ((nRows-2)*2) + nColumns-1;
+            checkDimensions(levelPath);
             boardTiles = new char[nRows][nColumns];
             String line;
             boolean stop = false;
@@ -154,6 +155,25 @@ public class Level implements Resetable{
         return new Parking(boardTiles);
     }
 
+    private void checkDimensions(String levelPath) throws IOException, WrongLevelFormatException{
+         try ( 
+            FileReader lvlFile = new FileReader(new File(levelPath)); 
+            BufferedReader br = new BufferedReader(lvlFile);
+           ){
+            this.name = br.readLine();
+            String[] dimensions = br.readLine().split(" ");
+            int nRows = Integer.parseInt(dimensions[0]);
+            int contador = 0;
+            String line = "";
+            for (int i = 0; i < nRows  && (line = br.readLine())!= null; i++) {
+                contador++;
+            }
+            if(contador!=nRows && line == null){
+                throw new WrongLevelFormatException("You have to put first the number"+ 
+            " of rows and then the number of columns");
+            }
+        }
+    }
    
     
     private void loadCars() throws WrongLevelFormatException{
