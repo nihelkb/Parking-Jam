@@ -211,9 +211,9 @@ public class MainFrame extends JFrame  {
         JMenuBar menuBarComp = new JMenuBar();
 
         JMenu gameMenu = createGameMenu();
-        JMenu[] options = createUndoMenu();
-        JMenu undo = options[0];
-        JMenu redo = options[1];
+        UndoMenuOptions options = createUndoMenu();
+        JMenu undo = options.getUndoMenu();
+        JMenu redo = options.getRedoMenu();
         JMenu soundMenu = createSoundMenu();
         JMenu help = new JMenu("Help");
 
@@ -261,15 +261,15 @@ public class MainFrame extends JFrame  {
         return gameMenu;
     }
 
-    private JMenu[] createUndoMenu() {
+    private UndoMenuOptions createUndoMenu() {
         JMenu undo = new JMenu("Undo");
         JMenu redo = new JMenu("Redo");
-        JMenu[] options = {undo, redo};
+
         MouseListener mouseListener = createUndoRedoMouseListener(undo, redo);
         undo.addMouseListener(mouseListener);
         redo.addMouseListener(mouseListener);
 
-        return options;
+        return new UndoMenuOptions(undo, redo);
     }
 
     private JMenu createSoundMenu() {
@@ -373,4 +373,23 @@ public class MainFrame extends JFrame  {
         return this.isMuted;
     }
 
+    public class UndoMenuOptions {
+        private JMenu undo;
+        private JMenu redo;
+
+        public UndoMenuOptions(JMenu undo, JMenu redo) {
+            this.undo = undo;
+            this.redo = redo;
+        }
+
+        public JMenu getUndoMenu() {
+            return undo;
+        }
+
+        public JMenu getRedoMenu() {
+            return redo;
+        }
+    }
+
 }
+
