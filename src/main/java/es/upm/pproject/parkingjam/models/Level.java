@@ -42,6 +42,8 @@ public class Level implements Resetable{
     private List<Character> idCars;
     private String name;
     private int score;
+    private int realColumns;
+    private int realRows;
     private List <Pair<Pair<Character,Integer>,Character>> undoMov;
     private Deque <Pair<Pair<Character,Integer>,Character>> stackRedo;
 
@@ -64,6 +66,10 @@ public class Level implements Resetable{
 
         // Fill the board reading the chars from the file.
         this.board = fillBoard(levelPath);
+        if(realRows!= board.getNRows() || realColumns!= board.getNColumns()){
+            throw new WrongLevelFormatException("You have to put first the number"+ 
+            "of rows and then the number of columns");
+        }
         this.initialBoard = this.board.duplicate();
         loadCars();
         
@@ -88,14 +94,20 @@ public class Level implements Resetable{
             this.name = br.readLine();
             int redSize = 0;
             int exit = 0;
+            int walls = 0;
             String[] dimensions = br.readLine().split(" ");
             int nRows = Integer.parseInt(dimensions[0]);
             int nColumns = Integer.parseInt(dimensions[1]);
+            int totalWalls = nColumns + ((nRows-2)*2) + nColumns-1;
             boardTiles = new char[nRows][nColumns];
             String line;
-            for (int i = 0; i < nRows; i++) {
-                line = br.readLine();
-                for (int j = 0; j < nColumns; j++) {
+            boolean stop = false;
+            int i = 0;
+            int j = 0;
+            for (i = 0; i < nRows && !stop; i++) {
+                line = br.readLine(); 
+                for (j = 0; j < nColumns && !stop; j++) {
+                    stop = line.length() != nColumns;
                     char c = line.charAt(j);
                     switch (c) {
                         case '*':
@@ -104,11 +116,23 @@ public class Level implements Resetable{
                         case '@':
                             exit++;
                             break;
+                        case '+':
+                            walls++;
+                            break;
                         default:
                             break;
                     }
                     boardTiles[i][j] = c;
                 }
+            }
+            realRows = i;
+            realColumns = j;
+            if(walls != totalWalls &&(realRows == nRows && realColumns == nColumns)){
+                throw new WrongLevelFormatException("A level must be surrounded by walls: This level"+
+                "must have " + totalWalls+" walls");
+            }
+            if(stop){
+                throw new WrongLevelFormatException("The level must have "+ nColumns +" columns each line");
             }
             // Level must have only one red car
             if(redSize != 2){
@@ -130,6 +154,8 @@ public class Level implements Resetable{
         return new Parking(boardTiles);
     }
 
+   
+    
     private void loadCars() throws WrongLevelFormatException{
         char[][] b = board.getTiles();
         char letter;
