@@ -26,6 +26,8 @@ public class Constants {
     public static final String RESET_SOUND = AUDIO_PATH + "reset.wav";
     public static final String UNDO_SOUND = AUDIO_PATH + "undo.wav";
     public static final String DEFAULT_SOUND = AUDIO_PATH + "default.wav";
+    public static final String LEVEL_SOUND = AUDIO_PATH + "level_completed.wav";
+    public static final String GAME_SOUND = AUDIO_PATH + "game_completed.wav";
 
     public static final int TILE_SIZE = 50;
     public static final int SCREEN_WIDTH = 900;

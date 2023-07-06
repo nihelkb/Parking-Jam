@@ -3,7 +3,6 @@ package es.upm.pproject.parkingjam.view;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
@@ -250,7 +249,7 @@ public class MainFrame extends JFrame  {
         saveGame.addActionListener(e -> handleSaveGameAction());
 
         JMenuItem exitGame = new JMenuItem("Exit");
-        exitGame.addActionListener(e -> this.dispose());
+        exitGame.addActionListener(e -> System.exit(0));
 
         gameMenu.add(newGame);
         gameMenu.add(resetLevel);

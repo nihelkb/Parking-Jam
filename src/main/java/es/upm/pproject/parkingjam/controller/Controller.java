@@ -58,11 +58,15 @@ public class Controller implements IController{
         game.moveCar(car, dir, distance);
         // pasa al siguiente nivel
         if (!game.getLevelName().equals(lvlName)){
+            if(!gui.isGameMuted())
+                playLevelSound();
             gui.showLevel();
         }
         gui.repaintStats();
         if(game.isFinished()){
-            gui.showCongratsMsg(game.getTotalScore());
+            if(!gui.isGameMuted())
+                playWinSound();
+            gui.showCongratsMsg(game.getTotalScore());   
         }
     }
 
@@ -121,6 +125,8 @@ public class Controller implements IController{
     public void loadGame(){
         game.newGame(true);
         game.setScoreAndUndoMov();
+        restartBackgroundMusic();
+        playNewGameSound();
         gui.init(); 
     }
 
@@ -163,6 +169,14 @@ public class Controller implements IController{
 
     public void playDefaultSound(){
         musicPlayer.defaultSound();
+    }
+
+    public void playLevelSound(){
+        musicPlayer.levelSound();
+    }
+
+    public void playWinSound(){
+        musicPlayer.gameSound();
     }
 
     public boolean isGameMuted(){

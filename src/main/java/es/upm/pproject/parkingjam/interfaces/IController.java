@@ -59,6 +59,10 @@ public interface IController {
 
     void playDefaultSound();
 
+    void playLevelSound();
+
+    void playWinSound();
+
     boolean isGameMuted();
 
 }

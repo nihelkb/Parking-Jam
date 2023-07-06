@@ -23,7 +23,8 @@ public class MusicPlayer {
 
     private void loadMusicTracks() {
         String[] trackPaths = { Constants.BACKGROUND_MUSIC, Constants.MOVE_CAR_SOUND, Constants.NEW_GAME_SOUND,
-                Constants.RESET_SOUND, Constants.UNDO_SOUND, Constants.DEFAULT_SOUND };
+                Constants.RESET_SOUND, Constants.UNDO_SOUND, Constants.DEFAULT_SOUND, Constants.LEVEL_SOUND,
+                Constants.GAME_SOUND };
         AudioInputStream audioInputStream;
         try {
             for (int i = 0; i < trackPaths.length; i++) {
@@ -89,5 +90,13 @@ public class MusicPlayer {
 
     public void defaultSound(){
         playSound(Constants.DEFAULT_SOUND);
+    }
+
+    public void levelSound(){
+        playSound(Constants.LEVEL_SOUND);
+    }
+
+    public void gameSound(){
+        playSound(Constants.GAME_SOUND);
     }
 }
