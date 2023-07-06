@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import es.upm.pproject.parkingjam.exceptions.LevelNotFoundException;
 import es.upm.pproject.parkingjam.exceptions.WrongLevelFormatException;
@@ -64,8 +66,20 @@ class MovesTest {
         level.moveCar(level.getRedCar(), 'D', 4, false, false);
         assertTrue(level.getRedCar().isOnGoal());
     }
-     
-    @Test
+
+    @ParameterizedTest
+    @CsvSource({
+            "6, U, 1, false",
+            "7, D, 1, false",
+            "15, L, 1, false"
+    })
+    void test6(int testNumber, char direction, int distance,
+            boolean isMuted) {
+        boolean success = level.moveCar(level.getRedCar(), direction, distance, false, false);
+        assertFalse(success);
+    }
+
+    /* @Test
     @DisplayName("Movement up against another car")
     void test6() {
         boolean success = level.moveCar(level.getRedCar(), 'U', 1, false, false);
@@ -77,7 +91,7 @@ class MovesTest {
     void test7() {
         boolean success = level.moveCar(level.getRedCar(), 'D', 1, false, false);
         assertFalse(success);
-    }
+    } */
 
     @Test
     @DisplayName("Movement right against another car")
@@ -128,11 +142,11 @@ class MovesTest {
         assertFalse(success);
     }
 
-    @Test
+    /* @Test
     @DisplayName("Vertical movement on a horizontal car")
     void test15() {
         boolean success = level.moveCar(level.getRedCar(), 'L', 1, false, false);
         assertFalse(success);
-    }
+    } */
 
 }
