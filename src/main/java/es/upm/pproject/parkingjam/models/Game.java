@@ -2,9 +2,13 @@ package es.upm.pproject.parkingjam.models;
 
 import java.awt.Dimension;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,11 +115,53 @@ public class Game implements Resetable{
     }
 
     public void saveGame() {
-        try {
-            level.saveGame(score);
-        } catch (IOException e) {
-            logger.error(fatalMarker, "The file cannot be created/opened");
+        // Crear un objeto JFileChooser
+        JFileChooser fileChooser = new JFileChooser();
+        
+        // Establecer el filtro de extensión del archivo (opcional)
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de texto", "txt");
+        fileChooser.setFileFilter(filter);
+        
+        // Mostrar el diálogo de selección de archivo
+        int result = fileChooser.showOpenDialog(null);
+        java.io.File selectedFile = null; 
+        if (result == JFileChooser.APPROVE_OPTION) {
+            // Obtener el archivo seleccionado
+            selectedFile = fileChooser.getSelectedFile();
+            FileWriter writeB;
+	        BufferedWriter bufferB;
+            File fileoutput = new File(selectedFile.getAbsolutePath());
+            try {
+                writeB = new FileWriter(fileoutput);
+                bufferB = new BufferedWriter(writeB);
+            try (PrintWriter outB = new PrintWriter(bufferB);) {
+                outB.append(level.getName());
+                outB.append('\n');
+                outB.append(level.getBoard().getNRows() + " " + level.getBoard().getNColumns() + '\n');
+
+                for (int i = 0; i < level.getBoard().getTiles().length; i++) {
+                    for(int j = 0; j < level.getBoard().getTiles()[i].length; j++){
+                        outB.append(level.getBoard().getTiles()[i][j] + "");
+                }
+		            outB.append('\n');
+                }
+                outB.append(String.valueOf(score));
+                outB.append('\n');
+                outB.append(String.valueOf(level.getScore()));
+                outB.append('\n');
+                for(int i = 0; i < level.getUndoMov().size(); i++) {
+                    outB.write(level.getUndoMov().get(i).getLeft().getLeft() + " ");
+                    outB.write(String.valueOf(level.getUndoMov().get(i).getLeft().getRight())+ " ");
+                    outB.write(level.getUndoMov().get(i).getRight());
+                    outB.write("\n");
+                }
+            }
+            } catch (IOException e) {
+                logger.error(fatalMarker, "The file cannot be created/opened");
+            }
+		   
         }
+       
     }
 
     public String getPath(){

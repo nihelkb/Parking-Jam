@@ -1,13 +1,10 @@
 package es.upm.pproject.parkingjam.models;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -16,9 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +42,7 @@ public class Level implements Resetable{
     private List<Character> idCars;
     private String name;
     private int score;
-    private List <Pair<Pair<Character,Integer>,Character>> list;
+    private List <Pair<Pair<Character,Integer>,Character>> undoMov;
     private Deque <Pair<Pair<Character,Integer>,Character>> stackRedo;
 
     public static final String LEVEL_FILE_NAME_FORMAT = "src/main/resources/levels/level_%d.txt";
@@ -65,7 +59,7 @@ public class Level implements Resetable{
     public Level(String levelPath) throws LevelNotFoundException, WrongLevelFormatException{
         this.vehicles = new HashMap<>();
         this.idCars = new LinkedList<>();
-        this.list = new ArrayList<>();
+        this.undoMov = new ArrayList<>();
         this.stackRedo = new ArrayDeque<>();
 
         // Fill the board reading the chars from the file.
@@ -211,7 +205,7 @@ public class Level implements Resetable{
             if(!undo){
                 Pair <Character,Integer> pair = new Pair<>(dir2, distance);
                 Pair <Pair <Character,Integer>, Character > pair2 = new Pair<>(pair, vehicle.getId());
-                list.add(pair2);
+                undoMov.add(pair2);
             }
             Coordinates newPos = board.updateParking(vehicle, direction, distance);
             score++;
@@ -376,7 +370,7 @@ public class Level implements Resetable{
             vehicles.get(c).reset();
         }
         redCar.setOnGoal(false);
-        list.clear();
+        undoMov.clear();
         stackRedo.clear();
         score = 0;
         this.board = this.initialBoard.duplicate();
@@ -386,8 +380,8 @@ public class Level implements Resetable{
     public char id(boolean isUndo){
         Pair<Pair<Character,Integer>, Character> pair;
         if(isUndo){
-            pair = list.get(list.size()-1);
-            list.remove(pair);
+            pair = undoMov.get(undoMov.size()-1);
+            undoMov.remove(pair);
         }
         else{
             pair = stackRedo.pop();
@@ -414,12 +408,12 @@ public class Level implements Resetable{
     }
 
     public boolean undo(){
-        if(list.isEmpty()){
+        if(undoMov.isEmpty()){
              logger.error(fatalMarker, "Imposible to undo the movement");
              return false;
         }
         else{
-            Pair<Pair<Character,Integer>, Character> pair = list.get(list.size()-1);
+            Pair<Pair<Character,Integer>, Character> pair = undoMov.get(undoMov.size()-1);
             moveCar(vehicles.get(pair.getRight()), pair.getLeft().getLeft(),pair.getLeft().getRight(),true, false);
             stackRedo.push(pair); 
             return true;
@@ -438,50 +432,6 @@ public class Level implements Resetable{
         }
     }
 
-    public void saveGame(int scoreGlobal) throws IOException {
-        // Crear un objeto JFileChooser
-        JFileChooser fileChooser = new JFileChooser();
-        
-        // Establecer el filtro de extensión del archivo (opcional)
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de texto", "txt");
-        fileChooser.setFileFilter(filter);
-        
-        // Mostrar el diálogo de selección de archivo
-        int result = fileChooser.showOpenDialog(null);
-        java.io.File selectedFile = null; 
-        if (result == JFileChooser.APPROVE_OPTION) {
-            // Obtener el archivo seleccionado
-            selectedFile = fileChooser.getSelectedFile();
-            FileWriter writeB;
-	        BufferedWriter bufferB;
-            File fileoutput = new File(selectedFile.getAbsolutePath());
-            writeB = new FileWriter(fileoutput);
-		    bufferB = new BufferedWriter(writeB);
-            try (PrintWriter outB = new PrintWriter(bufferB);) {
-                outB.append(name);
-                outB.append('\n');
-                outB.append(this.board.getNRows() + " " + this.board.getNColumns() + '\n');
-
-                for (int i = 0; i < board.getTiles().length; i++) {
-                    for(int j = 0; j < board.getTiles()[i].length; j++){
-                        outB.append(board.getTiles()[i][j] + "");
-                }
-		            outB.append('\n');
-                }
-                outB.append(String.valueOf(scoreGlobal));
-                outB.append('\n');
-                outB.append(String.valueOf(score));
-                outB.append('\n');
-                for(int i = 0; i < list.size(); i++) {
-                    outB.write(list.get(i).getLeft().getLeft() + " ");
-                    outB.write(String.valueOf(list.get(i).getLeft().getRight())+ " ");
-                    outB.write( list.get(i).getRight());
-                    outB.write("\n");
-                }
-            }
-        }
-
-    }
 
     @Override
     public String toString() {
@@ -507,7 +457,7 @@ public class Level implements Resetable{
     }
 
     public void setUndoList( List <Pair<Pair<Character,Integer>,Character>> list){
-        this.list = list;
+        this.undoMov = list;
     }
     
     public Map<Character, Car> getVehiclesMap() {
@@ -528,6 +478,10 @@ public class Level implements Resetable{
     
     public int getScore(){
         return score;
+    }
+
+    public List<Pair<Pair<Character,Integer>,Character>> getUndoMov(){
+        return undoMov;
     }
 
     public void setScore(int score){
