@@ -42,8 +42,6 @@ public class Level implements Resetable{
     private List<Character> idCars;
     private String name;
     private int score;
-    private int realColumns;
-    private int realRows;
     private List <Pair<Pair<Character,Integer>,Character>> undoMov;
     private Deque <Pair<Pair<Character,Integer>,Character>> stackRedo;
 
@@ -66,10 +64,6 @@ public class Level implements Resetable{
 
         // Fill the board reading the chars from the file.
         this.board = fillBoard(levelPath);
-        if(realRows!= board.getNRows() || realColumns!= board.getNColumns()){
-            throw new WrongLevelFormatException("You have to put first the number"+ 
-            "of rows and then the number of columns");
-        }
         this.initialBoard = this.board.duplicate();
         loadCars();
         
@@ -126,8 +120,8 @@ public class Level implements Resetable{
                     boardTiles[i][j] = c;
                 }
             }
-            realRows = i;
-            realColumns = j;
+            int realRows = i;
+            int realColumns = j;
             if(walls != totalWalls &&(realRows == nRows && realColumns == nColumns)){
                 throw new WrongLevelFormatException("A level must be surrounded by walls: This level"+
                 "must have " + totalWalls+" walls");
