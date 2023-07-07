@@ -103,14 +103,14 @@ public class Controller implements IController{
     
     public void undo(){
         if(game.undo()){
-            char id = game.id(true);
+            char id = game.getUndoRedoCarId(true);
             gui.undoRedo(id);
         }
     }
 
     public void redo(){
         if(game.redo()){
-            char id = game.id(false);
+            char id = game.getUndoRedoCarId(false);
             gui.undoRedo(id);
         }
     }

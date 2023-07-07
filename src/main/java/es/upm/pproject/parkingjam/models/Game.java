@@ -45,7 +45,10 @@ public class Game implements Resetable{
     private static final Logger logger = LoggerFactory.getLogger(Game.class);
     private static final Marker gameMarker = MarkerFactory.getMarker("GAME");
     private static final Marker fatalMarker = MarkerFactory.getMarker("FATAL");
-
+      /**
+    * Constructor of the class.
+    * FINISHED
+    */
     public Game(){
         this.levelPathFormat = Level.LEVEL_FILE_NAME_FORMAT;
         newGame();
@@ -81,6 +84,7 @@ public class Game implements Resetable{
 
     /**
      * Loads a saved game.
+     * @return If the level is load succesfully
      */
     public boolean loadGame(String selectedPath){
         if(selectedPath != null){
@@ -113,14 +117,23 @@ public class Game implements Resetable{
         }
     }
 
+    /**
+     * Method that undo a movement.
+     */
      public boolean undo(){
          return level.undo();
     }
 
+    /**
+     * Method that redo a movement.
+     */
     public boolean redo() {
         return level.redo();
     }
 
+     /**
+     * Method that save the game with the current board, scores and movements.
+     */
     public void saveGame(String selectedPath) {
         if (selectedPath != null) {
             FileWriter writeB;
@@ -130,20 +143,25 @@ public class Game implements Resetable{
                 writeB = new FileWriter(fileoutput);
                 bufferB = new BufferedWriter(writeB);
             try (PrintWriter outB = new PrintWriter(bufferB);) {
+                // save the level name
                 outB.append(level.getName());
                 outB.append('\n');
+                // save the nRows and nColumns
                 outB.append(level.getBoard().getNRows() + " " + level.getBoard().getNColumns() + '\n');
 
                 for (int i = 0; i < level.getBoard().getTiles().length; i++) {
                     for(int j = 0; j < level.getBoard().getTiles()[i].length; j++){
+                        // save the board
                         outB.append(level.getBoard().getTiles()[i][j] + "");
                 }
 		            outB.append('\n');
                 }
+                 // save the scores
                 outB.append(String.valueOf(score));
                 outB.append('\n');
                 outB.append(String.valueOf(level.getScore()));
                 outB.append('\n');
+                // save the movements
                 for(int i = 0; i < level.getUndoMov().size(); i++) {
                     outB.write(level.getUndoMov().get(i).getLeft().getLeft() + " ");
                     outB.write(String.valueOf(level.getUndoMov().get(i).getLeft().getRight())+ " ");
@@ -168,6 +186,11 @@ public class Game implements Resetable{
         return this.finished;
     }
 
+
+    /**
+     * Method to reset.
+     * FINISHED
+     */
     @Override
     public void reset() {
         this.level.reset();
@@ -177,6 +200,10 @@ public class Game implements Resetable{
         }
     }
 
+    /**
+     * Method that print the current level.
+     * FINISHED
+     */
     public void printCurrentLevel() {
         String msg = this.level.toString();
         logger.debug(gameMarker, msg);
@@ -214,6 +241,7 @@ public class Game implements Resetable{
         return new Dimension(level.getBoard().getNColumns(), level.getBoard().getNRows());
     }
 
+    // Getters and Setters
     public Level getLevel(){
         return level;
     }
@@ -242,7 +270,9 @@ public class Game implements Resetable{
         return this.score;
     }
 
-
+     /**
+     * Method that set the socre and the undo movement when we load a game.
+     */
     public void setScoreAndUndoMov(String seletedPath){
         String cadena;
         List <Pair<Pair<Character,Integer>,Character>> list = new ArrayList<>();
@@ -279,8 +309,14 @@ public class Game implements Resetable{
         }
     }
 
-    public char id(boolean isUndo){
-        return level.id(isUndo);
+    /**
+    * Method that returns the id of the car that we have moved. It also eliminates movement.
+    * isUndo = true, means that we have to remove the movement of the undo list
+    * @return id of the car that has been moved.
+    * FINISHED
+    */
+    public char getUndoRedoCarId(boolean isUndo){
+        return level.getUndoRedoCarId(isUndo);
     }
 
     @Override

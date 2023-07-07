@@ -93,7 +93,8 @@ public class Level implements Resetable{
             int nRows = Integer.parseInt(dimensions[0]);
             int nColumns = Integer.parseInt(dimensions[1]);
             int totalWalls = nColumns + ((nRows-2)*2) + nColumns-1;
-            checkDimensions(levelPath);
+            // check the number of rows and columns of the file
+            checkDimensions(levelPath); 
             boardTiles = new char[nRows][nColumns];
             String line;
             boolean stop = false;
@@ -120,16 +121,15 @@ public class Level implements Resetable{
                     boardTiles[i][j] = c;
                 }
             }
-            int realRows = i;
-            int realColumns = j;
-            // Level must have only one exit
             if(stop){
                 throw new WrongLevelFormatException("The level must have "+ nColumns +" columns each line");
             }
+            // Level must have only one exit
             if(exit != 1){
                 throw new WrongLevelFormatException("The level must have one exit");
             }
-            if(walls != totalWalls &&(realRows == nRows && realColumns == nColumns)){
+            // A level must be surrounded by walls
+            if(walls != totalWalls &&(i == nRows && j == nColumns)){
                 throw new WrongLevelFormatException("A level must be surrounded by walls: This level "+
                 "must have " + totalWalls+" walls");
             }
@@ -149,6 +149,11 @@ public class Level implements Resetable{
         return new Parking(boardTiles);
     }
 
+    /**
+    * Method that checks the number of rows and columns of the file.
+    * FINISHED
+     * @throws IOException,WrongLevelFormatException
+    */
     private void checkDimensions(String levelPath) throws IOException, WrongLevelFormatException{
          try ( 
             FileReader lvlFile = new FileReader(new File(levelPath)); 
@@ -160,7 +165,7 @@ public class Level implements Resetable{
             int contador = 0;
             String line = "";
             for (int i = 0; i < nRows  && (line = br.readLine())!= null; i++) {
-                contador++;
+                contador++; // number of lines
             }
             if(contador!=nRows && line == null){
                 throw new WrongLevelFormatException("You have to put first the number"+ 
@@ -169,7 +174,11 @@ public class Level implements Resetable{
         }
     }
    
-    
+    /**
+    * This method checks that all the cars are 1 × n or n × 1 where n ≥ 2 .
+    * FINISHED
+     * @throws IOException,WrongLevelFormatException
+    */
     private void loadCars() throws WrongLevelFormatException{
         char[][] b = board.getTiles();
         char letter;
@@ -182,7 +191,11 @@ public class Level implements Resetable{
             }
         }
     }
-
+    /**
+    * This method checks that all the cars are 1 × n or n × 1 where n ≥ 2 .
+    * FINISHED
+     * @throws IOException,WrongLevelFormatException
+    */
     private boolean loadCar(char [][] b, char letter, int x, int y){
         int tam = 1;
         // Check car orientation
@@ -204,6 +217,11 @@ public class Level implements Resetable{
         return createCar(tam, x, y, letter, horizontal);
     }
 
+    /**
+    * This method create a car with its parameters.
+    * @return true if the legth is bigger than two.
+    * FINISHED
+    */
     private boolean createCar(int tam, int x, int y, char letter, boolean horizontal) {
         if(tam >= 2) {
             boolean isRedCar = letter == '*';
@@ -221,11 +239,13 @@ public class Level implements Resetable{
 
     /**
     * Method that returns if a car has been moved succesfully.
+    * undo = true, means that the movement is a undo move and the same with redo(redo movement)
     * @return true if the car has been moved, false otherwise. 
     * FINISHED
     */
     public boolean moveCar(Car vehicle, char direction, int distance, boolean undo, boolean redo) {
-        char dir2 = ' ';
+        char dir2;
+        // is redo = true. As we are going to reverse the original movement we turn it around again
         if(redo)
             direction = invert(direction);
   
@@ -239,12 +259,13 @@ public class Level implements Resetable{
             if (vehicle.isOnGoal()) {
                 logger.trace(levelMarker, "Red car has reached the exit");
             }
-            if (!undo || redo) { // que es esto
-                dir2 = invert(direction);
-            }
+            // is undo = false thats means that is a normal movement
             if(!undo){
+                // we store the reversed addresses
+                dir2 = invert(direction);
                 Pair <Character,Integer> pair = new Pair<>(dir2, distance);
                 Pair <Pair <Character,Integer>, Character > pair2 = new Pair<>(pair, vehicle.getId());
+                // add the movement to the list
                 undoMov.add(pair2);
             }
             Coordinates newPos = board.updateParking(vehicle, direction, distance);
@@ -296,6 +317,11 @@ public class Level implements Resetable{
         return true;
     }
 
+    /**
+    * Method that returns if a car movement is valid to the left.
+    * @return true if the movement is valid, false otherwise.
+    * FINISHED
+    */
     private boolean verifyMovementLeft(char[][] tiles, int row, int column, int distance, boolean isRedCar, Car vehicle) {
         if (column - distance <= 0)
             return false;
@@ -313,6 +339,11 @@ public class Level implements Resetable{
         return true;
     }
 
+    /**
+    * Method that returns if a car movement is valid to the left.
+    * @return true if the movement is valid, false otherwise.
+    * FINISHED
+    */
     private boolean verifyMovementRight(char[][] tiles, Car vehicle, int distance, int nColumns) {
         int row = vehicle.getCurrentPositionX();
         int column = vehicle.getCurrentPositionY();
@@ -335,6 +366,11 @@ public class Level implements Resetable{
         return true;
     }
 
+    /**
+    * Method that returns if a car movement is valid upwards.
+    * @return true if the movement is valid, false otherwise.
+    * FINISHED
+    */
     private boolean verifyMovementUp(char[][] tiles, int row, int column, int distance, boolean isRedCar, Car vehicle) {
         if (row - distance <= 0)
             return false;
@@ -352,6 +388,11 @@ public class Level implements Resetable{
         return true;
     }
 
+    /**
+    * Method that returns if a car movement is valid downwards.
+    * @return true if the movement is valid, false otherwise.
+    * FINISHED
+    */
     private boolean verifyMovementDown(char[][] tiles, Car vehicle, int distance, int nRows) {
         int row = vehicle.getCurrentPositionX();
         int column = vehicle.getCurrentPositionY();
@@ -374,10 +415,20 @@ public class Level implements Resetable{
         return true;
     }
 
+    /**
+    * Method that returns if the char is empty.
+    * @return true if the char is empty.
+    * FINISHED
+    */
     private boolean isEmptyTile(char tile) {
         return tile == ' ';
     }
 
+    /**
+    * Method that returns if the car is the goal and is a red car.
+    * @return true if the car is the goal and is a red car.
+    * FINISHED
+    */
     private boolean isGoalTile(char tile, boolean isRedCar) {
         return tile == '@' && isRedCar;
     }
@@ -419,7 +470,13 @@ public class Level implements Resetable{
         logger.info(levelMarker, "The current level has been reset to its initial state.");
     }
 
-    public char id(boolean isUndo){
+    /**
+    * Method that returns the id of the car that we have moved. It also eliminates movement.
+    * isUndo = true, means that we have to remove the movement of the undo list
+    * @return id of the car that has been moved.
+    * FINISHED
+    */
+    public char getUndoRedoCarId(boolean isUndo){
         Pair<Pair<Character,Integer>, Character> pair;
         if(isUndo){
             pair = undoMov.get(undoMov.size()-1);
@@ -431,6 +488,11 @@ public class Level implements Resetable{
          return pair.getRight();
     }
 
+    /**
+    * Method invert the direction.
+    * @return the inverted direction.
+    * FINISHED
+    */
     private char invert(char c){
         char char2 = ' ';
         if(c == 'D'){
@@ -447,7 +509,12 @@ public class Level implements Resetable{
         }
         return char2;
     }
-
+    
+    /**
+    * Method that undo a movement.
+    * @return true if the movement is valid, false otherwise.
+    * FINISHED
+    */
     public boolean undo(){
         if(undoMov.isEmpty()){
              logger.error(fatalMarker, "Imposible to undo the movement");
@@ -460,6 +527,11 @@ public class Level implements Resetable{
         }
     }
 
+    /**
+    * Method that redo a movement.
+    * @return true if the movement is valid, false otherwise.
+    * FINISHED
+    */
     public boolean redo(){
         if(stackRedo.isEmpty()){
              logger.error(fatalMarker, "Imposible to redo the movement");
