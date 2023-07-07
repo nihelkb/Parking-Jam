@@ -82,14 +82,15 @@ public class Game implements Resetable{
     /**
      * Loads a saved game.
      */
-    public void loadGame(String selectedPath){
+    public boolean loadGame(String selectedPath){
         if(selectedPath != null){
             this.finished = false;
             logger.info(gameMarker, "Game succesfully loaded");
             levelLoad(selectedPath);
-            return;
+            return true;
         }
         logger.info(gameMarker, "Load game canceled");
+        return false;
     }
 
     /**

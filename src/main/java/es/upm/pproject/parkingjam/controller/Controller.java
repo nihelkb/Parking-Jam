@@ -124,10 +124,12 @@ public class Controller implements IController{
 
     public void loadGame(){
         String selectedPath = gui.openFileChooser();
-        game.loadGame(selectedPath);
+        if(!game.loadGame(selectedPath)) return;
         game.setScoreAndUndoMov(selectedPath);
-        restartBackgroundMusic();
-        playNewGameSound();
+        if(!gui.isGameMuted()){
+            restartBackgroundMusic();
+            playNewGameSound();
+        }
         gui.init(); 
     }
 
