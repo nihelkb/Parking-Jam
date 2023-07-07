@@ -1,0 +1,10 @@
+Level 1
+7 7
+++++++++
++a  bbb+
++a  c d+
++** ced@
++fff ed+
++  g jj+
++hhgii +
+++++++++
