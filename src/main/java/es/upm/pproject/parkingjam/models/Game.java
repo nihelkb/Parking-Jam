@@ -44,9 +44,9 @@ public class Game implements Resetable{
     private static final Logger logger = LoggerFactory.getLogger(Game.class);
     private static final Marker gameMarker = MarkerFactory.getMarker("GAME");
     private static final Marker fatalMarker = MarkerFactory.getMarker("FATAL");
+    
       /**
     * Constructor of the class.
-    * FINISHED
     */
     public Game(){
         this.levelPathFormat = Level.LEVEL_FILE_NAME_FORMAT;
@@ -189,7 +189,6 @@ public class Game implements Resetable{
 
     /**
      * Method to reset.
-     * FINISHED
      */
     @Override
     public void reset() {
@@ -202,7 +201,6 @@ public class Game implements Resetable{
 
     /**
      * Method that print the current level.
-     * FINISHED
      */
     public void printCurrentLevel() {
         String msg = this.level.toString();
@@ -271,7 +269,7 @@ public class Game implements Resetable{
     }
 
      /**
-     * Method that set the socre and the undo movement when we load a game.
+     * Method that set the score and the undo movement when we load a game.
      */
     public void setScoreAndUndoMov(String seletedPath){
         String cadena;
