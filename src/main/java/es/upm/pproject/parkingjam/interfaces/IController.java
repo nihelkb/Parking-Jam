@@ -5,6 +5,13 @@ import java.util.List;
 
 import es.upm.pproject.parkingjam.common.Coordinates;
 
+/**
+ * Interface that defines the controller methods.
+ * 
+ * @author Nihel Kella Bouziane
+ * @version 1.0
+ * @since 05/07/2023
+ */
 public interface IController {
 
     Dimension getLevelDimension();
@@ -37,11 +44,13 @@ public interface IController {
 
     void newGame();
 
-    void loadGame();
+    void loadGame() ;
 
     void resetLevel();
 
     void saveGame();
+
+    void startBackgroundMusic();
 
     void pauseBackgroundMusic();
 

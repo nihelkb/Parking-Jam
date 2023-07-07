@@ -2,9 +2,12 @@ package es.upm.pproject.parkingjam.view;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,6 +31,11 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 import es.upm.pproject.parkingjam.common.Coordinates;
 import es.upm.pproject.parkingjam.interfaces.IController;
@@ -54,6 +62,12 @@ public class MainFrame extends JFrame  {
     private boolean isMuted = false;
 
     private transient IController controller;
+
+    private boolean firstTime = true;
+
+    private static final Logger logger = LoggerFactory.getLogger(MainFrame.class);
+    private static final Marker guiMarker = MarkerFactory.getMarker("GUI");
+    private static final Marker fatalMarker = MarkerFactory.getMarker("FATAL");
     
     public MainFrame(IController controller) {
         super("Parking Jam");
@@ -77,6 +91,7 @@ public class MainFrame extends JFrame  {
         stats.setBackground(Constants.STATS_COLOR);
         // Padding for the text
         stats.setBorder(new EmptyBorder(0, 20, 0, 20));
+        
 
         levelScore = new JLabel("levelScore", SwingConstants.RIGHT);
         gameScore = new JLabel("gameScore", SwingConstants.LEFT);
@@ -95,10 +110,17 @@ public class MainFrame extends JFrame  {
         this.setIconImage(new ImageIcon(Constants.APP_ICON).getImage());
 
         buildMenuBar();
+
+        controller.startBackgroundMusic();
     }
 
     public void init() {
         showLevel();
+        if(firstTime){ // to avoid moving the frame position 
+            Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+            this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2 - 35);
+            firstTime = false;
+        }
         this.setVisible(true);
     }
 
@@ -108,9 +130,6 @@ public class MainFrame extends JFrame  {
         levelDimension = controller.getLevelDimension();
         carSpritesMap = createSpriteMap();
         repaintLevel();
-        this.pack();
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2 - 35);
     }
 
     public void repaintLevel() {
@@ -235,7 +254,7 @@ public class MainFrame extends JFrame  {
         }
     }
 
-    private JMenu createGameMenu() {
+    private JMenu createGameMenu(){
         JMenu gameMenu = new JMenu("Game");
 
         JMenuItem newGame = new JMenuItem("New game");
@@ -339,7 +358,7 @@ public class MainFrame extends JFrame  {
         }
     }
 
-    private void handleLoadGameAction() {
+    private void handleLoadGameAction(){
         if (!isMuted) {
             controller.playDefaultSound();
         }
@@ -354,7 +373,7 @@ public class MainFrame extends JFrame  {
         controller.resumeBackgroundMusic();
     }
 
-    private void handleSaveGameAction() {
+    private void handleSaveGameAction(){
         if (!isMuted) {
             controller.playDefaultSound();
         }
@@ -393,24 +412,69 @@ public class MainFrame extends JFrame  {
         }
     }
 
-    public String openFileChooser(){
+    private JFileChooser getFileChooser(){
         // Crear un objeto JFileChooser
         JFileChooser fileChooser = new JFileChooser();
         
         // Establecer el filtro de extensión del archivo (opcional)
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de texto", "txt");
         fileChooser.setFileFilter(filter);
-        
-        // Mostrar el diálogo de selección de archivo
+
+        return fileChooser;
+    }
+
+    public String openFileChooser(){
+        JFileChooser fileChooser = getFileChooser();
         int result = fileChooser.showOpenDialog(null);
         java.io.File selectedFile = null; 
         if (result == JFileChooser.APPROVE_OPTION) {
             // Obtener el archivo seleccionado
             selectedFile = fileChooser.getSelectedFile();
+            boolean isTxt = selectedFile.getName().endsWith(".txt");
+            if(!isTxt){
+                JOptionPane.showMessageDialog(null, Constants.WRONG_FILE, "Error while loading game", JOptionPane.ERROR_MESSAGE);
+                logger.error(fatalMarker, Constants.WRONG_FILE);
+                return null;
+            }
+            return selectedFile.getAbsolutePath();
+        }
+        return null;
+    }
+
+    public String saveFileChooser(){
+        JFileChooser fileChooser = getFileChooser();
+        int result = fileChooser.showSaveDialog(null);
+        java.io.File selectedFile = null; 
+        if (result == JFileChooser.APPROVE_OPTION) {
+            // Obtener el archivo seleccionado
+            selectedFile = fileChooser.getSelectedFile();
+            String[] fileName = selectedFile.getName().split("\\.");
+            if(fileName.length == 1){ // Add .txt
+                String nameWithTxt = selectedFile.getName() + ".txt";
+                File fileWithTxt = new File(selectedFile.getParent(), nameWithTxt);
+                try {
+                    if(!fileWithTxt.createNewFile()){
+                        JOptionPane.showMessageDialog(null, Constants.WRONG_FILE, Constants.ERROR_SAVING, JOptionPane.ERROR_MESSAGE);
+                        logger.error(fatalMarker, Constants.WRONG_FILE);
+                        return null; 
+                    }else{
+                        selectedFile = fileWithTxt;
+                    }
+                } catch (IOException e) {
+                    JOptionPane.showMessageDialog(null, Constants.WRONG_FILE, Constants.ERROR_SAVING, JOptionPane.ERROR_MESSAGE);
+                    logger.error(fatalMarker, Constants.WRONG_FILE);
+                    return null;
+                }
+                
+            }else if(selectedFile.getName().endsWith(".txt")){ // correct format
+            }else{ // wrong format
+                JOptionPane.showMessageDialog(null, Constants.WRONG_FILE, Constants.ERROR_SAVING, JOptionPane.ERROR_MESSAGE);
+                logger.error(fatalMarker, Constants.WRONG_FILE);
+                return null;
+            }
             return selectedFile.getAbsolutePath();
         }
         return null;
     }
 
 }
-

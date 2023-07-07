@@ -24,13 +24,21 @@ public class MusicPlayer {
     private Map<String, Clip> tracks;
     private Long currentFrame;
 
+    private static MusicPlayer instance; // singleton
+
     /**
      * Constructs a MusicPlayer object and initializes the music tracks.
      */
-    public MusicPlayer(){
+    private MusicPlayer(){
         this.tracks = new HashMap<>();
         loadMusicTracks();
-        playBackgroundMusic();
+    }
+
+    public static MusicPlayer getInstance(){
+        if(instance == null){
+            instance = new MusicPlayer();
+        }
+        return instance;
     }
 
     /**
@@ -58,7 +66,7 @@ public class MusicPlayer {
     /**
      * Plays the background music track in a loop.
      */
-    private void playBackgroundMusic() {
+    public void playBackgroundMusic() {
         Clip bgMusic = tracks.get(Constants.BACKGROUND_MUSIC);
         bgMusic.loop(Clip.LOOP_CONTINUOUSLY);
         bgMusic.start();

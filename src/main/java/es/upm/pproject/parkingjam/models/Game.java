@@ -22,7 +22,6 @@ import es.upm.pproject.parkingjam.exceptions.LevelNotFoundException;
 import es.upm.pproject.parkingjam.exceptions.WrongLevelFormatException;
 import es.upm.pproject.parkingjam.interfaces.Resetable;
 
-
 /**
  * Class that represents a game.
  * 
@@ -172,7 +171,8 @@ public class Game implements Resetable{
             }
             } catch (IOException e) {
                 logger.error(fatalMarker, "The file cannot be created/opened");
-            } 
+            }
+            return;
         }
         logger.info(gameMarker, "Save game canceled");
     }

@@ -28,9 +28,9 @@ public class Controller implements IController{
     private MusicPlayer musicPlayer;
 
     public Controller(){
+        this.musicPlayer = MusicPlayer.getInstance();
         this.gui = new MainFrame(this);
         this.game = new Game();
-        this.musicPlayer = new MusicPlayer();
         gui.init();   
     }
 
@@ -137,7 +137,11 @@ public class Controller implements IController{
     }
 
     public void saveGame(){
-        game.saveGame(gui.openFileChooser());
+        game.saveGame(gui.saveFileChooser());
+    }
+
+    public void startBackgroundMusic(){
+        musicPlayer.playBackgroundMusic();
     }
 
     public void pauseBackgroundMusic(){

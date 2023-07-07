@@ -38,4 +38,8 @@ public class Constants {
     public static final Color STATS_COLOR = Color.WHITE;
 
     public static final Font LEVEL_FONT = new Font("Abadi MT Condensed Extra Bold", Font.BOLD, 20);
+
+    public static final String WRONG_FILE = "The selected file is not a text file (.txt).";
+    public static final String ERROR_SAVING = "Error while saving game";
+
 }
