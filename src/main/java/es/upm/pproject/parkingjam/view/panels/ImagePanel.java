@@ -11,6 +11,7 @@ import java.awt.Graphics;
 
 /**
 * Class that extends a JPanel to represent a tile on a game board.
+
 * @author Nihel Kella Bouziane
 * @version 1.0
 * @since 18/06/2023
@@ -20,6 +21,7 @@ public class ImagePanel extends JPanel{
 
     /**
      * Constructs an ImagePanel object with the specified tile image path.
+     * 
      * @param tilePath Path of the image file to be displayed as a tile.
      */
     public ImagePanel(String tilePath) {
@@ -28,6 +30,7 @@ public class ImagePanel extends JPanel{
 
     /**
      * Constructs an ImagePanel object with the specified tile image and dimensions.
+     * 
      * @param tilePath Path of the image file to be displayed as a tile
      * @param width Width of the tile
      * @param height Height of the tile

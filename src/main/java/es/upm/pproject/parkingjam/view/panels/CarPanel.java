@@ -11,6 +11,15 @@ import es.upm.pproject.parkingjam.common.Pair;
 import es.upm.pproject.parkingjam.interfaces.IController;
 import es.upm.pproject.parkingjam.view.utils.Constants;
 
+/**
+* Class that extends a ImagePanel to represent a car on a game board.
+* The CarPanel is responsible for displaying a car image and handling 
+* the mouse events for dragging and releasing the car.
+
+* @author Nihel Kella Bouziane
+* @version 1.0
+* @since 18/06/2023
+*/
 public class CarPanel extends ImagePanel implements MouseMotionListener, MouseListener {
 
     private char idCar;
@@ -26,6 +35,17 @@ public class CarPanel extends ImagePanel implements MouseMotionListener, MouseLi
     // Auxiliar variable used to only play car movement sound if the car has been moved
     private boolean carMoved = false;
     
+     /**
+     * Constructs a CarPanel object with the specified car ID, sprite path, dimensions, initial position, and controller.
+     * 
+     * @param idCar       The ID of the car.
+     * @param spritePath  The path of the car's sprite image.
+     * @param width       The width of the car panel.
+     * @param height      The height of the car panel.
+     * @param initialX    The initial X position of the car panel.
+     * @param initialY    The initial Y position of the car panel.
+     * @param controller  The controller instance for handling car movements.
+     */
     public CarPanel(char idCar, String spritePath, int width, int height, int initialX, int initialY, IController controller) {
         super(spritePath, width, height);
         this.idCar = idCar;
@@ -42,10 +62,17 @@ public class CarPanel extends ImagePanel implements MouseMotionListener, MouseLi
         this.addMouseListener(this);
     }
 
+    /**
+     * Rotates the given image by 90 degrees clockwise.
+     * 
+     * @param image The image to rotate.
+     * @return The rotated image.
+     */
     private Image rotateImage(Image image) {
         // Calculate the dimensions of the rotated image
         double radians = Math.toRadians(90);
-        int width = (int) Math.ceil(image.getWidth(null) * Math.abs(Math.cos(radians)) + image.getHeight(null) * Math.abs(Math.sin(radians)));
+        int width = (int) Math.ceil(image.getWidth(null) * Math.abs(Math.cos(radians))
+                + image.getHeight(null) * Math.abs(Math.sin(radians)));
         int height = (int) Math.ceil(image.getWidth(null) * Math.abs(Math.sin(radians)) + image.getHeight(null) * Math.abs(Math.cos(radians)));
 
         // Create an empty image with the new dimensions
@@ -69,7 +96,14 @@ public class CarPanel extends ImagePanel implements MouseMotionListener, MouseLi
         return bufferedImage;
     }
 
-    private Pair<Character,Integer> calculateMovement(Point finalPositionOnScreen) {
+    /**
+     * Calculates the movement of the car based on the final position on the screen.
+     *
+     * @param finalPositionOnScreen The final position of the car on the screen.
+     * @return A Pair containing the direction ('R', 'L', 'D', 'U') and the number
+     *         of sprites moved.
+     */
+    private Pair<Character, Integer> calculateMovement(Point finalPositionOnScreen) {
         int positionDiff = 0;
         double spritesMoved = 0;
         int spritesMovedInt = 0;
@@ -126,7 +160,7 @@ public class CarPanel extends ImagePanel implements MouseMotionListener, MouseLi
     }
 
     @Override
-    public void mousePressed(MouseEvent e) { //
+    public void mousePressed(MouseEvent e) { 
         this.initialClick = e.getPoint(); // java.awt.Point[x=26,y=59] -> CarPanel coords
         this.initialPositionOnScreen = e.getLocationOnScreen(); // java.awt.Point[x=1343,y=768] -> Screen coor
     }
@@ -154,16 +188,31 @@ public class CarPanel extends ImagePanel implements MouseMotionListener, MouseLi
         // Method not used
     }
 
-    public char getId(){
+    /**
+     * Getter of the ID of the car.
+     *
+     * @return The ID of the car.
+     */
+    public char getId() {
         return idCar;
     }
-    
-    public int getInitialX(){
+
+    /**
+     * Getter of the initial X position of the car panel.
+     *
+     * @return The initial X position of the car panel.
+     */
+    public int getInitialX() {
         return initialX;
     }
 
-    public int getInitialY(){
+    /**
+     * Getter of the initial Y position of the car panel.
+     *
+     * @return The initial Y position of the car panel.
+     */
+    public int getInitialY() {
         return initialY;
     }
-    
+
 }
