@@ -2,7 +2,6 @@ package es.upm.pproject.parkingjam.view;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -66,7 +65,6 @@ public class MainFrame extends JFrame  {
     private boolean firstTime = true;
 
     private static final Logger logger = LoggerFactory.getLogger(MainFrame.class);
-    private static final Marker guiMarker = MarkerFactory.getMarker("GUI");
     private static final Marker fatalMarker = MarkerFactory.getMarker("FATAL");
     
     public MainFrame(IController controller) {
