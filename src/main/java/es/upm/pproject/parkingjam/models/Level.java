@@ -227,7 +227,7 @@ public class Level implements Resetable{
     public boolean moveCar(Car vehicle, char direction, int distance, boolean undo, boolean redo) {
         char dir2 = ' ';
         if(redo)
-            direction = change(direction);
+            direction = invert(direction);
   
         if (distance == 0) {
             return false;
@@ -239,8 +239,8 @@ public class Level implements Resetable{
             if (vehicle.isOnGoal()) {
                 logger.trace(levelMarker, "Red car has reached the exit");
             }
-            if (!undo || redo) {
-                dir2 = change(direction);
+            if (!undo || redo) { // que es esto
+                dir2 = invert(direction);
             }
             if(!undo){
                 Pair <Character,Integer> pair = new Pair<>(dir2, distance);
@@ -248,7 +248,9 @@ public class Level implements Resetable{
                 undoMov.add(pair2);
             }
             Coordinates newPos = board.updateParking(vehicle, direction, distance);
-            score++;
+            if(!undo && !redo){ 
+                score++;
+            }
             // Which car and how many positions
             logMsg = String.format("Car %c has been moved into tile [%d,%d]",
                     vehicle.getId(), newPos.getX(), newPos.getY());
@@ -429,7 +431,7 @@ public class Level implements Resetable{
          return pair.getRight();
     }
 
-    public char change(char c){
+    private char invert(char c){
         char char2 = ' ';
         if(c == 'D'){
              char2 = 'U';
@@ -444,21 +446,18 @@ public class Level implements Resetable{
             char2 = 'R';
         }
         return char2;
-
     }
 
     public boolean undo(){
         if(undoMov.isEmpty()){
              logger.error(fatalMarker, "Imposible to undo the movement");
              return false;
-        }
-        else{
-            Pair<Pair<Character,Integer>, Character> pair = undoMov.get(undoMov.size()-1);
-            moveCar(vehicles.get(pair.getRight()), pair.getLeft().getLeft(),pair.getLeft().getRight(),true, false);
+        } else{
+            Pair<Pair<Character,Integer>, Character> pair = undoMov.get(undoMov.size() - 1);
+            moveCar(vehicles.get(pair.getRight()), pair.getLeft().getLeft(), pair.getLeft().getRight(), true, false);
             stackRedo.push(pair); 
             return true;
         }
-       
     }
 
     public boolean redo(){
