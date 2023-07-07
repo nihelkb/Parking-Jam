@@ -8,7 +8,7 @@ sonarqube-check:
     paths:
       - .sonar/cache
   script: 
-    - mvn verify sonar:sonar -Dsonar.projectKey=c200320
+    - mvn clean verify sonar:sonar -Dsonar.projectKey=parking-jam-2 -Dsonar.host.url=https://costa.ls.fi.upm.es/sonar   -Dsonar.login=sqp_d62099f5e34184d989995b2a4e4221e214e44a13
   allow_failure: true
   only:
     - master # or the name of your main branch

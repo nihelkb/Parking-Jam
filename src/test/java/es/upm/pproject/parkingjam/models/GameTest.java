@@ -39,7 +39,7 @@ class GameTest {
     void test2(){
         g.levelPathFormat = "src/main/resources/levels4GameTest/level_%d.txt";
         //g.path = "src/main/resources/levels4GameTest";
-        g.newGame(false);
+        g.newGame();
         assertEquals("Level 2", g.getLevelName());
     }
 
