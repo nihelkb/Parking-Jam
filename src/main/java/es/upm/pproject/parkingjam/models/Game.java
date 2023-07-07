@@ -150,11 +150,13 @@ public class Game implements Resetable{
                     outB.write(level.getUndoMov().get(i).getRight());
                     outB.write("\n");
                 }
+                logger.info(gameMarker, "Game succesfully saved");
             }
             } catch (IOException e) {
                 logger.error(fatalMarker, "The file cannot be created/opened");
             } 
         }
+        logger.info(gameMarker, "Save game canceled");
     }
 
     /**

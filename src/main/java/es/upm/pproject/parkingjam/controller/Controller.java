@@ -3,7 +3,6 @@ package es.upm.pproject.parkingjam.controller;
 import java.awt.Dimension;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import es.upm.pproject.parkingjam.common.Coordinates;
 import es.upm.pproject.parkingjam.interfaces.IController;
@@ -75,8 +74,7 @@ public class Controller implements IController{
     }
 
     public List<Character> getCarIds() {
-        Map<Character,Car> cars = game.getLevel().getVehiclesMap();
-        return new LinkedList<>(cars.keySet());
+        return new LinkedList<>(game.getLevel().getVehiclesMap().keySet());
     }
 
     public boolean isCarHorizontal(char idCar) {
