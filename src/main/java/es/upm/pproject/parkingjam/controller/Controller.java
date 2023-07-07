@@ -118,13 +118,14 @@ public class Controller implements IController{
     }
 
     public void newGame(){
-        game.newGame(false);
+        game.newGame();
         gui.init();
     }
 
     public void loadGame(){
-        game.newGame(true);
-        game.setScoreAndUndoMov();
+        String selectedPath = gui.openFileChooser();
+        game.loadGame(selectedPath);
+        game.setScoreAndUndoMov(selectedPath);
         restartBackgroundMusic();
         playNewGameSound();
         gui.init(); 
@@ -136,7 +137,7 @@ public class Controller implements IController{
     }
 
     public void saveGame(){
-        game.saveGame();
+        game.saveGame(gui.openFileChooser());
     }
 
     public void pauseBackgroundMusic(){

@@ -14,6 +14,7 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -26,6 +27,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import es.upm.pproject.parkingjam.common.Coordinates;
 import es.upm.pproject.parkingjam.interfaces.IController;
@@ -389,6 +391,25 @@ public class MainFrame extends JFrame  {
         public JMenu getRedoMenu() {
             return redo;
         }
+    }
+
+    public String openFileChooser(){
+        // Crear un objeto JFileChooser
+        JFileChooser fileChooser = new JFileChooser();
+        
+        // Establecer el filtro de extensión del archivo (opcional)
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de texto", "txt");
+        fileChooser.setFileFilter(filter);
+        
+        // Mostrar el diálogo de selección de archivo
+        int result = fileChooser.showOpenDialog(null);
+        java.io.File selectedFile = null; 
+        if (result == JFileChooser.APPROVE_OPTION) {
+            // Obtener el archivo seleccionado
+            selectedFile = fileChooser.getSelectedFile();
+            return selectedFile.getAbsolutePath();
+        }
+        return null;
     }
 
 }

@@ -12,9 +12,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
@@ -44,7 +41,6 @@ public class Game implements Resetable{
     protected int score;
 
     protected String levelPathFormat;
-    protected String path;
 
     private static final Logger logger = LoggerFactory.getLogger(Game.class);
     private static final Marker gameMarker = MarkerFactory.getMarker("GAME");
@@ -52,7 +48,7 @@ public class Game implements Resetable{
 
     public Game(){
         this.levelPathFormat = Level.LEVEL_FILE_NAME_FORMAT;
-        newGame(false);
+        newGame();
     }
 
     /**
@@ -67,7 +63,7 @@ public class Game implements Resetable{
         if (this.level.checkStatus()) {
             this.levelNumber++;
             this.score += level.getScore();
-            levelLoad(false);
+            levelLoad(String.format(levelPathFormat, levelNumber));
         }
         return true;
     }
@@ -75,26 +71,36 @@ public class Game implements Resetable{
     /**
      * Starts a new game from the initial level.
      */
-    public final void newGame(boolean levelLoad){
+    public final void newGame(){
         this.levelNumber = 1;
-        this.finished = false;
         this.score = 0;
+        this.finished = false;
         logger.info(gameMarker, "A new game has started");
-        levelLoad(levelLoad);
+        levelLoad(String.format(levelPathFormat, levelNumber));
+    }
+
+    /**
+     * Loads a saved game.
+     */
+    public void loadGame(String selectedPath){
+        if(selectedPath != null){
+            this.finished = false;
+            logger.info(gameMarker, "Game succesfully loaded");
+            levelLoad(selectedPath);
+            return;
+        }
+        logger.info(gameMarker, "Load game canceled");
     }
 
     /**
      * Private method used to load the game's level.
      */
-    private void levelLoad(boolean levelLoad){
+    private void levelLoad(String levelPath){
         int lastLevelScore = 0;
         if(level != null)
             lastLevelScore = level.getScore();
         try{
-            if(levelLoad)
-                level = new Level(getPath());
-            else
-                level = new Level(String.format(levelPathFormat, levelNumber));
+            level = new Level(levelPath);   
         }catch (LevelNotFoundException e) {
             logger.info(gameMarker, "Game completed");
             finished = true;
@@ -102,7 +108,7 @@ public class Game implements Resetable{
         } catch (WrongLevelFormatException e) {
             logger.error(fatalMarker, String.format("Level %d could not be loaded", levelNumber), e);
             levelNumber++;
-            levelLoad(false);
+            levelLoad(String.format(levelPathFormat, levelNumber));
         }
     }
 
@@ -114,23 +120,11 @@ public class Game implements Resetable{
         return level.redo();
     }
 
-    public void saveGame() {
-        // Crear un objeto JFileChooser
-        JFileChooser fileChooser = new JFileChooser();
-        
-        // Establecer el filtro de extensión del archivo (opcional)
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de texto", "txt");
-        fileChooser.setFileFilter(filter);
-        
-        // Mostrar el diálogo de selección de archivo
-        int result = fileChooser.showOpenDialog(null);
-        java.io.File selectedFile = null; 
-        if (result == JFileChooser.APPROVE_OPTION) {
-            // Obtener el archivo seleccionado
-            selectedFile = fileChooser.getSelectedFile();
+    public void saveGame(String selectedPath) {
+        if (selectedPath != null) {
             FileWriter writeB;
 	        BufferedWriter bufferB;
-            File fileoutput = new File(selectedFile.getAbsolutePath());
+            File fileoutput = new File(selectedPath);
             try {
                 writeB = new FileWriter(fileoutput);
                 bufferB = new BufferedWriter(writeB);
@@ -158,30 +152,8 @@ public class Game implements Resetable{
             }
             } catch (IOException e) {
                 logger.error(fatalMarker, "The file cannot be created/opened");
-            }
-		   
+            } 
         }
-       
-    }
-
-    public String getPath(){
-        // Crear un objeto JFileChooser
-        JFileChooser fileChooser = new JFileChooser();
-        
-        // Establecer el filtro de extensión del archivo (opcional)
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de texto", "txt");
-        fileChooser.setFileFilter(filter);
-        
-        // Mostrar el diálogo de selección de archivo
-        int result = fileChooser.showOpenDialog(null);
-        java.io.File selectedFile = null; 
-        if (result == JFileChooser.APPROVE_OPTION) {
-            // Obtener el archivo seleccionado
-            selectedFile = fileChooser.getSelectedFile();
-            path = selectedFile.getAbsolutePath();
-            return path;
-        }
-        return null;
     }
 
     /**
@@ -268,7 +240,7 @@ public class Game implements Resetable{
     }
 
 
-    public void setScoreAndUndoMov(){
+    public void setScoreAndUndoMov(String seletedPath){
         String cadena;
         List <Pair<Pair<Character,Integer>,Character>> list = new ArrayList<>();
         Pair <Character, Integer> pair1;
@@ -276,15 +248,15 @@ public class Game implements Resetable{
         Integer distance;
         char direction = 'a'; // ?
         char id;
-        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-            cadena = br.readLine();
+        try (BufferedReader br = new BufferedReader(new FileReader(seletedPath))) {
+            this.levelNumber = Integer.parseInt(br.readLine().split(" ")[1]); 
             cadena = br.readLine();
             String[] nums = cadena.split(" ");
             int valor = Integer.parseInt(nums[0]);
             for(int i = 0 ; i < valor ; i++){
                 cadena = br.readLine();
             }
-            score = Integer.parseInt(br.readLine());
+            this.score = Integer.parseInt(br.readLine());
             level.setScore(Integer.parseInt(br.readLine()));
 
             while ((cadena = br.readLine())!=null) {
