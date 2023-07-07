@@ -122,8 +122,12 @@ public class Level implements Resetable{
             }
             int realRows = i;
             int realColumns = j;
+            // Level must have only one exit
+            if(exit != 1){
+                throw new WrongLevelFormatException("The level must have one exit");
+            }
             if(walls != totalWalls &&(realRows == nRows && realColumns == nColumns)){
-                throw new WrongLevelFormatException("A level must be surrounded by walls: This level"+
+                throw new WrongLevelFormatException("A level must be surrounded by walls: This level "+
                 "must have " + totalWalls+" walls");
             }
             if(stop){
@@ -132,10 +136,6 @@ public class Level implements Resetable{
             // Level must have only one red car
             if(redSize != 2){
                 throw new WrongLevelFormatException("The level must have one red car");
-            }
-            // Level must have only one exit
-            if(exit != 1){
-                throw new WrongLevelFormatException("The level must have one exit");
             }
         }catch (FileNotFoundException e) {
             LevelNotFoundException exc = new LevelNotFoundException(String.format("The level %s does not exist", levelPath));
