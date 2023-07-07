@@ -123,15 +123,15 @@ public class Level implements Resetable{
             int realRows = i;
             int realColumns = j;
             // Level must have only one exit
+            if(stop){
+                throw new WrongLevelFormatException("The level must have "+ nColumns +" columns each line");
+            }
             if(exit != 1){
                 throw new WrongLevelFormatException("The level must have one exit");
             }
             if(walls != totalWalls &&(realRows == nRows && realColumns == nColumns)){
                 throw new WrongLevelFormatException("A level must be surrounded by walls: This level "+
                 "must have " + totalWalls+" walls");
-            }
-            if(stop){
-                throw new WrongLevelFormatException("The level must have "+ nColumns +" columns each line");
             }
             // Level must have only one red car
             if(redSize != 2){
