@@ -334,4 +334,23 @@ class LevelTest {
         assertFalse(success);
     } */
 
+    @Test
+    void test13()throws LevelNotFoundException, WrongLevelFormatException{
+        level = new Level(usableLevels + "/level_1.txt");
+
+        char[][] parking= new char[level.getBoard().getNRows()][level.getBoard().getNRows()];
+        for(int i = 0; i< level.getBoard().getNRows(); i++){
+            System.arraycopy(level.getBoard().getTiles()[i], 0, parking[i], 0, 8);
+        }
+
+        level.moveCar(level.getVehiclesMap().get('c'), 'D', 1, false, false);
+        level.moveCar(level.getVehiclesMap().get('b'), 'R', 1, false, false);
+        level.moveCar(level.getVehiclesMap().get('a'), 'R', 1, false, false);
+        level.moveCar(level.getVehiclesMap().get('d'), 'U', 2, false, false);
+        level.moveCar(level.getVehiclesMap().get('e'), 'U', 3, false, false);
+        
+        level.reset();
+        assertArrayEquals(parking, level.getBoard().getTiles());
+    }
+
 }
