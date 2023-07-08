@@ -1,0 +1,19 @@
+Level 1
+8 8
+++++++++
++daabbb+
++de * c+
++de * c+
++fff   +
++      +
++ggg   +
+++++@+++
+0
+7
+U 1 c
+L 1 b
+L 1 a
+D 2 d
+D 3 e
+R 2 f
+R 3 g
