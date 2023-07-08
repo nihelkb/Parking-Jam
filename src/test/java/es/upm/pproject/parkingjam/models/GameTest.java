@@ -2,6 +2,7 @@ package es.upm.pproject.parkingjam.models;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -147,6 +148,28 @@ class GameTest {
 
         assertEquals(7,  g.getLevelScore());
         assertEquals(0,  g.getScore());
+    }
+
+    @Test
+    void test8(){
+        g.loadGame(null);
+        level = g.getLevel();
+        g.moveCar(level.getVehiclesMap().get('c'), 'D', 1);
+        g.moveCar(level.getVehiclesMap().get('b'), 'R', 1);
+        g.moveCar(level.getVehiclesMap().get('a'), 'R', 1);
+        g.moveCar(level.getVehiclesMap().get('d'), 'U', 2);
+        g.moveCar(level.getVehiclesMap().get('e'), 'U', 3);
+        g.moveCar(level.getVehiclesMap().get('f'), 'L', 2);
+        g.moveCar(level.getVehiclesMap().get('g'), 'L', 3);
+        assertFalse(g.isFinished());
+
+    }
+
+    @Test
+    void test9(){
+        g.setLevelNumber(2);
+        g.newGame();;
+        assertEquals(1, g.getLevelNumber());
     }
 
 }
