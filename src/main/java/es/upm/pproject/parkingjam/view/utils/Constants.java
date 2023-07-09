@@ -40,6 +40,7 @@ public class Constants {
     public static final Font LEVEL_FONT = new Font("Abadi MT Condensed Extra Bold", Font.BOLD, 20);
 
     public static final String WRONG_FILE = "The selected file is not a text file (.txt).";
+    public static final String GAME_FINISHED_SAVE = "Save game not allowed: the game has been completed.";
     public static final String ERROR_SAVING = "Error while saving game";
 
 }

@@ -191,6 +191,10 @@ public class Controller implements IController{
      * Method used to save a game in an specific place of the computer
      */
     public void saveGame(){
+        if(game.isFinished()){
+            gui.cannotSaveGame();
+            return;
+        }
         game.saveGame(gui.saveFileChooser());
     }
 

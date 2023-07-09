@@ -128,6 +128,7 @@ public class MainFrame extends JFrame  {
         levelDimension = controller.getLevelDimension();
         carSpritesMap = createSpriteMap();
         repaintLevel();
+        stats.validate();
     }
 
     public void repaintLevel() {
@@ -473,6 +474,11 @@ public class MainFrame extends JFrame  {
             return selectedFile.getAbsolutePath();
         }
         return null;
+    }
+
+    public void cannotSaveGame(){
+        JOptionPane.showMessageDialog(null, "It is not possible to save a game that has been completed.", Constants.ERROR_SAVING, JOptionPane.ERROR_MESSAGE);
+        logger.error(fatalMarker, Constants.GAME_FINISHED_SAVE);
     }
 
 }

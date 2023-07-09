@@ -117,7 +117,8 @@ public class Game implements Resetable{
     }
 
     /**
-     * Method that undo a movement.
+     * Method that undos a movement.
+     * @return true if the undo has been done, false otherwise
      */
      public boolean undo(){
          return level.undo();
@@ -125,6 +126,7 @@ public class Game implements Resetable{
 
     /**
      * Method that redo a movement.
+     * @return true if the redo has been done, false otherwise
      */
     public boolean redo() {
         return level.redo();
@@ -179,7 +181,6 @@ public class Game implements Resetable{
 
     /**
      * Method used to check if the game is finished.
-     * 
      * @return true if the game is finished, false otherwise
      */
     public boolean isFinished() {
@@ -269,7 +270,7 @@ public class Game implements Resetable{
     }
 
      /**
-     * Method that set the score and the undo movement when we load a game.
+     * Method that sets the score and the undo movement when a game is loaded.
      */
     public void setScoreAndUndoMov(String seletedPath){
         String cadena;
@@ -277,7 +278,7 @@ public class Game implements Resetable{
         Pair <Character, Integer> pair1;
         Pair <Pair<Character,Integer>,Character> pair2;
         Integer distance;
-        char direction = 'a'; // ?
+        char direction;
         char id;
         try (BufferedReader br = new BufferedReader(new FileReader(seletedPath))) {
             this.levelNumber = Integer.parseInt(br.readLine().split(" ")[1]); 
@@ -295,7 +296,7 @@ public class Game implements Resetable{
                 direction = elements[0].charAt(0);
                 distance = Integer.parseInt(elements[1]);
                 id = elements[2].charAt(0);
-                pair1 = new Pair<>(direction,distance);
+                pair1 = new Pair<>(direction, distance);
                 pair2 = new Pair<>(pair1, id);
                 list.add(pair2);
             }
