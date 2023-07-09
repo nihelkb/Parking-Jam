@@ -11,13 +11,18 @@ public class Coordinates{
     private int x;
     private int y;
     
+    /**
+    * Constructor of the class.
+    * @param x x coordinate
+    * @param y y coordinate
+    */
     public Coordinates(int x, int y){
         this.x = x;
         this.y = y;
     }
 
     /**
-     * returns the x coordinate
+     * Getter of the x coordinate
      * @return the x coordinate
      */
     public int getX() {
@@ -25,7 +30,7 @@ public class Coordinates{
     }
 
     /**
-     * returns the y coordinate
+     * Getter of the y coordinate
      * @return the y coordinate
      */
     public int getY() {

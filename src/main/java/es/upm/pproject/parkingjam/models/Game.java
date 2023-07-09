@@ -45,9 +45,9 @@ public class Game implements Resetable{
     private static final Marker gameMarker = MarkerFactory.getMarker("GAME");
     private static final Marker fatalMarker = MarkerFactory.getMarker("FATAL");
     
-      /**
-    * Constructor of the class.
-    */
+    /**
+     * Constructor of the class.
+     */
     public Game(){
         this.levelPathFormat = Level.LEVEL_FILE_NAME_FORMAT;
         newGame();
@@ -83,7 +83,8 @@ public class Game implements Resetable{
 
     /**
      * Loads a saved game.
-     * @return If the level is load succesfully
+     * @param selectedPath The path of the selected file from which data will be retrieved.
+     * @return true if the level has been loaded, false otherwise
      */
     public boolean loadGame(String selectedPath){
         if(selectedPath != null){
@@ -98,6 +99,7 @@ public class Game implements Resetable{
 
     /**
      * Private method used to load the game's level.
+     * @param levelPath The path of the next level to load.
      */
     private void levelLoad(String levelPath){
         int lastLevelScore = 0;
@@ -134,6 +136,7 @@ public class Game implements Resetable{
 
      /**
      * Method that save the game with the current board, scores and movements.
+     * @param selectedPath The path of the selected file where data will be stored.
      */
     public void saveGame(String selectedPath) {
         if (selectedPath != null) {
@@ -187,9 +190,8 @@ public class Game implements Resetable{
         return this.finished;
     }
 
-
     /**
-     * Method to reset.
+     * Method to reset the level.
      */
     @Override
     public void reset() {
@@ -201,7 +203,7 @@ public class Game implements Resetable{
     }
 
     /**
-     * Method that print the current level.
+     * Method that prints the current level.
      */
     public void printCurrentLevel() {
         String msg = this.level.toString();
@@ -271,6 +273,7 @@ public class Game implements Resetable{
 
      /**
      * Method that sets the score and the undo movement when a game is loaded.
+     * @param selectedPath The path of the selected file from which data will be retrieved.
      */
     public void setScoreAndUndoMov(String seletedPath){
         String cadena;
@@ -309,10 +312,9 @@ public class Game implements Resetable{
     }
 
     /**
-    * Method that returns the id of the car that we have moved. It also eliminates movement.
-    * isUndo = true, means that we have to remove the movement of the undo list
+    * Method that returns the id of the car that we have moved.
+    * @param isUndo if true, the movement will be removed from the undo list
     * @return id of the car that has been moved.
-    * FINISHED
     */
     public char getUndoRedoCarId(boolean isUndo){
         return level.getUndoRedoCarId(isUndo);

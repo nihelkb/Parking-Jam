@@ -7,6 +7,11 @@ package es.upm.pproject.parkingjam.exceptions;
  * @version 1.0
  */
 public class LevelNotFoundException extends Exception {
+
+    /**
+     * Constructs a new LevelNotFoundException with the specified detail message.
+     * @param message the detail message.
+    */
     public LevelNotFoundException(String message) {
         super(message);
     }

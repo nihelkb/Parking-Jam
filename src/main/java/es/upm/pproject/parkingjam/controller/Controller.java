@@ -11,7 +11,6 @@ import es.upm.pproject.parkingjam.models.Game;
 import es.upm.pproject.parkingjam.view.MainFrame;
 import es.upm.pproject.parkingjam.view.utils.MusicPlayer;
 
-
 /**
  * Class responsible for the application's controller.
  * 
@@ -45,16 +44,20 @@ public class Controller implements IController{
         return game.getDimension();
     }
 
+    /**
+     * Method to obtain the board tiles of the level.
+     * @return Board tiles
+     */
     public char[][] getLevelBoard() {
         return game.getLevel().getBoard().getTiles();
     }
 
     /**
     * Checks that the car selected can be moved in the direction selected the distance selected
-    * @param id of the car
-    * @param direction the car will be moved
+    * @param idCar of the car
+    * @param dir the car will be moved
     * @param distance the car will be moved
-    * @return If the car can move or not
+    * @return true if the car can move, false otherwise
     */
     public boolean canMove(char idCar, char dir, int distance) {
         Car car = game.getLevel().getVehiclesMap().get(idCar);
@@ -62,9 +65,9 @@ public class Controller implements IController{
     }
 
     /**
-    * Moves the car selected
-    * @param id of the car
-    * @param direction the car will be moved
+    * Moves the selected car
+    * @param idCar of the car
+    * @param dir the car will be moved
     * @param distance the car will be moved
     */
     public void move(char idCar, char dir, int distance) {
@@ -86,30 +89,34 @@ public class Controller implements IController{
     }
 
     /**
-     * Gets the position of a car
-     * @param id of the car whose position we want to know
-     * @return position of the car
+     * Method to obtain the current position of a car
+     * @param idCar The car id whose position we want to know
+     * @return The coordinates of the current position of the car
      */
     public Coordinates getCarPosition(char idCar) {
         return game.getLevel().getVehiclesMap().get(idCar).getCurrentPos();
     }
 
+    /**
+     * Method to obtain a list of the stored car ids
+     * @return The list of the car ids
+     */
     public List<Character> getCarIds() {
         return new LinkedList<>(game.getLevel().getVehiclesMap().keySet());
     }
 
     /**
      * Checks if the car is horizontal
-     * @param id of the car who is going to be checked
-     * @return If the car is horizontal or not
+     * @param idCar The car id whose orientation is going to be checked
+     * @return true if the car is horizontal, false otherwise
      */
     public boolean isCarHorizontal(char idCar) {
         return game.getLevel().getVehiclesMap().get(idCar).getOrientation() == 'H';
     }
 
     /**
-     * Getter of the length of the car
-     * @param id of the car 
+     * Method to obtain the length of the car
+     * @param idCar The car id whose length we want to know 
      * @return length of the car
      */
     public int getCarLength(char idCar) {
@@ -118,21 +125,33 @@ public class Controller implements IController{
 
      /**
      * Checks if the car selected is the red car
-     * @param id of the car 
-     * @return If the car is the red car
+     * @param idCar The car id we want to check
+     * @return true if the car is the red car, false otherwise
      */
     public boolean isRedCar(char idCar) {
         return game.getLevel().getVehiclesMap().get(idCar).isRedCar();
     }
 
+    /**
+     * Method to obtain the name of the current level in the game
+     * @return The level name
+     */
     public String getLevelName(){
         return game.getLevelName();
     }
 
+    /**
+     * Method to obtain the score of the game
+     * @return The total score of the game
+     */
     public int getGameScore(){
         return game.getTotalScore();
     }
 
+    /**
+     * Method to obtain the score of the current level
+     * @return The current level score
+     */
     public int getLevelScore(){
         return game.getLevelScore();
     }

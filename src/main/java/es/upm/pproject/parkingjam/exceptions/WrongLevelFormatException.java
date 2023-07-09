@@ -7,6 +7,11 @@ package es.upm.pproject.parkingjam.exceptions;
  * @version 1.0
  */
 public class WrongLevelFormatException extends Exception {
+
+    /**
+     * Constructs a new WrongLevelFormatException with the specified detail message.
+     * @param message the detail message.
+    */
     public WrongLevelFormatException(String message) {
         super(message);
     }

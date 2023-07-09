@@ -13,7 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
@@ -33,7 +32,6 @@ import es.upm.pproject.parkingjam.exceptions.WrongLevelFormatException;
 * @version 2.0
 * @since 15/06/2023
 */
-
 public class Level implements Resetable{    
     private Car redCar;
     private Parking board;
@@ -54,7 +52,6 @@ public class Level implements Resetable{
     /**
     * Constructor of the class.
     * @param levelPath File path of the level file.
-    * FINISHED
     */
     public Level(String levelPath) throws LevelNotFoundException, WrongLevelFormatException{
         this.vehicles = new HashMap<>();
@@ -72,11 +69,11 @@ public class Level implements Resetable{
         String logMsg = String.format("The new level (%s) has been successfully loaded.", name);
         logger.info(levelMarker, logMsg);
     }
+
     /**
     * Method that fills the board by reading the level file.
     * @return The board created with the tiles content.
-    * FINISHED
-     * @throws LevelNotFoundException,WrongLevelFormatException
+    * @throws LevelNotFoundException,WrongLevelFormatException
     */
     private Parking fillBoard(String levelPath) throws LevelNotFoundException, WrongLevelFormatException {
         char[][] boardTiles = null;
@@ -151,8 +148,7 @@ public class Level implements Resetable{
 
     /**
     * Method that checks the number of rows and columns of the file.
-    * FINISHED
-     * @throws IOException,WrongLevelFormatException
+    * @throws IOException,WrongLevelFormatException
     */
     private void checkDimensions(String levelPath) throws IOException, WrongLevelFormatException{
          try ( 
@@ -176,8 +172,7 @@ public class Level implements Resetable{
    
     /**
     * This method checks that all the cars are 1 × n or n × 1 where n ≥ 2 .
-    * FINISHED
-     * @throws IOException,WrongLevelFormatException
+    * @throws IOException,WrongLevelFormatException
     */
     private void loadCars() throws WrongLevelFormatException{
         char[][] b = board.getTiles();
@@ -191,10 +186,10 @@ public class Level implements Resetable{
             }
         }
     }
+
     /**
     * This method checks that all the cars are 1 × n or n × 1 where n ≥ 2 .
-    * FINISHED
-     * @throws IOException,WrongLevelFormatException
+    * @throws IOException,WrongLevelFormatException
     */
     private boolean loadCar(char [][] b, char letter, int x, int y){
         int tam = 1;
@@ -220,7 +215,6 @@ public class Level implements Resetable{
     /**
     * This method create a car with its parameters.
     * @return true if the legth is bigger than two.
-    * FINISHED
     */
     private boolean createCar(int tam, int x, int y, char letter, boolean horizontal) {
         if(tam >= 2) {
@@ -241,7 +235,6 @@ public class Level implements Resetable{
     * Method that returns if a car has been moved succesfully.
     * undo = true, means that the movement is a undo move and the same with redo(redo movement)
     * @return true if the car has been moved, false otherwise. 
-    * FINISHED
     */
     public boolean moveCar(Car vehicle, char direction, int distance, boolean undo, boolean redo) {
         char dir2;
@@ -285,7 +278,6 @@ public class Level implements Resetable{
     /**
     * Method that returns if a car movement is valid.
     * @return true if the movement is valid, false otherwise.
-    * FINISHED
     */
     public boolean verifyMovement(Car vehicle, char direction, int distance) {
         char[][] tiles = board.getTiles();
@@ -320,7 +312,6 @@ public class Level implements Resetable{
     /**
     * Method that returns if a car movement is valid to the left.
     * @return true if the movement is valid, false otherwise.
-    * FINISHED
     */
     private boolean verifyMovementLeft(char[][] tiles, int row, int column, int distance, boolean isRedCar, Car vehicle) {
         if (column - distance <= 0)
@@ -342,7 +333,6 @@ public class Level implements Resetable{
     /**
     * Method that returns if a car movement is valid to the left.
     * @return true if the movement is valid, false otherwise.
-    * FINISHED
     */
     private boolean verifyMovementRight(char[][] tiles, Car vehicle, int distance, int nColumns) {
         int row = vehicle.getCurrentPositionX();
@@ -369,7 +359,6 @@ public class Level implements Resetable{
     /**
     * Method that returns if a car movement is valid upwards.
     * @return true if the movement is valid, false otherwise.
-    * FINISHED
     */
     private boolean verifyMovementUp(char[][] tiles, int row, int column, int distance, boolean isRedCar, Car vehicle) {
         if (row - distance <= 0)
@@ -391,7 +380,6 @@ public class Level implements Resetable{
     /**
     * Method that returns if a car movement is valid downwards.
     * @return true if the movement is valid, false otherwise.
-    * FINISHED
     */
     private boolean verifyMovementDown(char[][] tiles, Car vehicle, int distance, int nRows) {
         int row = vehicle.getCurrentPositionX();
@@ -418,7 +406,6 @@ public class Level implements Resetable{
     /**
     * Method that returns if the char is empty.
     * @return true if the char is empty.
-    * FINISHED
     */
     private boolean isEmptyTile(char tile) {
         return tile == ' ';
@@ -427,7 +414,6 @@ public class Level implements Resetable{
     /**
     * Method that returns if the car is the goal and is a red car.
     * @return true if the car is the goal and is a red car.
-    * FINISHED
     */
     private boolean isGoalTile(char tile, boolean isRedCar) {
         return tile == '@' && isRedCar;
@@ -436,7 +422,6 @@ public class Level implements Resetable{
     /**
     * Method that returns the red car coordinates.
     * @return Current coordinates of the red car position.
-    * FINISHED
     */
     public Coordinates getRedCarCoords(){
         return redCar.getCurrentPos();
@@ -445,7 +430,6 @@ public class Level implements Resetable{
     /**
     * Method that checks if a level is completed.
     * @return true if the level has been completed, false otherwise.
-    * FINISHED
     */
     public boolean checkStatus() {
         return redCar.isOnGoal();
@@ -453,7 +437,6 @@ public class Level implements Resetable{
 
     /**
      * Method to reset a level.
-     * FINISHED
      */
     @Override
     public void reset(){
@@ -474,7 +457,6 @@ public class Level implements Resetable{
     * Method that returns the id of the car that we have moved. It also eliminates movement.
     * isUndo = true, means that we have to remove the movement of the undo list
     * @return id of the car that has been moved.
-    * FINISHED
     */
     public char getUndoRedoCarId(boolean isUndo){
         Pair<Pair<Character,Integer>, Character> pair;
@@ -489,9 +471,8 @@ public class Level implements Resetable{
     }
 
     /**
-    * Method invert the direction.
+    * Method to invert the direction.
     * @return the inverted direction.
-    * FINISHED
     */
     private char invert(char c){
         char char2 = ' ';
@@ -513,7 +494,6 @@ public class Level implements Resetable{
     /**
     * Method that undo a movement.
     * @return true if the movement is valid, false otherwise.
-    * FINISHED
     */
     public boolean undo(){
         if(undoMov.isEmpty()){
@@ -530,7 +510,6 @@ public class Level implements Resetable{
     /**
     * Method that redo a movement.
     * @return true if the movement is valid, false otherwise.
-    * FINISHED
     */
     public boolean redo(){
         if(stackRedo.isEmpty()){
@@ -542,14 +521,8 @@ public class Level implements Resetable{
             return true;
         }
     }
-
-
-    @Override
-    public String toString() {
-        return "\n" + board.toString();
-    }
     
-    // Getters and setters for xml binding
+    // Getters and setters
     
     public Car getRedCar() {
         return redCar;
@@ -597,6 +570,11 @@ public class Level implements Resetable{
 
     public void setScore(int score){
         this.score = score;
+    }
+
+    @Override
+    public String toString() {
+        return "\n" + board.toString();
     }
 
 }
