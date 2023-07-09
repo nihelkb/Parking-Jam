@@ -79,6 +79,7 @@ public class Controller implements IController{
             if(!gui.isGameMuted())
                 playLevelSound();
             gui.showLevel();
+            gui.repaintStats();
         }
         gui.repaintStats();
         if(game.isFinished()){
