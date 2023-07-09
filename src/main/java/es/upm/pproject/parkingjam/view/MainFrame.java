@@ -3,6 +3,7 @@ package es.upm.pproject.parkingjam.view;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -282,17 +283,6 @@ public class MainFrame extends JFrame  {
         return gameMenu;
     }
 
-    private UndoMenuOptions createUndoMenu() {
-        JMenu undo = new JMenu("Undo");
-        JMenu redo = new JMenu("Redo");
-
-        MouseListener mouseListener = createUndoRedoMouseListener(undo, redo);
-        undo.addMouseListener(mouseListener);
-        redo.addMouseListener(mouseListener);
-
-        return new UndoMenuOptions(undo, redo);
-    }
-
     private JMenu createSoundMenu() {
         JMenu soundMenu = new JMenu("Sound");
         JCheckBoxMenuItem mute = new JCheckBoxMenuItem("Mute", false);
@@ -304,8 +294,19 @@ public class MainFrame extends JFrame  {
         return soundMenu;
     }
 
+    private UndoMenuOptions createUndoMenu() {
+        JMenu undo = new JMenu("Undo");
+        JMenu redo = new JMenu("Redo");
+
+        MouseListener mouseListener = createUndoRedoMouseListener(undo, redo);
+        undo.addMouseListener(mouseListener);
+        redo.addMouseListener(mouseListener);
+
+        return new UndoMenuOptions(undo, redo);
+    }
+
     private MouseListener createUndoRedoMouseListener(JMenu undo, JMenu redo) {
-        return new MouseListener() {
+        return new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getSource() == undo) {
@@ -315,60 +316,17 @@ public class MainFrame extends JFrame  {
                 }
                 controller.playUndoSound();
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                // Not needed
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                // Not needed
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                // Not needed
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                // Not needed
-            }
         };
     }
 
     private JMenu createHelpMenu() {
         JMenu helpMenu = new JMenu("Help");
-        helpMenu.addMouseListener(new MouseListener() {
-
+        helpMenu.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 JOptionPane.showMessageDialog(null, Constants.HELP, "How to play", JOptionPane.INFORMATION_MESSAGE);
                 logger.info(guiMarker, Constants.HELP_MSG_LOGGER);
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                // Not needed
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                // Not needed
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                // Not needed
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                // Not needed
-            }
-            
         });
 
         return helpMenu;
