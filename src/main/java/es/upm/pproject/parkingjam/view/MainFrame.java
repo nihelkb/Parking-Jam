@@ -314,7 +314,8 @@ public class MainFrame extends JFrame  {
                 } else if (e.getSource() == redo) {
                     controller.redo();
                 }
-                controller.playUndoSound();
+                if(!isMuted)
+                    controller.playUndoSound();
             }
         };
     }
@@ -324,8 +325,11 @@ public class MainFrame extends JFrame  {
         helpMenu.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                JOptionPane.showMessageDialog(null, Constants.HELP, "How to play", JOptionPane.INFORMATION_MESSAGE);
+                if (!isMuted) {
+                    controller.playDefaultSound();
+                }
                 logger.info(guiMarker, Constants.HELP_MSG_LOGGER);
+                JOptionPane.showMessageDialog(null, Constants.HELP, "How to play", JOptionPane.INFORMATION_MESSAGE);
             }
         });
 
@@ -376,13 +380,15 @@ public class MainFrame extends JFrame  {
 
     private void handleMuteAction(boolean isMuted) {
         this.isMuted = isMuted;
-        if (isMuted) {
+        if (isMuted){
+            logger.info(guiMarker, "Game is muted");
             pauseBackgroundMusic();
         } else {
+            logger.info(guiMarker, "Game is unmuted");
             controller.playDefaultSound();
             resumeBackgroundMusic();
         }
-    }
+    } 
 
     public boolean isGameMuted(){
         return this.isMuted;
