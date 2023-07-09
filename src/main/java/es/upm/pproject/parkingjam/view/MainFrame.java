@@ -65,6 +65,7 @@ public class MainFrame extends JFrame  {
     private boolean firstTime = true;
 
     private static final Logger logger = LoggerFactory.getLogger(MainFrame.class);
+    private static final Marker guiMarker = MarkerFactory.getMarker("GUI");
     private static final Marker fatalMarker = MarkerFactory.getMarker("FATAL");
     
     public MainFrame(IController controller) {
@@ -235,7 +236,7 @@ public class MainFrame extends JFrame  {
         JMenu undo = options.getUndoMenu();
         JMenu redo = options.getRedoMenu();
         JMenu soundMenu = createSoundMenu();
-        JMenu help = new JMenu("Help");
+        JMenu help = createHelpMenu();
 
         menuBarComp.add(gameMenu);
         menuBarComp.add(undo);
@@ -335,6 +336,42 @@ public class MainFrame extends JFrame  {
                 // Not needed
             }
         };
+    }
+
+    private JMenu createHelpMenu() {
+        JMenu helpMenu = new JMenu("Help");
+        helpMenu.addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JOptionPane.showMessageDialog(null, Constants.HELP, "How to play", JOptionPane.INFORMATION_MESSAGE);
+                logger.info(guiMarker, Constants.HELP_MSG_LOGGER);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // Not needed
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                // Not needed
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                // Not needed
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // Not needed
+            }
+            
+        });
+
+        return helpMenu;
     }
 
     private void handleNewGameAction() {

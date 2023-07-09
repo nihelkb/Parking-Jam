@@ -39,8 +39,18 @@ public class Constants {
 
     public static final Font LEVEL_FONT = new Font("Abadi MT Condensed Extra Bold", Font.BOLD, 20);
 
+    public static final String HELP = "The objective of the game is to maneuver the red car out of the parking lot.\n"
+    + "Other vehicles will be blocking the way, and you need to strategically move them to create an open path for the red car.\n\n"
+    + "Rules:\n"
+    + "- Vehicles can only move in the direction they are initially oriented.\n"
+    + "- Vehicles cannot overlap or move through each other.\n"
+    + "- You can only move vehicles that have empty spaces adjacent to them.\n\n"
+    + "Enjoy the game and have fun!";
+    
     public static final String WRONG_FILE = "The selected file is not a text file (.txt).";
     public static final String GAME_FINISHED_SAVE = "Save game not allowed: the game has been completed.";
     public static final String ERROR_SAVING = "Error while saving game";
+
+    public static final String HELP_MSG_LOGGER = "Help dialog displayed";
 
 }
