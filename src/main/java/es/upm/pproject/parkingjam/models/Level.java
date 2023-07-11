@@ -191,24 +191,24 @@ public class Level implements Resetable{
     * This method checks that all the cars are 1 × n or n × 1 where n ≥ 2 .
     */
     private boolean loadCar(char [][] b, char letter, int x, int y){
-        int tam = 1;
+        int len = 1;
         // Check car orientation
         boolean horizontal = b[x][y + 1] == letter;
         int zero = 0;
         if (horizontal) {
            for (int j = y + 1; j < b[zero].length; j++) {
                 if (b[x][j] == letter) {
-                    tam++;
+                    len++;
                 }
             }
         }else {
             for (int i = x + 1; i < b.length; i++) {
                 if (b[i][y] == letter) {
-                    tam++;
+                    len++;
                 }
             }
         }
-        return createCar(tam, x, y, letter, horizontal);
+        return createCar(len, x, y, letter, horizontal);
     }
 
     /**
@@ -297,19 +297,15 @@ public class Level implements Resetable{
                 return verifyMovementLeft(tiles, vehicle, distance);
             } else if (direction == 'R') {
                 return verifyMovementRight(tiles, vehicle, distance);
-            }else{
-                return false;
             }
-        } else if (orientation == 'V') {
+        } else {
             if (direction == 'U') {
                 return verifyMovementUp(tiles, vehicle, distance);
             } else if (direction == 'D') {
                 return verifyMovementDown(tiles, vehicle, distance);
-            }else{
-                return false;
             }
         }
-        return true;
+        return false;
     }
 
     /**

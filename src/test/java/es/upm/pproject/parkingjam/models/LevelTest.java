@@ -262,4 +262,20 @@ class LevelTest {
         assertArrayEquals(parking, level.getBoard().getTiles());
     }
 
+    @Test
+    @DisplayName("Test on reset functionality")
+    void test15() throws LevelNotFoundException, WrongLevelFormatException{
+        level = new Level(usableLevels + "/level_1.txt");
+        level.moveCar(level.getVehiclesMap().get('c'), 'D', 1, false, false);
+        String expectedBoard = "++++++++\n" +
+                               "+aabbb +\n" +
+                               "+   * c+\n" +
+                               "+d  * c+\n" +
+                               "+d fff +\n" +
+                               "+de    +\n" +
+                               "+ e ggg+\n" +
+                               "++++@+++\n";
+        assertEquals(expectedBoard, level.getBoard().toString());
+    }
+
 }

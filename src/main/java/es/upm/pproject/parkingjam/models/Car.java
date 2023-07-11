@@ -63,7 +63,7 @@ public class Car implements Resetable {
                 this.positionY = this.positionY + distance;
             }
         }
-        else if(this.orientation == 'V'){
+        else{ // Vertical 
             if(direction == 'U'){
                 this.positionX = this.positionX - distance;
             }

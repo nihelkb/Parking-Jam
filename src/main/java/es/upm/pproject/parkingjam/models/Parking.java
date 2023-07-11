@@ -71,7 +71,7 @@ public class Parking{
             for (int j = posY; j < posY + length; j++) {
                 tiles[posX][j] = id;
             }
-        } else if (orientation == 'V') {
+        } else {
             for (int i = posX; i < posX + length; i++) {
                 tiles[i][posY] = id;
             }
@@ -91,7 +91,7 @@ public class Parking{
             for (int j = posY; j < length + posY; j++) {
                 tiles[posX][j] = ' ';
             }
-        } else if (orientation == 'V') {
+        } else {
             for (int i = posX; i < posX + length; i++) {
                 tiles[i][posY] = ' ';
             }

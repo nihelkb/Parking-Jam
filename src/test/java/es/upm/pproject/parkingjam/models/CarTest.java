@@ -47,6 +47,14 @@ class CarTest {
     }
 
     @Test
+    @DisplayName("Move with invalid arguments test")
+    void test4(){
+        Coordinates initialCoords = blueCar.move('U', 0);
+        Coordinates finalCoords = blueCar.move('N', 2);
+        assertEquals(initialCoords, finalCoords);
+    }
+
+    @Test
     @DisplayName("Overrided to string test")
     void toStringTest(){
         assertEquals("* 2 V [0,0]", redCar.toString());
