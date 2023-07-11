@@ -380,6 +380,9 @@ The game can be saved and loaded from a file. The file is a txt file that contai
 ## Authors ##
 
 200320 - Julio Manso Sánchez-Tornero
+
 200034 - Lucía Sánchez Navidad
+
 200358 - Álvaro Dominguez Martín
+
 200315 - Nihel Kella Bouziane
