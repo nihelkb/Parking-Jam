@@ -58,7 +58,7 @@ public class Game implements Resetable{
      * @param car Car to be moved
      * @param dir Direction in which the car should move in the current level of the game.
      * @param distance Distance by which the car should be moved.
-     * @return If the movement has been done 
+     * @return true if the movement has been done, false otherwise 
      */
     public boolean moveCar(Car car, char dir, int distance){
         if (this.finished || !level.moveCar(car, dir, distance,false, false)) return false;
@@ -242,35 +242,6 @@ public class Game implements Resetable{
         return new Dimension(level.getBoard().getNColumns(), level.getBoard().getNRows());
     }
 
-    // Getters and Setters
-    public Level getLevel(){
-        return level;
-    }
-
-    public void setLevel(Level level){
-        this.level = level;
-    }
-
-    public int getLevelNumber(){
-        return levelNumber;
-    }
-
-    public void setLevelNumber(int levelNumber){
-        this.levelNumber = levelNumber;
-    }
-
-    public boolean getGameFinished(){
-        return finished;
-    }
-
-    public void setGameFinished(boolean gameFinished){
-        this.finished = gameFinished;
-    }
-    
-    public int getScore(){
-        return this.score;
-    }
-
      /**
      * Method that sets the score and the undo movement when a game is loaded.
      * @param selectedPath The path of the selected file from which data will be retrieved.
@@ -312,12 +283,42 @@ public class Game implements Resetable{
     }
 
     /**
-    * Method that returns the id of the car that we have moved.
-    * @param isUndo if true, the movement will be removed from the undo list
+    * Method that returns the id of the car that has been moved.
+    * @param isUndo true if is a undo movement, false if is a redo movement 
     * @return id of the car that has been moved.
     */
     public char getUndoRedoCarId(boolean isUndo){
         return level.getUndoRedoCarId(isUndo);
+    }
+
+    // Getters and Setters
+    
+    public Level getLevel(){
+        return level;
+    }
+
+    public void setLevel(Level level){
+        this.level = level;
+    }
+
+    public int getLevelNumber(){
+        return levelNumber;
+    }
+
+    public void setLevelNumber(int levelNumber){
+        this.levelNumber = levelNumber;
+    }
+
+    public boolean getGameFinished(){
+        return finished;
+    }
+
+    public void setGameFinished(boolean gameFinished){
+        this.finished = gameFinished;
+    }
+    
+    public int getScore(){
+        return this.score;
     }
 
     @Override
