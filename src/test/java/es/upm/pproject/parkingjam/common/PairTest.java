@@ -1,6 +1,7 @@
 package es.upm.pproject.parkingjam.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,5 +29,14 @@ class PairTest {
     void test2(){
         assertEquals(18, pair2.getLeft());
         assertEquals(106, pair2.getRight());
+    }
+
+    @Test
+    @DisplayName("Tests the set methods")
+    void test3(){
+        pair1.setLeft(106);
+        pair2.setRight(18);
+        assertNotEquals(18, pair1.getLeft());
+        assertEquals(18, pair2.getRight());
     }
 }
