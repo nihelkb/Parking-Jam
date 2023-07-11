@@ -18,25 +18,32 @@ class PairTest {
     }
 
     @Test
-    @DisplayName("Tests the first Pair constructor")
+    @DisplayName("First Pair constructor test")
     void test1(){
         assertEquals(18, pair1.getLeft());
         assertEquals(106, pair1.getRight());
     }
 
     @Test
-    @DisplayName("Tests the second Pair constructor")
+    @DisplayName("Second Pair constructor test")
     void test2(){
         assertEquals(18, pair2.getLeft());
         assertEquals(106, pair2.getRight());
     }
 
     @Test
-    @DisplayName("Tests the set methods")
+    @DisplayName("Set methods test")
     void test3(){
         pair1.setLeft(106);
         pair2.setRight(18);
         assertNotEquals(18, pair1.getLeft());
         assertEquals(18, pair2.getRight());
     }
+
+    @Test
+    @DisplayName("Overrided to string test")
+    void toStringTest(){
+        assertEquals("Pair(18,106)", pair2.toString());
+    }
+
 }

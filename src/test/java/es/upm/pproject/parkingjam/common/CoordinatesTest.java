@@ -41,5 +41,11 @@ class CoordinatesTest {
         Coordinates coords2 = new Coordinates(32, 64);
         assertNotEquals(coords, coords2);
     }
+
+    @Test
+    @DisplayName("Overrided to string test")
+    void toStringTest(){
+        assertEquals("(32,12)", coords.toString());
+    }
 }
 
