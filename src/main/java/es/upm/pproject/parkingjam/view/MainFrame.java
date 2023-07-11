@@ -69,7 +69,8 @@ public class MainFrame extends JFrame  {
     private static final Marker guiMarker = MarkerFactory.getMarker("GUI");
     private static final Marker fatalMarker = MarkerFactory.getMarker("FATAL");
     /**
-     * Constructs a Mainframe.
+     * Constructor of the class.
+     * @param controller the controller that controls the game.
      */
     public MainFrame(IController controller) {
         super("Parking Jam");
@@ -154,7 +155,7 @@ public class MainFrame extends JFrame  {
         this.pack();
     }
     
-     /**
+    /**
      * This method repaints the parking of each level. 
      */
     private void repaintParking() {
@@ -167,7 +168,7 @@ public class MainFrame extends JFrame  {
         grid.add(parking);
     }
 
-     /**
+    /**
      * This method repaints the stats of each level. 
      */
     public void repaintStats(){
@@ -227,7 +228,7 @@ public class MainFrame extends JFrame  {
         }
     }
     /**
-     *  create the sprites of the cars that fit the most 
+     * This method creates the sprites of the cars that fit the most.
      */
     private Map<Integer,List<String>> createSpriteMap() {
         // Incluir coches segun tamaño
@@ -252,7 +253,7 @@ public class MainFrame extends JFrame  {
 
      /**
      * This method undo or redo a movement moving a car. 
-     * @param the id of the car.
+     * @param id of the car.
      */
     public void undoRedo(char id){
         CarPanel a = mapCarPanels.get(id);
@@ -349,7 +350,13 @@ public class MainFrame extends JFrame  {
 
         return new UndoMenuOptions(undo, redo);
     }
-    // actionListener
+    
+    /**
+     * This method undo or redo a movement moving a car. 
+     * @param undo the JMenu of the undo movement.
+     * @param redo the JMenu of the redo movement.
+     * @return the mouseListener.
+     */
     private MouseListener createUndoRedoMouseListener(JMenu undo, JMenu redo) {
         return new MouseAdapter() {
             @Override
@@ -365,6 +372,9 @@ public class MainFrame extends JFrame  {
         };
     }
 
+    /**
+     * This method creates the help menu. 
+     */
     private JMenu createHelpMenu() {
         JMenu helpMenu = new JMenu("Help");
         helpMenu.addMouseListener(new MouseAdapter() {
@@ -381,7 +391,7 @@ public class MainFrame extends JFrame  {
         return helpMenu;
     }
 
-     /**
+    /**
      * This method creates a new game and mute the music or no. 
      */
     private void handleNewGameAction() {
@@ -394,7 +404,7 @@ public class MainFrame extends JFrame  {
         }
     }
 
-     /**
+    /**
      * This method resets a game and mute the music or no. 
      */
     private void handleResetLevelAction() {
@@ -458,7 +468,7 @@ public class MainFrame extends JFrame  {
     } 
 
     /**
-    * Method that returns if the music is muted.
+    * This method returns if the music is muted.
     * @return true if the music is muted. 
     */
     public boolean isGameMuted(){
@@ -487,8 +497,8 @@ public class MainFrame extends JFrame  {
     }
 
     /**
-    * Method that returns the fileChooser.
-    * @return returns the fileChooser. 
+    * This method returns the fileChooser.
+    * @return the fileChooser. 
     */
     private JFileChooser getFileChooser(){
         // Crear un objeto JFileChooser
@@ -502,8 +512,8 @@ public class MainFrame extends JFrame  {
     }
 
     /**
-    * Method that open the fileChooser and gets the path of the file.
-    * @return returns the path of te file. 
+    * This method open the fileChooser and gets the path of the file.
+    * @return the path of te file. 
     */
     public String openFileChooser(){
         JFileChooser fileChooser = getFileChooser();
@@ -524,8 +534,8 @@ public class MainFrame extends JFrame  {
     }
 
     /**
-    * Method that save the fileChooser and gets the path of the file.
-    * @return returns the path of te file. 
+    * This method save the fileChooser and gets the path of the file.
+    * @return the path of te file. 
     */
     public String saveFileChooser(){
         JFileChooser fileChooser = getFileChooser();
@@ -564,7 +574,7 @@ public class MainFrame extends JFrame  {
     }
 
     /**
-    * Method that shows that is imposible to save the game when it is completed.
+    * This method shows that is impossible to save the game when it is completed.
     */
     public void cannotSaveGame(){
         JOptionPane.showMessageDialog(null, "It is not possible to save a game that has been completed.", Constants.ERROR_SAVING, JOptionPane.ERROR_MESSAGE);
