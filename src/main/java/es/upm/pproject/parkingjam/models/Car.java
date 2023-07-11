@@ -152,6 +152,6 @@ public class Car implements Resetable {
 
     @Override
     public String toString() {
-        return id + " " + length + " " + orientation + " " + positionX + " " + positionY + " " + redCar;
+        return id + " " + length + " " + orientation + " " + getCurrentPos();
     }
 }
