@@ -45,7 +45,7 @@ class CoordinatesTest {
     @Test
     @DisplayName("Overrided to string test")
     void toStringTest(){
-        assertEquals("(32,12)", coords.toString());
+        assertEquals("[32,12]", coords.toString());
     }
 }
 
