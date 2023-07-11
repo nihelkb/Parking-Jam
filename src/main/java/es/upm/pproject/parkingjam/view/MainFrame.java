@@ -138,7 +138,6 @@ public class MainFrame extends JFrame  {
         levelDimension = controller.getLevelDimension();
         carSpritesMap = createSpriteMap();
         repaintLevel();
-        stats.validate();
     }
 
 
@@ -153,6 +152,7 @@ public class MainFrame extends JFrame  {
         repaintBackground();
         grid.repaint();
         this.pack();
+        stats.repaint();
     }
     
     /**

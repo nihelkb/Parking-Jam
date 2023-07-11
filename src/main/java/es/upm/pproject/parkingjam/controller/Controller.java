@@ -196,7 +196,8 @@ public class Controller implements IController{
             restartBackgroundMusic();
             playNewGameSound();
         }
-        gui.init(); 
+        gui.init();
+        gui.repaintStats(); 
     }
 
     /**
