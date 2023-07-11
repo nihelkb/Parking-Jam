@@ -42,7 +42,6 @@ class GameTest {
     @DisplayName("Going directly to level 2 when level 1 has wrong format")
     void test2(){
         g.levelPathFormat = "src/main/resources/levels4GameTest/level_%d.txt";
-        //g.path = "src/main/resources/levels4GameTest";
         g.newGame();
         assertEquals("Level 2", g.getLevelName());
     }
@@ -76,7 +75,7 @@ class GameTest {
     }
     
     @Test
-    @DisplayName("Test om reset functionality")
+    @DisplayName("Test on reset functionality")
     void test4(){
         level = g.getLevel();
 
@@ -171,15 +170,51 @@ class GameTest {
         g.moveCar(level.getVehiclesMap().get('f'), 'L', 2);
         g.moveCar(level.getVehiclesMap().get('g'), 'L', 3);
         assertFalse(g.isFinished());
-
     }
 
     @Test
-    @DisplayName("Test on load game withoout parameter")
+    @DisplayName("Test on save game withoout parameter")
     void test9(){
+        g.saveGame(null);
+        assertTrue(true);
+    }
+
+    @Test
+    @DisplayName("Completed game test")
+    void test11(){
+        int score = g.getTotalScore();
+        g.loadGame("noExistingPath");
+        assertTrue(g.isFinished());
+        assertEquals(score, g.getTotalScore());
+    }
+
+    @Test
+    @DisplayName("Level number when restarting the game test")
+    void test12(){
         g.setLevelNumber(2);
         g.newGame();
         assertEquals(1, g.getLevelNumber());
+    }
+
+    @Test
+    @DisplayName("Reset level test: game finished")
+    void test13(){
+        int levelNum = g.getLevelNumber();
+        g.setGameFinished(true);
+        g.reset();
+        assertEquals(levelNum - 1, g.getLevelNumber());
+        assertFalse(g.isFinished());
+    }
+
+    @Test
+    @DisplayName("Reset level test: game not finished")
+    void test14(){
+        int levelNum = g.getLevelNumber();
+        
+        g.setGameFinished(false);
+        g.reset();
+        assertEquals(levelNum, g.getLevelNumber());
+        assertFalse(g.isFinished());
     }
 
 }

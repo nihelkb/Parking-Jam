@@ -297,20 +297,12 @@ public class Game implements Resetable{
         return level;
     }
 
-    public void setLevel(Level level){
-        this.level = level;
-    }
-
     public int getLevelNumber(){
         return levelNumber;
     }
 
     public void setLevelNumber(int levelNumber){
         this.levelNumber = levelNumber;
-    }
-
-    public boolean getGameFinished(){
-        return finished;
     }
 
     public void setGameFinished(boolean gameFinished){
