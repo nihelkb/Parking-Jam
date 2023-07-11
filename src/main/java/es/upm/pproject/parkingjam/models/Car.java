@@ -75,7 +75,7 @@ public class Car implements Resetable {
     }
 
     /**
-    * Method that checks if the car reached the exit.
+    * Method that checks if the car is on goal.
     * @return true if the car reached the exit, false otherwise
     */
     public boolean isOnGoal() {

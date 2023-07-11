@@ -17,8 +17,10 @@ public class Parking{
     private char[][] tiles;
     private int nRows;
     private int nColumns;
+
     /**
-    * Constructs a parking.
+    * Constructor of the class.
+    * @param board The board tiles.
     */
     public Parking(char [][] board) {
         this.tiles = board;
@@ -27,34 +29,11 @@ public class Parking{
     }
 
     /**
-    * Method that returns the matrix.
-    * @return the matrix. 
-    */
-    public char[][] getTiles () {
-        return this.tiles.clone();
-    }
-    /**
-    * Method that returns the number of rows.
-    * @return the number of rows.
-    */
-    public int getNRows () {
-        return nRows;
-    }
-
-    /**
-    * Method that returns the number of columns.
-    * @return the number of columns.
-    */
-    public int getNColumns () {
-        return nColumns;
-    }
-
-    /**
-    * Method that updates the parking.
-    * @param the car.
-    * @param the direction that the car has to move.
-    * @param the distance that the car has to move.
-    * @return the newpostion.
+    * Method that updates the parking when a vehicle is moved.
+    * @param vehicle the vehicle to update.
+    * @param direction the direction in which the vehicle will be moved.
+    * @param distance how many positions the vehicle will be moved
+    * @return The new position of the vehicle.
     */
     public Coordinates updateParking(Car vehicle, char direction, int distance) {
         deleteCar(vehicle);
@@ -64,8 +43,11 @@ public class Parking{
     }
 
     /**
-    * Method that duplicates the parking.
-    * @return the new parking.
+    * Method that duplicates the parking
+    * @param vehicle the vehicle to update.
+    * @param direction the direction in which the vehicle will be moved.
+    * @param distance how many positions the vehicle will be moved
+    * @return The new position of the vehicle.
     */
     public Parking duplicate() {
         char[][] clonedTiles = new char[nRows][nColumns];
@@ -115,10 +97,21 @@ public class Parking{
             }
         }
     }
-    
-     /**
-    * Method toString.
-    */
+
+    // Getters
+
+    public char[][] getTiles () {
+        return this.tiles.clone();
+    }
+
+    public int getNRows () {
+        return nRows;
+    }
+
+    public int getNColumns () {
+        return nColumns;
+    }
+
     @Override
     public String toString() {
         StringBuilder boardRep = new StringBuilder();
