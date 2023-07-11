@@ -6,9 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-
+@DisplayName("Class to test Game class")
 class GameTest {
     Game g;
     Level level;
@@ -23,6 +24,7 @@ class GameTest {
     }
     
     @Test
+    @DisplayName("Test on goal notification when red car reaches exit")
     void test1(){
         level = g.getLevel();
         level.moveCar(level.getVehiclesMap().get('c'), 'D', 1, false, false);
@@ -37,6 +39,7 @@ class GameTest {
     }
 
     @Test
+    @DisplayName("Going directly to level 2 when level 1 has wrong format")
     void test2(){
         g.levelPathFormat = "src/main/resources/levels4GameTest/level_%d.txt";
         //g.path = "src/main/resources/levels4GameTest";
@@ -45,6 +48,7 @@ class GameTest {
     }
 
     @Test
+    @DisplayName("Test on save and load the game")
     void test3(){
         String testPath = "src/main/resources/saveloadLevelTest/test3.txt";
         level = g.getLevel();
@@ -72,6 +76,7 @@ class GameTest {
     }
     
     @Test
+    @DisplayName("Test om reset functionality")
     void test4(){
         level = g.getLevel();
 
@@ -94,6 +99,7 @@ class GameTest {
     }
 
     @Test
+    @DisplayName("Test on undo funtionality")
     void test5(){
         level = g.getLevel();
 
@@ -115,6 +121,7 @@ class GameTest {
     }
 
     @Test
+    @DisplayName("Test on undo and redo funtionality")
     void test6(){
         level = g.getLevel();
 
@@ -135,6 +142,7 @@ class GameTest {
     }
 
     @Test
+    @DisplayName("Test on level and global score")
     void test7(){
         level = g.getLevel();
 
@@ -151,6 +159,7 @@ class GameTest {
     }
 
     @Test
+    @DisplayName("Test on load game withoout parameter")
     void test8(){
         g.loadGame(null);
         level = g.getLevel();
@@ -166,9 +175,10 @@ class GameTest {
     }
 
     @Test
+    @DisplayName("Test on load game withoout parameter")
     void test9(){
         g.setLevelNumber(2);
-        g.newGame();;
+        g.newGame();
         assertEquals(1, g.getLevelNumber());
     }
 

@@ -21,7 +21,7 @@ import es.upm.pproject.parkingjam.exceptions.LevelNotFoundException;
 import es.upm.pproject.parkingjam.exceptions.WrongLevelFormatException;
 
 
-@DisplayName("Class to test the level")
+@DisplayName("Class to test level class")
 class LevelTest {
     Level level;
     final String usableLevels = "src/main/resources/levels";
@@ -30,7 +30,7 @@ class LevelTest {
 
     @Test
     @DisplayName("Reading level 2 file")
-    void test0() throws LevelNotFoundException, WrongLevelFormatException{
+    void test1() throws LevelNotFoundException, WrongLevelFormatException{
         board = new char[8][8];
         board[0][0] = '+';
         board[0][1] = '+';
@@ -105,7 +105,7 @@ class LevelTest {
     
     @Test
     @DisplayName("Reading level file - wrong format (invalid path)")
-    void test1() throws LevelNotFoundException, WrongLevelFormatException {
+    void test2() throws LevelNotFoundException, WrongLevelFormatException {
         String expectedMessage = "The level src/main/resources/levels/level.txt does not exist";
         Exception exception = assertThrows(LevelNotFoundException.class, () -> {
             level = new Level(usableLevels + "/level.txt");
@@ -114,42 +114,9 @@ class LevelTest {
         String actualMessage = exception.getMessage();
         assertEquals(actualMessage, expectedMessage);
     }
-    /* 
-    @Test
-    void test2() throws LevelNotFoundException, WrongLevelFormatException {
-        String expectedMessage = "A level must be surrounded by walls: This level must have 27 walls";
-        Exception exception = assertThrows(WrongLevelFormatException.class, () -> {
-            level = new Level(testLevels + "/levelTest2.txt");
-        });
-
-        String actualMessage = exception.getMessage();
-        assertEquals(actualMessage, expectedMessage);
-    }
-    //levelTest1.txt
-
-    @Test
-    void test2_1() throws LevelNotFoundException, WrongLevelFormatException {
-        String expectedMessage = "The level must have 7 columns each line";
-        Exception exception = assertThrows(WrongLevelFormatException.class, () -> {
-            level = new Level(testLevels + "/levelTest1.txt");
-        });
-
-        String actualMessage = exception.getMessage();
-        assertEquals(actualMessage, expectedMessage);
-    }
-
-    @Test
-    void test2_2() throws LevelNotFoundException, WrongLevelFormatException {
-        String expectedMessage = "You have to put first the number of rows and then the number of columns";
-        Exception exception = assertThrows(WrongLevelFormatException.class, () -> {
-            level = new Level(testLevels + "/levelTest8.txt");
-        });
-
-        String actualMessage = exception.getMessage();
-        assertEquals(actualMessage, expectedMessage);
-    }*/
 
     @ParameterizedTest(name = "Reading level file - wrong format: {1}")
+    @DisplayName("Test on WrongLevelFormatException")
     @CsvSource({
             "The level must have 7 columns each line,/levelTest1.txt",
             "A level must be surrounded by walls: This level must have 27 walls,/levelTest2.txt",
@@ -161,7 +128,7 @@ class LevelTest {
             "You have to put first the number of rows and then the number of columns,/levelTest8.txt"
             
     })
-    void testWrongLevelFormat(String expectedMessage, String levelFile) throws WrongLevelFormatException {
+    void test3(String expectedMessage, String levelFile) throws WrongLevelFormatException {
 
         Exception exception = assertThrows(WrongLevelFormatException.class, () -> {
             level = new Level(testLevels + levelFile);
@@ -170,13 +137,6 @@ class LevelTest {
         String actualMessage = exception.getMessage();
         assertEquals(expectedMessage, actualMessage);
     }
-
-    
-    /* 
-    @BeforeEach
-    void setUP() throws LevelNotFoundException, WrongLevelFormatException{
-        level = new Level(usableLevels + "/level_1.txt");
-    }*/
 
     private static Stream<Arguments> dataProvider() {
         return Stream.of(
@@ -188,49 +148,17 @@ class LevelTest {
     }
 
     @ParameterizedTest
+    @DisplayName("Test on different moves")
     @MethodSource("dataProvider")
-    void test3(char car, char direction) throws LevelNotFoundException, WrongLevelFormatException {
+    void test4(char car, char direction) throws LevelNotFoundException, WrongLevelFormatException {
         level = new Level(usableLevels + "/level_1.txt");
         boolean success = level.moveCar(level.getVehiclesMap().get(car), direction, 1, false, false);
         assertTrue(success);
     }
 
-    /* 
-    @Test
-    @DisplayName("Movement up is a success")
-    void test3() throws LevelNotFoundException, WrongLevelFormatException {
-        level = new Level(usableLevels + "/level_1.txt");
-        boolean success = level.moveCar(level.getVehiclesMap().get('d'), 'U', 1, false, false);
-        assertTrue(success);
-    }
-
-    @Test
-    @DisplayName("Movement down is a success")
-    void test4() throws LevelNotFoundException, WrongLevelFormatException {
-        level = new Level(usableLevels + "/level_1.txt");
-        boolean success = level.moveCar(level.getVehiclesMap().get('c'), 'D', 1, false, false);
-        assertTrue(success);
-    }
-
-    @Test
-    @DisplayName("Movement right is a success")
-    void test5() throws LevelNotFoundException, WrongLevelFormatException {
-        level = new Level(usableLevels + "/level_1.txt");
-        boolean success = level.moveCar(level.getVehiclesMap().get('f'), 'R', 1, false, false);
-        assertTrue(success);
-    }
-
-    @Test
-    @DisplayName("Movement left is a success")
-    void test6() throws LevelNotFoundException, WrongLevelFormatException {
-        level = new Level(usableLevels + "/level_1.txt");
-        boolean success = level.moveCar(level.getVehiclesMap().get('f'), 'L', 1, false, false);
-        assertTrue(success);
-    }*/
-
     @Test
     @DisplayName("End of level")
-    void test4() throws LevelNotFoundException, WrongLevelFormatException {
+    void test5() throws LevelNotFoundException, WrongLevelFormatException {
         level = new Level(usableLevels + "/level_1.txt");
         level.moveCar(level.getVehiclesMap().get('c'), 'D', 1, false, false);
         level.moveCar(level.getVehiclesMap().get('b'), 'R', 1, false, false);
@@ -244,36 +172,23 @@ class LevelTest {
     }
 
     @ParameterizedTest
+    @DisplayName("Test on different moves")
     @CsvSource({
         
             "6, U, 1, false",
             "7, D, 1, false",
             "15, L, 1, false"
     })
-    void test5(int testNumber, char direction, int distance,
+    void test6(int testNumber, char direction, int distance,
             boolean isMuted) throws LevelNotFoundException, WrongLevelFormatException {
         level = new Level(usableLevels + "/level_1.txt");
         boolean success = level.moveCar(level.getRedCar(), direction, distance, false, false);
         assertFalse(success);
     }
 
-    /* @Test
-    @DisplayName("Movement up against another car")
-    void test6() {
-        boolean success = level.moveCar(level.getRedCar(), 'U', 1, false, false);
-        assertFalse(success);
-    }
-
-    @Test
-    @DisplayName("Movement down against another car")
-    void test7() {
-        boolean success = level.moveCar(level.getRedCar(), 'D', 1, false, false);
-        assertFalse(success);
-    } */
-
     @Test
     @DisplayName("Movement right against another car")
-    void test6() throws LevelNotFoundException, WrongLevelFormatException {
+    void test7() throws LevelNotFoundException, WrongLevelFormatException {
         level = new Level(usableLevels + "/level_1.txt");
         boolean success = level.moveCar(level.getVehiclesMap().get('a'), 'R', 1, false, false);
         assertFalse(success);
@@ -281,7 +196,7 @@ class LevelTest {
 
     @Test
     @DisplayName("Movement left against another car")
-    void test7() throws LevelNotFoundException, WrongLevelFormatException {
+    void test8() throws LevelNotFoundException, WrongLevelFormatException {
         level = new Level(usableLevels + "/level_1.txt");
         boolean success = level.moveCar(level.getVehiclesMap().get('b'), 'L', 1, false, false);
         assertFalse(success);
@@ -289,7 +204,7 @@ class LevelTest {
 
     @Test
     @DisplayName("Movement up against the wall")
-    void test8() throws LevelNotFoundException, WrongLevelFormatException {
+    void test9() throws LevelNotFoundException, WrongLevelFormatException {
         level = new Level(usableLevels + "/level_1.txt");
         boolean success = level.moveCar(level.getVehiclesMap().get('c'), 'U', 1, false, false);
         assertFalse(success);
@@ -297,7 +212,7 @@ class LevelTest {
 
     @Test
     @DisplayName("Movement down against the wall")
-    void test9() throws LevelNotFoundException, WrongLevelFormatException {
+    void test10() throws LevelNotFoundException, WrongLevelFormatException {
         level = new Level(usableLevels + "/level_1.txt");
         boolean success = level.moveCar(level.getVehiclesMap().get('d'), 'D', 2, false, false);
         assertFalse(success);
@@ -305,7 +220,7 @@ class LevelTest {
 
     @Test
     @DisplayName("Movement right against the wall")
-    void test10() throws LevelNotFoundException, WrongLevelFormatException {
+    void test11() throws LevelNotFoundException, WrongLevelFormatException {
         level = new Level(usableLevels + "/level_1.txt");
         boolean success = level.moveCar(level.getVehiclesMap().get('f'), 'R', 2, false, false);
         assertFalse(success);
@@ -313,7 +228,7 @@ class LevelTest {
 
     @Test
     @DisplayName("Movement left against the wall")
-    void test11() throws LevelNotFoundException, WrongLevelFormatException {
+    void test12() throws LevelNotFoundException, WrongLevelFormatException {
         level = new Level(usableLevels + "/level_1.txt");
         boolean success = level.moveCar(level.getVehiclesMap().get('a'), 'L', 1, false, false);
         assertFalse(success);
@@ -321,21 +236,15 @@ class LevelTest {
 
     @Test
     @DisplayName("Horizontal movement on a vertical car")
-    void test12() throws LevelNotFoundException, WrongLevelFormatException {
+    void test13() throws LevelNotFoundException, WrongLevelFormatException {
         level = new Level(usableLevels + "/level_1.txt");
         boolean success = level.moveCar(level.getVehiclesMap().get('g'), 'U', 1, false, false);
         assertFalse(success);
     }
 
-    /* @Test
-    @DisplayName("Vertical movement on a horizontal car")
-    void test15() {
-        boolean success = level.moveCar(level.getRedCar(), 'L', 1, false, false);
-        assertFalse(success);
-    } */
-
     @Test
-    void test13()throws LevelNotFoundException, WrongLevelFormatException{
+    @DisplayName("Test on reset functionality")
+    void test14()throws LevelNotFoundException, WrongLevelFormatException{
         level = new Level(usableLevels + "/level_1.txt");
 
         char[][] parking= new char[level.getBoard().getNRows()][level.getBoard().getNRows()];
