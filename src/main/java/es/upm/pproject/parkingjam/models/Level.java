@@ -222,12 +222,11 @@ public class Level implements Resetable{
     */
     private boolean createCar(int length, int x, int y, char id, boolean horizontal) {
         if(length >= 2) {
-            boolean isRedCar = id == '*';
-            Car vehicle = new Car(x, y, id, length, horizontal, isRedCar);
+            Car vehicle = new Car(x, y, id, length, horizontal);
             vehicles.put(id, vehicle);
             idCars.add(id);
             // Save redCar reference
-            if(isRedCar){
+            if(vehicle.isRedCar()){
                 this.redCar = vehicle;
             }
             return true;

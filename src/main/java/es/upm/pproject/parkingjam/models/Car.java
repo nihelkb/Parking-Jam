@@ -36,11 +36,11 @@ public class Car implements Resetable {
     * @param horizontal if the orientation is vertical.
     * @param redCar if the car is the target one (red car).
     */
-    public Car(int initialStateX, int initialStateY, char id, int length, boolean horizontal, boolean redCar) {
+    public Car(int initialStateX, int initialStateY, char id, int length, boolean horizontal) {
         this.id = id;
         this.length = length;
         this.orientation = horizontal ? 'H' : 'V';
-        this.redCar = redCar;
+        this.redCar = id == '*';
 
         this.initialStateX = initialStateX;
         this.initialStateY = initialStateY;
