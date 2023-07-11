@@ -27,6 +27,9 @@ public class Car implements Resetable {
     private boolean redCar;
     private boolean isOnGoal;
 
+    /**
+    * Constructs a Car.
+    */
     public Car(int initialStateX, int initialStateY, char id, int length, boolean vertical, boolean redCar) {
         this.id = id;
         this.length = length;
@@ -39,22 +42,28 @@ public class Car implements Resetable {
         this.positionY = initialStateY;
     }
 
+    // getters and setters.
+
     public char getId() {
         return id;
     }
 
+   
     public int getLength() {
         return length;
     }
 
+  
     public char getOrientation() {
         return orientation;
     }
 
+  
     public boolean isRedCar() {
         return redCar;
     }
 
+   
     public Coordinates getCurrentPos() {
         return new Coordinates(this.positionX, this.positionY);
     }
@@ -91,6 +100,12 @@ public class Car implements Resetable {
         this.positionY = currentPositionY;
     }
 
+    /**
+    * Method that move a car into a direction and with a determinated distance.
+    * @param the direction that the car has to move.
+    * @param the distance that the car has to move
+    * @return the coordinates of the car after the move.
+    */
     public Coordinates move(char direction, int distance){
         if(this.orientation == 'H'){
             if(direction == 'L'){
@@ -111,6 +126,10 @@ public class Car implements Resetable {
         return new Coordinates(this.positionX, this.positionY);
     }
 
+    /**
+    * Method that returns true if the car is red and is at the goal.
+    * @return true if the car is red and is at the goal.
+    */
     public boolean isOnGoal() {
         return this.isOnGoal && this.redCar;
     }

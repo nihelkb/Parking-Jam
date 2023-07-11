@@ -17,25 +17,45 @@ public class Parking{
     private char[][] tiles;
     private int nRows;
     private int nColumns;
-
+    /**
+    * Constructs a parking.
+    */
     public Parking(char [][] board) {
         this.tiles = board;
         this.nRows = board.length;
         this.nColumns = board[0].length;
     }
 
+    /**
+    * Method that returns the matrix.
+    * @return the matrix. 
+    */
     public char[][] getTiles () {
         return this.tiles.clone();
     }
-
+    /**
+    * Method that returns the number of rows.
+    * @return the number of rows.
+    */
     public int getNRows () {
         return nRows;
     }
 
+    /**
+    * Method that returns the number of columns.
+    * @return the number of columns.
+    */
     public int getNColumns () {
         return nColumns;
     }
 
+    /**
+    * Method that updates the parking.
+    * @param the car.
+    * @param the direction that the car has to move.
+    * @param the distance that the car has to move.
+    * @return the newpostion.
+    */
     public Coordinates updateParking(Car vehicle, char direction, int distance) {
         deleteCar(vehicle);
         Coordinates newPosition = vehicle.move(direction, distance);
@@ -43,6 +63,10 @@ public class Parking{
         return newPosition;
     }
 
+    /**
+    * Method that duplicates the parking.
+    * @return the new parking.
+    */
     public Parking duplicate() {
         char[][] clonedTiles = new char[nRows][nColumns];
         for (int i = 0; i < nRows; i++) {
@@ -51,6 +75,10 @@ public class Parking{
         return new Parking(clonedTiles);
     }
 
+    /**
+    * Method that insert a car in the parking.
+    * @param the car.
+    */
     private void insertCar(Car vehicle) {
         int posX = vehicle.getCurrentPositionX();
         int posY = vehicle.getCurrentPositionY();
@@ -68,6 +96,10 @@ public class Parking{
         }
     }
 
+    /**
+    * Method that deletes a car in the parking.
+    * @param the car.
+    */
     private void deleteCar(Car vehicle) {
         char orientation = vehicle.getOrientation();
         int length = vehicle.getLength();
@@ -84,6 +116,9 @@ public class Parking{
         }
     }
     
+     /**
+    * Method toString.
+    */
     @Override
     public String toString() {
         StringBuilder boardRep = new StringBuilder();

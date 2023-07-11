@@ -68,7 +68,9 @@ public class MainFrame extends JFrame  {
     private static final Logger logger = LoggerFactory.getLogger(MainFrame.class);
     private static final Marker guiMarker = MarkerFactory.getMarker("GUI");
     private static final Marker fatalMarker = MarkerFactory.getMarker("FATAL");
-    
+    /**
+     * Constructs a Mainframe.
+     */
     public MainFrame(IController controller) {
         super("Parking Jam");
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -114,6 +116,9 @@ public class MainFrame extends JFrame  {
         controller.startBackgroundMusic();
     }
 
+     /**
+     * This method starts the graphical interface showing the level. 
+     */
     public void init() {
         showLevel();
         if(firstTime){ // to avoid moving the frame position 
@@ -124,7 +129,9 @@ public class MainFrame extends JFrame  {
         this.setVisible(true);
     }
 
-    // Repinta despues de cada nivel completado
+     /**
+     * This method repaints after the level is completed. 
+     */
     public void showLevel() {
         mapCarPanels.clear();
         levelDimension = controller.getLevelDimension();
@@ -133,6 +140,10 @@ public class MainFrame extends JFrame  {
         stats.validate();
     }
 
+
+    /**
+     * This method repaints the level. 
+     */
     public void repaintLevel() {
         grid.removeAll();
         repaintStats();
@@ -142,7 +153,10 @@ public class MainFrame extends JFrame  {
         grid.repaint();
         this.pack();
     }
-
+    
+     /**
+     * This method repaints the parking of each level. 
+     */
     private void repaintParking() {
         int width = (int)levelDimension.getWidth()*Constants.TILE_SIZE;
         int heigth = (int)levelDimension.getHeight()*Constants.TILE_SIZE;
@@ -153,6 +167,9 @@ public class MainFrame extends JFrame  {
         grid.add(parking);
     }
 
+     /**
+     * This method repaints the stats of each level. 
+     */
     public void repaintStats(){
         stats.removeAll();
         levelName.setText(controller.getLevelName());
@@ -165,11 +182,16 @@ public class MainFrame extends JFrame  {
         stats.repaint();
     }
     
+    /**
+     * This method repaints the background. 
+     */
     private void repaintBackground(){
         grid.add(backgroundSprite);
     }
 
-    // Coches y troncos
+    /**
+     * This method paints all the cars and trunks. 
+     */
     public void paintParking() {
         int widthLvl = (int)levelDimension.getWidth()* Constants.TILE_SIZE;
         int heigthLvl = (int)levelDimension.getHeight()*Constants.TILE_SIZE;
@@ -204,7 +226,9 @@ public class MainFrame extends JFrame  {
             }
         }
     }
-
+    /**
+     *  create the sprites of the cars that fit the most 
+     */
     private Map<Integer,List<String>> createSpriteMap() {
         // Incluir coches segun tamaño
         List<String> doubles = new LinkedList<>(Arrays.asList("car1.png","car2.png","car3.png","car4.png","car5.png","car6.png","car11.png"));
@@ -216,6 +240,9 @@ public class MainFrame extends JFrame  {
         return Map.of(2, doubles,3, triples);
     }
 
+    /**
+     * This method shows the congrats message when you win the 
+     */
     public void showCongratsMsg(int gameScore) {
         String message = String.format(
                 "<html><div style='text-align: center;'>Congratulations!<br><br>You have completed the game.<br><br>Score: %d</div></html>",
@@ -223,12 +250,20 @@ public class MainFrame extends JFrame  {
         JOptionPane.showMessageDialog(null, message, "Game completed", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(Constants.CONGRATS_ICON));
     }
 
+     /**
+     * This method undo or redo a movement moving a car. 
+     * @param the id of the car.
+     */
     public void undoRedo(char id){
         CarPanel a = mapCarPanels.get(id);
         Coordinates carCoordinates = controller.getCarPosition(id);
+        // move the car
         a.setLocation(a.getInitialX() + carCoordinates.getY()*Constants.TILE_SIZE,a.getInitialY() + carCoordinates.getX()*Constants.TILE_SIZE);
     }
 
+    /**
+     * This method creates the menu. 
+     */
     private void buildMenuBar() {
         JMenuBar menuBarComp = new JMenuBar();
 
@@ -255,6 +290,9 @@ public class MainFrame extends JFrame  {
         }
     }
 
+    /**
+     * This method creates all the buttons and actionlisteners of the menu. 
+     */
     private JMenu createGameMenu(){
         JMenu gameMenu = new JMenu("Game");
 
@@ -283,6 +321,10 @@ public class MainFrame extends JFrame  {
         return gameMenu;
     }
 
+
+    /**
+     * This method creates the sound menu. 
+     */
     private JMenu createSoundMenu() {
         JMenu soundMenu = new JMenu("Sound");
         JCheckBoxMenuItem mute = new JCheckBoxMenuItem("Mute", false);
@@ -294,6 +336,9 @@ public class MainFrame extends JFrame  {
         return soundMenu;
     }
 
+    /**
+     * This method creates the undo and redo menu. 
+     */
     private UndoMenuOptions createUndoMenu() {
         JMenu undo = new JMenu("Undo");
         JMenu redo = new JMenu("Redo");
@@ -304,7 +349,7 @@ public class MainFrame extends JFrame  {
 
         return new UndoMenuOptions(undo, redo);
     }
-
+    // actionListener
     private MouseListener createUndoRedoMouseListener(JMenu undo, JMenu redo) {
         return new MouseAdapter() {
             @Override
@@ -336,6 +381,9 @@ public class MainFrame extends JFrame  {
         return helpMenu;
     }
 
+     /**
+     * This method creates a new game and mute the music or no. 
+     */
     private void handleNewGameAction() {
         controller.newGame();
         if (isMuted) {
@@ -346,6 +394,9 @@ public class MainFrame extends JFrame  {
         }
     }
 
+     /**
+     * This method resets a game and mute the music or no. 
+     */
     private void handleResetLevelAction() {
         controller.resetLevel();
         if (isMuted) {
@@ -356,6 +407,9 @@ public class MainFrame extends JFrame  {
         }
     }
 
+     /**
+     * This method load a game and mute the music or no. 
+     */
     private void handleLoadGameAction(){
         if (!isMuted) {
             controller.playDefaultSound();
@@ -363,14 +417,24 @@ public class MainFrame extends JFrame  {
         controller.loadGame();
     }
 
+    /**
+     * This method pauses the music. 
+     */
     private void pauseBackgroundMusic() {
         controller.pauseBackgroundMusic();
     }
 
+     /**
+     * This method resumes the music. 
+     */
     private void resumeBackgroundMusic() {
         controller.resumeBackgroundMusic();
     }
 
+
+    /**
+     * This method save a game and mute the music or no. 
+     */
     private void handleSaveGameAction(){
         if (!isMuted) {
             controller.playDefaultSound();
@@ -378,6 +442,9 @@ public class MainFrame extends JFrame  {
         controller.saveGame();
     }
 
+    /**
+     * This method muted the music. 
+     */
     private void handleMuteAction(boolean isMuted) {
         this.isMuted = isMuted;
         if (isMuted){
@@ -390,10 +457,17 @@ public class MainFrame extends JFrame  {
         }
     } 
 
+    /**
+    * Method that returns if the music is muted.
+    * @return true if the music is muted. 
+    */
     public boolean isGameMuted(){
         return this.isMuted;
     }
 
+    /**
+    * this class controls the JMenu of the undo and redo
+    */
     public class UndoMenuOptions {
         private JMenu undo;
         private JMenu redo;
@@ -412,6 +486,10 @@ public class MainFrame extends JFrame  {
         }
     }
 
+    /**
+    * Method that returns the fileChooser.
+    * @return returns the fileChooser. 
+    */
     private JFileChooser getFileChooser(){
         // Crear un objeto JFileChooser
         JFileChooser fileChooser = new JFileChooser();
@@ -423,6 +501,10 @@ public class MainFrame extends JFrame  {
         return fileChooser;
     }
 
+    /**
+    * Method that open the fileChooser and gets the path of the file.
+    * @return returns the path of te file. 
+    */
     public String openFileChooser(){
         JFileChooser fileChooser = getFileChooser();
         int result = fileChooser.showOpenDialog(null);
@@ -441,6 +523,10 @@ public class MainFrame extends JFrame  {
         return null;
     }
 
+    /**
+    * Method that save the fileChooser and gets the path of the file.
+    * @return returns the path of te file. 
+    */
     public String saveFileChooser(){
         JFileChooser fileChooser = getFileChooser();
         int result = fileChooser.showSaveDialog(null);
@@ -477,6 +563,9 @@ public class MainFrame extends JFrame  {
         return null;
     }
 
+    /**
+    * Method that shows that is imposible to save the game when it is completed.
+    */
     public void cannotSaveGame(){
         JOptionPane.showMessageDialog(null, "It is not possible to save a game that has been completed.", Constants.ERROR_SAVING, JOptionPane.ERROR_MESSAGE);
         logger.error(fatalMarker, Constants.GAME_FINISHED_SAVE);
