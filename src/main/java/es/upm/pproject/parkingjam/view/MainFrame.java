@@ -255,7 +255,7 @@ public class MainFrame extends JFrame  {
 
      /**
      * Method that undo or redo a movement moving a car. 
-     * @param id of the car.
+     * @param id the car id.
      */
     public void undoRedo(char id){
         CarPanel a = mapCarPanels.get(id);
@@ -295,7 +295,7 @@ public class MainFrame extends JFrame  {
 
     /**
      * Method that creates all the buttons and actionlisteners of the menu.
-     * @return the game menu. 
+     * @return the game menu component. 
      */
     private JMenu createGameMenu(){
         JMenu gameMenu = new JMenu("Game");
@@ -328,7 +328,7 @@ public class MainFrame extends JFrame  {
 
     /**
      * Method that creates the sound menu. 
-     * @return the sound menu.
+     * @return the sound menu component.
      */
     private JMenu createSoundMenu() {
         JMenu soundMenu = new JMenu("Sound");
@@ -343,7 +343,7 @@ public class MainFrame extends JFrame  {
 
     /**
      * Method that creates the undo and redo menu. 
-     * @return the undoMenuOptions class.
+     * @return the undoMenuOptions with the undo and redo menu components.
      */
     private UndoMenuOptions createUndoMenu() {
         JMenu undo = new JMenu("Undo");
@@ -360,7 +360,7 @@ public class MainFrame extends JFrame  {
      * Method that undo or redo a movement moving a car. 
      * @param undo the JMenu of the undo movement.
      * @param redo the JMenu of the redo movement.
-     * @return the mouseListener.
+     * @return the mouseListener associated to undo and redo menus.
      */
     private MouseListener createUndoRedoMouseListener(JMenu undo, JMenu redo) {
         return new MouseAdapter() {
@@ -379,7 +379,7 @@ public class MainFrame extends JFrame  {
 
     /**
      * Method that creates the help menu. 
-     * @return the help menu.
+     * @return the help menu component.
      */
     private JMenu createHelpMenu() {
         JMenu helpMenu = new JMenu("Help");
@@ -459,7 +459,8 @@ public class MainFrame extends JFrame  {
     }
 
     /**
-     * Method that muted the music. 
+     * Method that handles the mute music action. 
+     * @param isMuted true if the game has been muted, false if unmuted
      */
     private void handleMuteAction(boolean isMuted) {
         this.isMuted = isMuted;
@@ -475,14 +476,14 @@ public class MainFrame extends JFrame  {
 
     /**
     * Method that returns if the music is muted.
-    * @return true if the music is muted. 
+    * @return true if the music is muted, false otherwise. 
     */
     public boolean isGameMuted(){
         return this.isMuted;
     }
 
     /**
-    * This class controls the JMenu of the undo and redo
+    * Class that controls the JMenu of the undo and redo
     */
     public class UndoMenuOptions {
         private JMenu undo;
@@ -503,8 +504,8 @@ public class MainFrame extends JFrame  {
     }
 
     /**
-    * Method that returns the fileChooser.
-    * @return the fileChooser. 
+    * Method that creates a generic fileChooser that filters by txt files.
+    * @return the created fileChooser. 
     */
     private JFileChooser getFileChooser(){
         // Crear un objeto JFileChooser
@@ -518,8 +519,8 @@ public class MainFrame extends JFrame  {
     }
 
     /**
-    * Method that open the fileChooser and gets the path of the file.
-    * @return the path of te file. 
+    * Method that displays an open fileChooser and gets the path of the file.
+    * @return the path of the selected file. 
     */
     public String openFileChooser(){
         JFileChooser fileChooser = getFileChooser();
@@ -540,8 +541,8 @@ public class MainFrame extends JFrame  {
     }
 
     /**
-    * Method that save the fileChooser and gets the path of the file.
-    * @return the path of te file. 
+    * Method that displays a save fileChooser and gets the path of the file.
+    * @return the path of the selected file. 
     */
     public String saveFileChooser(){
         JFileChooser fileChooser = getFileChooser();
@@ -580,7 +581,7 @@ public class MainFrame extends JFrame  {
     }
 
     /**
-    * Method that shows that is impossible to save the game when it is completed.
+    * Method that displays an error dialog when trying to save the game when it is completed.
     */
     public void cannotSaveGame(){
         JOptionPane.showMessageDialog(null, "It is not possible to save a game that has been completed.", Constants.ERROR_SAVING, JOptionPane.ERROR_MESSAGE);
