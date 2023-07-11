@@ -171,8 +171,8 @@ public class Level implements Resetable{
     }
    
     /**
-    * This method checks that all the cars are 1 × n or n × 1 where n ≥ 2 .
-    * @throws IOException,WrongLevelFormatException
+    * Method that checks if all the cars are in the valid format (1 × N or N × 1 where N ≥ 2)
+    * @throws WrongLevelFormatException
     */
     private void loadCars() throws WrongLevelFormatException{
         char[][] b = board.getTiles();
@@ -189,12 +189,11 @@ public class Level implements Resetable{
 
     /**
     * This method checks that all the cars are 1 × n or n × 1 where n ≥ 2 .
-    * @throws IOException,WrongLevelFormatException
     */
     private boolean loadCar(char [][] b, char letter, int x, int y){
         int tam = 1;
         // Check car orientation
-        boolean horizontal = b[x][y+1] == letter;
+        boolean horizontal = b[x][y + 1] == letter;
         int zero = 0;
         if (horizontal) {
            for (int j = y + 1; j < b[zero].length; j++) {
@@ -213,15 +212,20 @@ public class Level implements Resetable{
     }
 
     /**
-    * This method create a car with its parameters.
-    * @return true if the legth is bigger than two.
+    * Method to create a car with a given atributes.
+    * @param length the length of the car
+    * @param x the initial X position of the car
+    * @param y the initial Y position of the car
+    * @param id the id of the car (char)
+    * @param horizontal if the car is horizontally oriented
+    * @return true if the atributes conform a valid car format (length >= 2), false otherwise.
     */
-    private boolean createCar(int tam, int x, int y, char letter, boolean horizontal) {
-        if(tam >= 2) {
-            boolean isRedCar = letter == '*';
-            Car vehicle = new Car(x, y, letter, tam, horizontal, isRedCar);
-            vehicles.put(letter, vehicle);
-            idCars.add(letter);
+    private boolean createCar(int length, int x, int y, char id, boolean horizontal) {
+        if(length >= 2) {
+            boolean isRedCar = id == '*';
+            Car vehicle = new Car(x, y, id, length, horizontal, isRedCar);
+            vehicles.put(id, vehicle);
+            idCars.add(id);
             // Save redCar reference
             if(isRedCar){
                 this.redCar = vehicle;
@@ -232,12 +236,15 @@ public class Level implements Resetable{
     }
 
     /**
-    * Method that returns if a car has been moved succesfully.
-    * undo = true, means that the movement is a undo move and the same with redo(redo movement)
+    * Method that moves the car in the board if is a valid movement
+    * @param vehicle the car that is wanted to be moved
+    * @param direction the direction in which the car is wanted to be moved
+    * @param distance how many positions the car is wanted to be moved
+    * @param undo if the movement is an undo
+    * @param undo if the movement is an redo
     * @return true if the car has been moved, false otherwise. 
     */
     public boolean moveCar(Car vehicle, char direction, int distance, boolean undo, boolean redo) {
-        char dir2;
         // is redo = true. As we are going to reverse the original movement we turn it around again
         if(redo)
             direction = invert(direction);
@@ -248,14 +255,13 @@ public class Level implements Resetable{
          
         // if movement is valid
         if (verifyMovement(vehicle, direction, distance)) {
-            String logMsg;
             if (vehicle.isOnGoal()) {
                 logger.trace(levelMarker, "Red car has reached the exit");
             }
             // is undo = false thats means that is a normal movement
             if(!undo){
                 // we store the reversed addresses
-                dir2 = invert(direction);
+                char dir2 = invert(direction);
                 Pair <Character,Integer> pair = new Pair<>(dir2, distance);
                 Pair <Pair <Character,Integer>, Character > pair2 = new Pair<>(pair, vehicle.getId());
                 // add the movement to the list
@@ -266,7 +272,7 @@ public class Level implements Resetable{
                 score++;
             }
             // Which car and how many positions
-            logMsg = String.format("Car %c has been moved into tile [%d,%d]",
+            String logMsg = String.format("Car %c has been moved into tile [%d,%d]",
                     vehicle.getId(), newPos.getX(), newPos.getY());
             
             logger.trace(levelMarker, logMsg);
@@ -276,32 +282,30 @@ public class Level implements Resetable{
     }
     
     /**
-    * Method that returns if a car movement is valid.
+    * Method that checks if a car movement is valid.
+    * @param vehicle the car that is wanted to be moved.
+    * @param direction the direction in which is wanted to move the car
+    * @param distance how many distance is wanted to move the car
     * @return true if the movement is valid, false otherwise.
     */
     public boolean verifyMovement(Car vehicle, char direction, int distance) {
         char[][] tiles = board.getTiles();
-        int numRows = board.getNRows();
-        int numColumns = board.getNColumns();
 
-        int row = vehicle.getCurrentPositionX();
-        int column = vehicle.getCurrentPositionY();
         char orientation = vehicle.getOrientation();
-        boolean isRedCar = vehicle.isRedCar();
 
         if (orientation == 'H') {
             if (direction == 'L') {
-                return verifyMovementLeft(tiles, row, column, distance, isRedCar, vehicle);
+                return verifyMovementLeft(tiles, vehicle, distance);
             } else if (direction == 'R') {
-                return verifyMovementRight(tiles, vehicle, distance, numColumns);
+                return verifyMovementRight(tiles, vehicle, distance);
             }else{
                 return false;
             }
         } else if (orientation == 'V') {
             if (direction == 'U') {
-                return verifyMovementUp(tiles, row, column, distance, isRedCar, vehicle);
+                return verifyMovementUp(tiles, vehicle, distance);
             } else if (direction == 'D') {
-                return verifyMovementDown(tiles, vehicle, distance, numRows);
+                return verifyMovementDown(tiles, vehicle, distance);
             }else{
                 return false;
             }
@@ -311,9 +315,16 @@ public class Level implements Resetable{
 
     /**
     * Method that returns if a car movement is valid to the left.
+    * @param tiles the car that is wanted to be moved.
+    * @param vehicle the vehicle that is wanted to be moved.
+    * @param distance how many distance is wanted to move the car.
     * @return true if the movement is valid, false otherwise.
     */
-    private boolean verifyMovementLeft(char[][] tiles, int row, int column, int distance, boolean isRedCar, Car vehicle) {
+    private boolean verifyMovementLeft(char[][] tiles, Car vehicle, int distance) {
+        int row = vehicle.getCurrentPositionX();
+        int column = vehicle.getCurrentPositionY();
+        boolean isRedCar = vehicle.isRedCar();
+
         if (column - distance <= 0)
             return false;
         boolean isGoal;
@@ -331,10 +342,15 @@ public class Level implements Resetable{
     }
 
     /**
-    * Method that returns if a car movement is valid to the left.
+    * Method that returns if a car movement is valid to the right.
+    * @param tiles the car that is wanted to be moved.
+    * @param vehicle the vehicle that is wanted to be moved.
+    * @param distance how many distance is wanted to move the car.
     * @return true if the movement is valid, false otherwise.
     */
-    private boolean verifyMovementRight(char[][] tiles, Car vehicle, int distance, int nColumns) {
+    private boolean verifyMovementRight(char[][] tiles, Car vehicle, int distance) {
+        int nColumns = tiles[0].length;
+
         int row = vehicle.getCurrentPositionX();
         int column = vehicle.getCurrentPositionY();
         int vehicleSize = vehicle.getLength();
@@ -358,9 +374,16 @@ public class Level implements Resetable{
 
     /**
     * Method that returns if a car movement is valid upwards.
+    * @param tiles the car that is wanted to be moved.
+    * @param vehicle the vehicle that is wanted to be moved.
+    * @param distance how many distance is wanted to move the car.
     * @return true if the movement is valid, false otherwise.
     */
-    private boolean verifyMovementUp(char[][] tiles, int row, int column, int distance, boolean isRedCar, Car vehicle) {
+    private boolean verifyMovementUp(char[][] tiles, Car vehicle, int distance) {
+        int row = vehicle.getCurrentPositionX();
+        int column = vehicle.getCurrentPositionY();
+        boolean isRedCar = vehicle.isRedCar();
+
         if (row - distance <= 0)
             return false;
         boolean isGoal;
@@ -379,9 +402,14 @@ public class Level implements Resetable{
 
     /**
     * Method that returns if a car movement is valid downwards.
+    * @param tiles the car that is wanted to be moved.
+    * @param vehicle the vehicle that is wanted to be moved.
+    * @param distance how many distance is wanted to move the car.
     * @return true if the movement is valid, false otherwise.
     */
-    private boolean verifyMovementDown(char[][] tiles, Car vehicle, int distance, int nRows) {
+    private boolean verifyMovementDown(char[][] tiles, Car vehicle, int distance) {
+        int nRows = tiles.length;
+        
         int row = vehicle.getCurrentPositionX();
         int column = vehicle.getCurrentPositionY();
         int vehicleSize = vehicle.getLength();
@@ -404,16 +432,16 @@ public class Level implements Resetable{
     }
 
     /**
-    * Method that returns if the char is empty.
-    * @return true if the char is empty.
+    * Method that checks if the tile is the empty tile.
+    * @return true if the tile is empty, false otherwise.
     */
     private boolean isEmptyTile(char tile) {
         return tile == ' ';
     }
 
     /**
-    * Method that returns if the car is the goal and is a red car.
-    * @return true if the car is the goal and is a red car.
+    * Method that checks if the exit has been reached by the target car.
+    * @return true if the red car reached the goal, false otherwise.
     */
     private boolean isGoalTile(char tile, boolean isRedCar) {
         return tile == '@' && isRedCar;
@@ -454,8 +482,8 @@ public class Level implements Resetable{
     }
 
     /**
-    * Method that returns the id of the car that we have moved. It also eliminates movement.
-    * isUndo = true, means that we have to remove the movement of the undo list
+    * Method that obtains the id of the car that has been moved.
+    * @param isUndo true if the movement comes from an undo, false if comes from a redo
     * @return id of the car that has been moved.
     */
     public char getUndoRedoCarId(boolean isUndo){
@@ -471,28 +499,26 @@ public class Level implements Resetable{
     }
 
     /**
-    * Method to invert the direction.
+    * Method to invert a given direction.
+    * @param dir the direction to be inverted.
     * @return the inverted direction.
     */
-    private char invert(char c){
-        char char2 = ' ';
-        if(c == 'D'){
-             char2 = 'U';
+    private char invert(char dir){
+        char invertedDir = ' ';
+        if(dir == 'D'){
+             invertedDir = 'U';
+        } else if(dir == 'R'){
+            invertedDir = 'L';
+        } else if(dir == 'U'){
+            invertedDir = 'D';
+        } else if(dir == 'L'){
+            invertedDir = 'R';
         }
-        if(c == 'R'){
-            char2 = 'L';
-        }
-        if(c == 'U'){
-            char2 = 'D';
-        }
-        if(c == 'L'){
-            char2 = 'R';
-        }
-        return char2;
+        return invertedDir;
     }
     
     /**
-    * Method that undo a movement.
+    * Method that undos a movement.
     * @return true if the movement is valid, false otherwise.
     */
     public boolean undo(){
@@ -508,7 +534,7 @@ public class Level implements Resetable{
     }
 
     /**
-    * Method that redo a movement.
+    * Method that redos a movement.
     * @return true if the movement is valid, false otherwise.
     */
     public boolean redo(){

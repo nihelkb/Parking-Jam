@@ -28,12 +28,18 @@ public class Car implements Resetable {
     private boolean isOnGoal;
 
     /**
-    * Constructs a Car.
+    * Constructor of the class.
+    * @param initialStateX initial X position of the car.
+    * @param initialStateY initial Y position of the car.
+    * @param id the id of the car that is going to be created.
+    * @param length number of tiles that the car will be holding.
+    * @param horizontal if the orientation is vertical.
+    * @param redCar if the car is the target one (red car).
     */
-    public Car(int initialStateX, int initialStateY, char id, int length, boolean vertical, boolean redCar) {
+    public Car(int initialStateX, int initialStateY, char id, int length, boolean horizontal, boolean redCar) {
         this.id = id;
         this.length = length;
-        this.orientation = vertical ? 'H' : 'V';
+        this.orientation = horizontal ? 'H' : 'V';
         this.redCar = redCar;
 
         this.initialStateX = initialStateX;
@@ -42,28 +48,66 @@ public class Car implements Resetable {
         this.positionY = initialStateY;
     }
 
-    // getters and setters.
+    /**
+    * Method that obtains the new position of the car when moving.
+    * @param direction the direction where the car is wanted to be moved.
+    * @param distance how many positions the car is wanted to be moved.
+    * @return the new position of the car if the move is finally effective
+    */
+    public Coordinates move(char direction, int distance){
+        if(this.orientation == 'H'){
+            if(direction == 'L'){
+                this.positionY = this.positionY - distance;
+            }
+            else if(direction == 'R'){
+                this.positionY = this.positionY + distance;
+            }
+        }
+        else if(this.orientation == 'V'){
+            if(direction == 'U'){
+                this.positionX = this.positionX - distance;
+            }
+            else if(direction == 'D'){
+                this.positionX = this.positionX + distance;
+            }
+        }
+        return new Coordinates(this.positionX, this.positionY);
+    }
+
+    /**
+    * Method that checks if the car reached the exit.
+    * @return true if the car reached the exit, false otherwise
+    */
+    public boolean isOnGoal() {
+        return this.isOnGoal && this.redCar;
+    }
+
+    /**
+    * Method that sets if the car is on goal or not.
+    * @param isOnGoal true if the car reached the exit, false otherwise
+    */
+    public void setOnGoal(boolean isOnGoal) {
+        this.isOnGoal = isOnGoal;
+    }
+
+    // Getters and setters
 
     public char getId() {
         return id;
     }
 
-   
     public int getLength() {
         return length;
     }
 
-  
     public char getOrientation() {
         return orientation;
     }
-
   
     public boolean isRedCar() {
         return redCar;
     }
 
-   
     public Coordinates getCurrentPos() {
         return new Coordinates(this.positionX, this.positionY);
     }
@@ -98,44 +142,6 @@ public class Car implements Resetable {
 
     public void setCurrentPositionY(int currentPositionY) {
         this.positionY = currentPositionY;
-    }
-
-    /**
-    * Method that move a car into a direction and with a determinated distance.
-    * @param the direction that the car has to move.
-    * @param the distance that the car has to move
-    * @return the coordinates of the car after the move.
-    */
-    public Coordinates move(char direction, int distance){
-        if(this.orientation == 'H'){
-            if(direction == 'L'){
-                this.positionY = this.positionY - distance;
-            }
-            else if(direction == 'R'){
-                this.positionY = this.positionY + distance;
-            }
-        }
-        else if(this.orientation == 'V'){
-            if(direction == 'U'){
-                this.positionX = this.positionX - distance;
-            }
-            else if(direction == 'D'){
-                this.positionX = this.positionX + distance;
-            }
-        }
-        return new Coordinates(this.positionX, this.positionY);
-    }
-
-    /**
-    * Method that returns true if the car is red and is at the goal.
-    * @return true if the car is red and is at the goal.
-    */
-    public boolean isOnGoal() {
-        return this.isOnGoal && this.redCar;
-    }
-
-    public void setOnGoal(boolean isOnGoal) {
-        this.isOnGoal = isOnGoal;
     }
 
     @Override
