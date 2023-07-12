@@ -72,10 +72,10 @@ public class Controller implements IController{
     */
     public void move(char idCar, char dir, int distance) {
         Car car = game.getLevel().getVehiclesMap().get(idCar);
-        String lvlName = game.getLevelName();
+        int lvlNum = game.getLevelNumber();
         game.moveCar(car, dir, distance);
         // pasa al siguiente nivel
-        if (!game.getLevelName().equals(lvlName)){
+        if (game.getLevelNumber() != lvlNum){
             if(!gui.isGameMuted())
                 playLevelSound();
             gui.showLevel();

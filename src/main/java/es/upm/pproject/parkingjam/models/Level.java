@@ -254,9 +254,6 @@ public class Level implements Resetable{
          
         // if movement is valid
         if (verifyMovement(vehicle, direction, distance)) {
-            if (vehicle.isOnGoal()) {
-                logger.trace(levelMarker, "Red car has reached the exit");
-            }
             // is undo = false thats means that is a normal movement
             if(!undo){
                 // we store the reversed addresses
@@ -275,6 +272,9 @@ public class Level implements Resetable{
                     vehicle.getId(), newPos.getX(), newPos.getY());
             
             logger.trace(levelMarker, logMsg);
+            if (vehicle.isOnGoal()) {
+                logger.trace(levelMarker, "Red car has reached the exit");
+            }
             return true;
         }
         return false;
@@ -327,9 +327,7 @@ public class Level implements Resetable{
             if (!isEmptyTile(tiles[row][i])){
                 // Look if destine tile is exit
                 isGoal = isGoalTile(tiles[row][i], isRedCar);
-                if(isGoal){
-                    vehicle.setOnGoal(true);
-                }
+                vehicle.setOnGoal(isGoal);
                 return isGoal;
             }
         }
@@ -358,9 +356,7 @@ public class Level implements Resetable{
             if (!isEmptyTile(tiles[row][i])){
                 // Look if destine tile is exit
                 isGoal = isGoalTile(tiles[row][i], isRedCar);
-                if(isGoal){
-                    vehicle.setOnGoal(true);
-                }
+                vehicle.setOnGoal(isGoal);
                 return isGoal;
             }
         }
@@ -386,9 +382,7 @@ public class Level implements Resetable{
             if (!isEmptyTile(tiles[i][column])){
                 // Look if destine tile is exit
                 isGoal = isGoalTile(tiles[i][column], isRedCar);
-                if(isGoal){
-                    vehicle.setOnGoal(true);
-                }
+                vehicle.setOnGoal(isGoal);
                 return isGoal;
             }    
         }
@@ -417,9 +411,7 @@ public class Level implements Resetable{
             if (!isEmptyTile(tiles[i][column])){
                 // Look if destine tile is exit
                 isGoal = isGoalTile(tiles[i][column], isRedCar);
-                if(isGoal){
-                    vehicle.setOnGoal(true);
-                }
+                vehicle.setOnGoal(isGoal);
                 return isGoal;
             }
         }
@@ -518,8 +510,8 @@ public class Level implements Resetable{
     */
     public boolean undo(){
         if(undoMov.isEmpty()){
-             logger.error(fatalMarker, "Imposible to undo the movement");
-             return false;
+            logger.error(fatalMarker, "Imposible to undo the movement");
+            return false;
         } else{
             Pair<Pair<Character,Integer>, Character> pair = undoMov.get(undoMov.size() - 1);
             moveCar(vehicles.get(pair.getRight()), pair.getLeft().getLeft(), pair.getLeft().getRight(), true, false);
@@ -534,8 +526,8 @@ public class Level implements Resetable{
     */
     public boolean redo(){
         if(stackRedo.isEmpty()){
-             logger.error(fatalMarker, "Imposible to redo the movement");
-             return false;
+            logger.error(fatalMarker, "Imposible to redo the movement");
+            return false;
         } else{
             Pair<Pair<Character,Integer>, Character> pair = stackRedo.peek();
             moveCar(vehicles.get(pair.getRight()), pair.getLeft().getLeft(),pair.getLeft().getRight(),false, true);

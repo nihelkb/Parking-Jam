@@ -106,7 +106,7 @@ public class Game implements Resetable{
         if(level != null)
             lastLevelScore = level.getScore();
         try{
-            level = new Level(levelPath);   
+            level = new Level(levelPath);
         }catch (LevelNotFoundException e) {
             logger.info(gameMarker, "Game completed");
             finished = true;
@@ -123,7 +123,11 @@ public class Game implements Resetable{
      * @return true if the undo has been done, false otherwise
      */
      public boolean undo(){
-         return level.undo();
+        if(isFinished()){
+            logger.error(fatalMarker, "Imposible to undo the movement: finished game");
+            return false;
+        }else
+            return level.undo();
     }
 
     /**
@@ -131,7 +135,11 @@ public class Game implements Resetable{
      * @return true if the redo has been done, false otherwise
      */
     public boolean redo() {
-        return level.redo();
+        if(isFinished()){
+            logger.error(fatalMarker, "Imposible to redo the movement: finished game");
+            return false;
+        }else
+            return level.redo();
     }
 
      /**
@@ -160,6 +168,9 @@ public class Game implements Resetable{
                 }
 		            outB.append('\n');
                 }
+                // save the level number
+                outB.append(this.levelNumber + "");
+                outB.append('\n');
                  // save the scores
                 outB.append(String.valueOf(score));
                 outB.append('\n');
@@ -255,13 +266,14 @@ public class Game implements Resetable{
         char direction;
         char id;
         try (BufferedReader br = new BufferedReader(new FileReader(seletedPath))) {
-            this.levelNumber = Integer.parseInt(br.readLine().split(" ")[1]); 
+            cadena = br.readLine();
             cadena = br.readLine();
             String[] nums = cadena.split(" ");
             int valor = Integer.parseInt(nums[0]);
             for(int i = 0 ; i < valor ; i++){
                 cadena = br.readLine();
             }
+            this.levelNumber = Integer.parseInt(br.readLine());
             this.score = Integer.parseInt(br.readLine());
             level.setScore(Integer.parseInt(br.readLine()));
 
