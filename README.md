@@ -8,7 +8,7 @@ This repository contains a Java project to play the game called **parking-jam**.
   * [Download the source code](#download-the-source-code)
   * [Run tests](#run-tests)
   * [Directory Layout](#directory-layout)
-  * [Implementation](#implementation)
+* [Implementation](#implementation)
 * [Run the game](#run-the-game)
   * [How to play](#how-to-play)
   * [Load and save](#load-and-save)
@@ -142,11 +142,11 @@ This repository contains a Java project to play the game called **parking-jam**.
 
 This project is oriented to emulate the game **parking-jam** using the **model-view-controller** arquitecture pattern.
 
-**Controller** is the class that handless the communication between the model and the view. Is in charge of starting the game, handling the user input and updating the model.
+**Controller** handles the communication between the model and the view. Is in charge of starting the game, handling the user input and updating the model.
 
-**model** is formed by four classes. The first one is *car.java* that represents a car with all the characteristics. For example length, id, orientation... Another one is *level.java* is the class that represents a level in which we have the board, create the cars, verify if a movement is valid, reset the level and level up. Furthermore, *game.java* represents the game and is in charge of managing the different levels, create a new game, manage the score, and more. And last but not least, *parking.java* is the class that is representing the board.
+**Model** package is formed by four classes. The first one is `Car`, that represents a car with all the characteristics such as length, id, orientation... Another one is `Level` is the class that represents a level in which we have the board, create the cars, verify if a movement is valid, reset the level and level up. Furthermore, `Game` represents the game and is in charge of managing the different levels, create a new game, manage the score, and more. And last but not least, `Parking` is the class that is representing the board.
 
-**mainframe** is the class in charge of controlling the gui.
+**View** package contains classes responsible for the graphical user interface (GUI) of the game. The `MainFrame` class represents the main frame of the game and manages the game's GUI components. The `CarPanel` class handles the display and interaction of draggable cars on the game board. The `ImagePanel` class represents a tile on the game board and displays an image as a tile. The `ParkingPanel` class displays the parking area on the game board. The `Constants` class contains constant values used throughout the GUI. The `MusicPlayer` class manages and plays music tracks and sound effects in the application.
 
 ### Car Class
 
@@ -291,6 +291,8 @@ The `MusicPlayer` class is responsible for managing and playing different music 
 2. Compile the project with: `mvn clean compile`
 3. Run the game with: `mvn exec:java`
 
+This will be displayed on a new window.
+
 <div style="text-align: center;">
 
   ![Parking-Jam](src/main/resources/img/parking-jam1.png)
@@ -303,7 +305,7 @@ The objective of the game is to move the cars in order the red car can scape the
 
 ### Load and save ###
 
-The game can be saved and loaded from a file. The file is a txt file that contains the state of the game when it was saved. In this file you will find the positions of the cars, the level score, the global score and the stack of the moves
+The game can be saved and loaded from a file. The file is a txt file that contains the state of the game when it was saved. In this file you will find the level name and its dimension, the positions of the cars, the level number, the level score, the global score and the stack of the moves.
 
 ## Authors ##
 
