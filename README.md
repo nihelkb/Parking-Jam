@@ -35,7 +35,8 @@ This repository contains a Java project to play the game called **parking-jam**.
     ├── deliverables
     │   ├── backlog1.csv
     │   ├── backlog2.csv
-    │   └── sprint1.csv
+    │   ├── sprint1.csv
+    │   └── sprint2.csv
     ├── pom.xml
     └── src
         ├── main
@@ -137,7 +138,7 @@ This repository contains a Java project to play the game called **parking-jam**.
                                     └── LevelTest.java
 ```
 
-### Implementation ###
+## Implementation ##
 
 This project is oriented to emulate the game **parking-jam** using the **model-view-controller** arquitecture pattern.
 
@@ -147,7 +148,142 @@ This project is oriented to emulate the game **parking-jam** using the **model-v
 
 **mainframe** is the class in charge of controlling the gui.
 
-**level** is represented by a matrix of characters. The character '+' represents a wall, '*' a red car, '@' is the goal and the rest of letters are cars.
+### Car Class
+
+The `Car` class represents a car in the game. It implements the `Resetable` interface and provides methods for moving the car, checking if it is on the goal, and managing its state.
+
+#### Features
+
+- Stores the car's ID, length, orientation, initial position, and current position.
+- Tracks whether the car is the red car (target car) or not.
+- Moves the car based on a specified direction and distance.
+- Checks if the car is on the goal (reached the exit).
+- Provides methods for resetting the car's position.
+- Implements the `Resetable` interface to support resetting the car's state.
+
+### Parking Class
+
+The `Parking` class represents the game board or parking lot in the Parking Jam application. It manages the layout of the parking lot, the position of vehicles, and provides methods for updating the parking state.
+
+#### Features
+
+- Stores the tiles representing the parking lot and vehicles on the board.
+- Tracks the number of rows and columns in the parking lot.
+- Updates the parking state when a vehicle is moved.
+- Duplicates the parking to create a copy for analysis or simulation.
+- Inserts a car into the parking lot.
+- Deletes a car from the parking lot.
+- Provides access to the tiles, number of rows, and number of columns.
+
+### Level Class
+
+The `Level` class represents a level in the game. It provides methods for loading a level from a file, managing cars and their movements, checking the status of the level, and resetting the level.
+
+#### Features
+
+- Stores the red car, the game board, the initial board state, and the list of vehicles.
+- Manages the score, undo and redo movements, and the name of the level.
+- Loads a level from a file, filling the board and creating cars.
+- Validates the format and dimensions of the level file.
+- Moves a car on the board and verifies the validity of the movement.
+- Checks if the red car has reached the goal (exit).
+- Resets the level to its initial state.
+- Supports undo and redo movements.
+
+### Game Class
+
+The `Game` class represents a game in the Parking Jam application. It manages the game's levels and provides methods for moving cars, starting a new game, loading and saving game state, undoing and redoing movements, resetting the level, and retrieving game information.
+
+#### Features
+
+- Manages the game's levels and provides methods for interacting with the game.
+- Moves cars within each level of the game based on user input.
+- Starts a new game from the initial level.
+- Loads a saved game state from a file.
+- Saves the game state, including the board, scores, and movements, to a file.
+- Supports undo and redo functionality for movements.
+- Checks if the game has finished.
+- Resets the level to its initial state.
+- Prints the current level.
+- Retrieves game information such as total score, level score, level name, and level dimensions.
+- Sets the score and undo movements when loading a game state.
+- Retrieves the ID of the car that has been moved in the last undo or redo movement.
+
+### MainFrame Class
+
+The `MainFrame` class represents the graphical user interface (GUI) of the game. It extends the `JFrame` class and provides methods for initializing the GUI, displaying the game level, handling user input, and managing the game menu and sound options.
+
+#### Features
+
+- Initializes the GUI components, including the game grid, stats panel, and background sprite.
+- Displays the level and game scores in the stats panel.
+- Paints the game parking area, cars, and walls on the grid.
+- Manages the game menu options, including new game, reset level, load game, save game, and exit.
+- Handles the mute sound option and controls the background music.
+- Provides functionality for undoing and redoing car movements.
+- Shows the help menu with instructions on how to play the game.
+- Provides file chooser dialogs for loading and saving game files.
+
+### ImagePanel
+
+The `ImagePanel` class represents a tile on the game board. It extends the `JPanel` class and is responsible for displaying an image as a tile.
+
+#### Features
+
+- Displays an image as a tile on the game board.
+- Supports custom dimensions for the tile.
+- Provides access to the image used for the tile.
+
+### ParkingPanel Class
+
+The `ParkingPanel` class represents the parking area on the game board. It extends the `JPanel` class and is responsible for displaying the parking area where cars are placed.
+
+#### Features
+
+- Displays the parking area on the game board.
+- Supports custom dimensions for the parking area.
+- Sets the background color of the parking area.
+
+### CarPanel Class
+
+The `CarPanel` class represents a draggable car on the game board. It extends the `ImagePanel` class and is responsible for displaying a car image and handling mouse events for dragging and releasing the car. It interacts with the game controller to handle car movements.
+
+#### Features
+
+- Displays a car image on the game board.
+- Handles mouse events for dragging and releasing the car.
+- Calculates the movement of the car based on the mouse drag distance.
+- Rotates the car image if the car is vertical.
+- Interacts with the game controller to check the validity of car movements.
+- Plays a sound effect when the car is successfully moved.
+- Provides access to the ID and initial position of the car.
+
+### Controller Class
+
+The `Controller` class is responsible for handling the application's logic and communication between the model and the view. It manages user input, updates the model, and interacts with the GUI.
+
+#### Features
+
+- Initializes the game, GUI, and music player.
+- Retrieves level dimensions and board tiles from the game model.
+- Validates and performs car movements based on user input.
+- Retrieves information about car positions, orientations, and lengths.
+- Manages game score, level progress, and undo/redo functionality.
+- Handles new game creation, game loading, level reset, and game saving.
+- Controls the background music and plays sound effects.
+- Manages game muting functionality.
+
+### MusicPlayer Class ###
+
+The `MusicPlayer` class is responsible for managing and playing different music tracks and sound effects in the application. It uses the Java Sound API to load and play audio files.
+
+#### Features
+
+- Utilizes the singleton design pattern to ensure only one instance of the `MusicPlayer` class is created.
+- Loads music tracks from specified file paths, supporting audio formats such as WAV, AIFF, and AU.
+- Plays background music in a loop.
+- Plays various sound effects, including move car sound, new game sound, reset sound, undo sound, default sound, level sound, and game sound.
+- Provides functionality to pause, resume, and restart the background music.
 
 ## Run the game ##
 
